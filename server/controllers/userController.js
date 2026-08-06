@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 // =======================
 // Register User
 // =======================
@@ -47,10 +48,24 @@ if (!isMatch) {
 }
 
     // Login Successful
-    res.status(200).json({
-        message: "Login Successful",
-        user
-    });
+
+const token = jwt.sign(
+    { id: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+);
+
+
+
+   res.status(200).json({
+    message: "Login Successful",
+    token,
+    user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email
+    }
+});
 };
 
 module.exports = {
