@@ -1,0 +1,973 @@
+/* =========================================
+   SKILLBRIDGE DASHBOARD
+========================================= */
+
+.dashboard-page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  color: #171827;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+
+/* =========================================
+   NAVBAR
+========================================= */
+
+.dashboard-navbar {
+  height: 72px;
+  padding: 0 7%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: rgba(255, 255, 255, 0.94);
+
+  border-bottom: 1px solid #e8e9f0;
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  backdrop-filter: blur(14px);
+}
+
+.dashboard-logo {
+  font-size: 25px;
+  font-weight: 850;
+  letter-spacing: -1px;
+
+  background: linear-gradient(
+    135deg,
+    #5558e8,
+    #8b5cf6
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dashboard-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.dashboard-user-name {
+  color: #62677a;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.logout-button {
+  padding: 9px 17px;
+
+  background: #ffffff;
+
+  color: #555a6d;
+
+  border: 1px solid #dfe1e8;
+
+  border-radius: 9px;
+
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.logout-button:hover {
+  color: #5558e8;
+
+  border-color: #bfc2f7;
+
+  background: #f7f7ff;
+}
+
+
+/* =========================================
+   MAIN
+========================================= */
+
+.dashboard-content {
+  width: min(1120px, 92%);
+
+  margin: 0 auto;
+
+  padding: 45px 0 80px;
+}
+
+
+/* =========================================
+   HERO
+========================================= */
+
+.dashboard-hero {
+  min-height: 245px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: relative;
+
+  overflow: hidden;
+
+  padding: 42px 48px;
+
+  margin-bottom: 55px;
+
+  background:
+    radial-gradient(
+      circle at 85% 30%,
+      rgba(139, 92, 246, 0.3),
+      transparent 35%
+    ),
+    linear-gradient(
+      120deg,
+      #181a38,
+      #292c66
+    );
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 20px 45px rgba(38, 39, 87, 0.18);
+
+  box-sizing: border-box;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+
+  max-width: 650px;
+}
+
+.hero-label {
+  display: inline-block;
+
+  margin-bottom: 14px;
+
+  color: #bfc3ff;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+.hero-content h1 {
+  margin: 0 0 12px;
+
+  color: #ffffff;
+
+  font-size: clamp(30px, 4vw, 42px);
+
+  line-height: 1.1;
+
+  letter-spacing: -1.4px;
+
+  font-weight: 800;
+}
+
+.hero-content h1 span {
+  color: #aeb1ff;
+}
+
+.hero-content p {
+  max-width: 570px;
+
+  margin: 0;
+
+  color: #c9cbe0;
+
+  font-size: 15px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================
+   HERO DECORATION
+========================================= */
+
+.hero-decoration {
+  width: 190px;
+  height: 190px;
+
+  position: relative;
+
+  margin-right: 30px;
+
+  flex-shrink: 0;
+}
+
+.hero-orbit {
+  position: absolute;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  border-radius: 50%;
+}
+
+.orbit-one {
+  width: 180px;
+  height: 180px;
+
+  top: 5px;
+  left: 5px;
+}
+
+.orbit-two {
+  width: 120px;
+  height: 120px;
+
+  top: 35px;
+  left: 35px;
+
+  border-color: rgba(174, 177, 255, 0.25);
+}
+
+.hero-center {
+  width: 70px;
+  height: 70px;
+
+  position: absolute;
+
+  top: 60px;
+  left: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 22px;
+
+  background: linear-gradient(
+    135deg,
+    #6d70f5,
+    #9b72f5
+  );
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 850;
+
+  letter-spacing: 1px;
+
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================
+   SECTION HEADING
+========================================= */
+
+.section-heading {
+  margin-bottom: 22px;
+}
+
+.section-label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #7377d9;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.7px;
+}
+
+.section-heading h2,
+.sessions-header h2 {
+  margin: 0;
+
+  color: #171827;
+
+  font-size: 23px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.6px;
+}
+
+
+/* =========================================
+   DASHBOARD CARDS
+========================================= */
+
+.dashboard-cards {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 18px;
+
+  margin-bottom: 60px;
+}
+
+.dashboard-card {
+  min-height: 285px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  padding: 25px;
+
+  background: #ffffff;
+
+  border: 1px solid #e7e8ef;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 5px 20px rgba(28, 31, 49, 0.04);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+
+  box-sizing: border-box;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+
+  border-color: #d6d8fb;
+
+  box-shadow:
+    0 16px 35px rgba(28, 31, 49, 0.08);
+}
+
+.card-top {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 24px;
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+}
+
+.mentor-icon {
+  color: #5558e8;
+
+  background: #eef0ff;
+}
+
+.skills-icon {
+  color: #7c4fe8;
+
+  background: #f3edff;
+}
+
+.session-icon {
+  color: #2879bd;
+
+  background: #eaf5ff;
+}
+
+.card-number {
+  color: #c5c7d1;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.dashboard-card h3 {
+  margin: 0 0 10px;
+
+  color: #191a29;
+
+  font-size: 19px;
+
+  font-weight: 750;
+
+  letter-spacing: -0.3px;
+}
+
+.dashboard-card p {
+  margin: 0;
+
+  color: #74798c;
+
+  font-size: 13px;
+
+  line-height: 1.7;
+}
+
+.card-action {
+  margin-top: auto;
+
+  padding: 13px 0 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  background: transparent;
+
+  color: #5558e8;
+
+  border: none;
+
+  font-size: 13px;
+
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition: gap 0.2s ease;
+}
+
+.card-action:hover {
+  gap: 11px;
+}
+
+
+/* =========================================
+   SESSIONS SECTION
+========================================= */
+
+.sessions-section {
+  padding: 30px;
+
+  background: #ffffff;
+
+  border: 1px solid #e7e8ef;
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 5px 20px rgba(28, 31, 49, 0.04);
+
+  box-sizing: border-box;
+}
+
+.sessions-header {
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-bottom: 24px;
+
+  margin-bottom: 5px;
+
+  border-bottom: 1px solid #ececf2;
+}
+
+.sessions-header p {
+  margin: 7px 0 0;
+
+  color: #85899a;
+
+  font-size: 13px;
+}
+
+.refresh-button {
+  padding: 9px 15px;
+
+  background: #f4f4ff;
+
+  color: #5558e8;
+
+  border: 1px solid #e0e1fa;
+
+  border-radius: 9px;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.refresh-button:hover {
+  background: #ebecff;
+
+  border-color: #d1d3f7;
+}
+
+
+/* =========================================
+   SESSION LIST
+========================================= */
+
+.sessions-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  padding-top: 18px;
+}
+
+.session-card {
+  padding: 20px;
+
+  display: grid;
+
+  grid-template-columns: 1.2fr 1.5fr auto;
+
+  align-items: center;
+
+  gap: 22px;
+
+  background: #fafafe;
+
+  border: 1px solid #e7e8ef;
+
+  border-radius: 14px;
+
+  transition: all 0.2s ease;
+
+  box-sizing: border-box;
+}
+
+.session-card:hover {
+  background: #ffffff;
+
+  border-color: #d9dbfa;
+
+  box-shadow:
+    0 8px 22px rgba(30, 32, 60, 0.06);
+}
+
+.session-main {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+}
+
+.session-avatar {
+  width: 43px;
+  height: 43px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  background: linear-gradient(
+    135deg,
+    #e9eaff,
+    #f1eaff
+  );
+
+  color: #5558e8;
+
+  border-radius: 13px;
+
+  font-size: 15px;
+
+  font-weight: 800;
+}
+
+.session-info h3 {
+  margin: 0 0 4px;
+
+  color: #202131;
+
+  font-size: 14px;
+
+  font-weight: 750;
+}
+
+.session-info p {
+  margin: 0;
+
+  color: #85899a;
+
+  font-size: 12px;
+}
+
+.session-meta {
+  display: flex;
+
+  gap: 30px;
+}
+
+.meta-item {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+  color: #45495c;
+
+  font-size: 12px;
+
+  font-weight: 650;
+}
+
+.meta-label {
+  color: #a0a3b0;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.session-status {
+  justify-self: end;
+
+  padding: 7px 12px;
+
+  border-radius: 50px;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  text-transform: capitalize;
+}
+
+.session-status.pending {
+  color: #a16207;
+
+  background: #fff5d9;
+}
+
+.session-status.accepted {
+  color: #15803d;
+
+  background: #e5f8eb;
+}
+
+.session-status.rejected {
+  color: #b91c1c;
+
+  background: #ffe9e9;
+}
+
+.session-status.completed {
+  color: #4338ca;
+
+  background: #e9eaff;
+}
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+.session-message-box {
+  grid-column: 1 / -1;
+
+  padding: 13px 15px;
+
+  background: #ffffff;
+
+  border-left: 3px solid #6a6ded;
+
+  border-radius: 7px;
+}
+
+.session-message-box span {
+  color: #999cab;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+}
+
+.session-message-box p {
+  margin: 5px 0 0;
+
+  color: #515568;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.no-sessions {
+  padding: 55px 20px;
+
+  text-align: center;
+}
+
+.empty-icon {
+  width: 55px;
+  height: 55px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 15px;
+
+  color: #6669e9;
+
+  background: #f0f1ff;
+
+  border-radius: 16px;
+}
+
+.no-sessions h3 {
+  margin: 0 0 7px;
+
+  color: #202131;
+
+  font-size: 17px;
+}
+
+.no-sessions p {
+  margin: 0 0 20px;
+
+  color: #85899a;
+
+  font-size: 13px;
+}
+
+.no-sessions button {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 11px 17px;
+
+  background: #595ce8;
+
+  color: #ffffff;
+
+  border: none;
+
+  border-radius: 9px;
+
+  font-size: 12px;
+
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.no-sessions button:hover {
+  background: #4c4fd8;
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
+
+.session-state {
+  padding: 50px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  color: #85899a;
+
+  font-size: 13px;
+}
+
+.session-state p {
+  margin: 0;
+}
+
+.loading-dot {
+  width: 8px;
+  height: 8px;
+
+  background: #6265ed;
+
+  border-radius: 50%;
+
+  animation: pulse 1s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+.session-error {
+  margin-top: 20px;
+
+  padding: 12px 15px;
+
+  background: #fff1f1;
+
+  border: 1px solid #ffd5d5;
+
+  border-radius: 9px;
+
+  color: #b42318;
+
+  font-size: 12px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+  .hero-decoration {
+    display: none;
+  }
+
+  .dashboard-hero {
+    padding: 38px;
+  }
+
+  .dashboard-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-card {
+    min-height: 240px;
+  }
+
+  .session-card {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+  }
+
+  .session-status {
+    justify-self: start;
+  }
+
+  .session-meta {
+    gap: 40px;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .dashboard-navbar {
+    padding: 0 20px;
+  }
+
+  .dashboard-user-name {
+    display: none;
+  }
+
+  .dashboard-content {
+    width: 92%;
+
+    padding: 30px 0 60px;
+  }
+
+  .dashboard-hero {
+    min-height: auto;
+
+    padding: 32px 25px;
+
+    border-radius: 19px;
+  }
+
+  .hero-content h1 {
+    font-size: 29px;
+  }
+
+  .hero-content p {
+    font-size: 13px;
+  }
+
+  .dashboard-cards {
+    gap: 14px;
+  }
+
+  .dashboard-card {
+    min-height: 220px;
+
+    padding: 22px;
+  }
+
+  .sessions-section {
+    padding: 21px;
+  }
+
+  .sessions-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .session-meta {
+    gap: 25px;
+  }
+}

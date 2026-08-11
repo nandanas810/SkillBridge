@@ -1,0 +1,603 @@
+/* =========================================
+   SKILLBRIDGE - MENTORS PAGE
+========================================= */
+
+.mentors-page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  color: #171827;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+
+/* =========================================
+   NAVBAR
+========================================= */
+
+.mentors-navbar {
+  height: 72px;
+  padding: 0 7%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e8e9f0;
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  box-sizing: border-box;
+}
+
+.mentors-logo {
+  font-size: 25px;
+  font-weight: 850;
+  letter-spacing: -1px;
+
+  background: linear-gradient(
+    135deg,
+    #5558e8,
+    #8b5cf6
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.back-dashboard-button {
+  padding: 9px 17px;
+
+  background: #ffffff;
+
+  color: #555a6d;
+
+  border: 1px solid #dfe1e8;
+
+  border-radius: 9px;
+
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.back-dashboard-button:hover {
+  color: #5558e8;
+
+  border-color: #bfc2f7;
+
+  background: #f7f7ff;
+}
+
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.mentors-content {
+  width: min(1120px, 92%);
+
+  margin: 0 auto;
+
+  padding: 50px 0 80px;
+}
+
+
+/* =========================================
+   HERO
+========================================= */
+
+.mentors-hero {
+  padding: 15px 0 35px;
+}
+
+.mentors-label {
+  display: inline-block;
+
+  margin-bottom: 10px;
+
+  color: #7377d9;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.8px;
+}
+
+.mentors-hero h1 {
+  max-width: 700px;
+
+  margin: 0 0 13px;
+
+  color: #171827;
+
+  font-size: clamp(32px, 4vw, 46px);
+
+  line-height: 1.1;
+
+  letter-spacing: -1.5px;
+
+  font-weight: 850;
+}
+
+.mentors-hero h1 span {
+  color: #5b5fef;
+}
+
+.mentors-hero p {
+  max-width: 620px;
+
+  margin: 0;
+
+  color: #74798c;
+
+  font-size: 15px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================
+   SEARCH BAR
+========================================= */
+
+.mentor-search-wrapper {
+  width: 100%;
+
+  position: relative;
+
+  margin-bottom: 38px;
+}
+
+.mentor-search-wrapper svg {
+  position: absolute;
+
+  left: 18px;
+  top: 16px;
+
+  color: #85899a;
+
+  pointer-events: none;
+}
+
+.mentor-search-wrapper input {
+  width: 100%;
+
+  height: 52px;
+
+  padding: 0 20px 0 50px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  color: #202131;
+
+  border: 1px solid #e1e3eb;
+
+  border-radius: 13px;
+
+  outline: none;
+
+  font-family: inherit;
+
+  font-size: 13px;
+
+  box-shadow:
+    0 5px 18px rgba(28, 31, 49, 0.035);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.mentor-search-wrapper input::placeholder {
+  color: #a1a4b1;
+}
+
+.mentor-search-wrapper input:focus {
+  border-color: #aeb1f5;
+
+  box-shadow:
+    0 0 0 4px rgba(91, 95, 239, 0.08);
+}
+
+
+/* =========================================
+   MENTOR GRID
+========================================= */
+
+.mentors-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 18px;
+}
+
+
+/* =========================================
+   MENTOR CARD
+========================================= */
+
+.mentor-card {
+  min-height: 355px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  padding: 24px;
+
+  background: #ffffff;
+
+  border: 1px solid #e6e7ee;
+
+  border-radius: 18px;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 5px 20px rgba(28, 31, 49, 0.045);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.mentor-card:hover {
+  transform: translateY(-5px);
+
+  border-color: #d6d8fb;
+
+  box-shadow:
+    0 16px 35px rgba(28, 31, 49, 0.085);
+}
+
+
+/* =========================================
+   CARD TOP
+========================================= */
+
+.mentor-card-top {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 22px;
+}
+
+.mentor-avatar {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 17px;
+
+  background: linear-gradient(
+    135deg,
+    #e9eaff,
+    #f1eaff
+  );
+
+  color: #5558e8;
+
+  font-size: 21px;
+
+  font-weight: 850;
+}
+
+.mentor-badge {
+  padding: 6px 10px;
+
+  color: #5558e8;
+
+  background: #f1f2ff;
+
+  border: 1px solid #e2e3ff;
+
+  border-radius: 50px;
+
+  font-size: 10px;
+
+  font-weight: 750;
+}
+
+
+/* =========================================
+   MENTOR INFORMATION
+========================================= */
+
+.mentor-info h2 {
+  margin: 0 0 8px;
+
+  color: #1c1d2c;
+
+  font-size: 19px;
+
+  font-weight: 800;
+
+  letter-spacing: -0.3px;
+}
+
+.mentor-bio {
+  min-height: 63px;
+
+  margin: 0;
+
+  color: #777b8e;
+
+  font-size: 12.5px;
+
+  line-height: 1.65;
+}
+
+
+/* =========================================
+   SKILLS
+========================================= */
+
+.mentor-skills {
+  margin-top: 20px;
+}
+
+.skills-label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #999cab;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.2px;
+
+  text-transform: uppercase;
+}
+
+.skill-tags {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 7px;
+}
+
+.skill-tag {
+  padding: 6px 9px;
+
+  background: #f6f7fb;
+
+  color: #5e6376;
+
+  border: 1px solid #e5e6ed;
+
+  border-radius: 7px;
+
+  font-size: 10px;
+
+  font-weight: 650;
+}
+
+
+/* =========================================
+   VIEW PROFILE BUTTON
+========================================= */
+
+.mentor-profile-button {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  margin-top: auto;
+
+  padding: 11px 15px;
+
+  background: #595ce8;
+
+  color: #ffffff;
+
+  border: none;
+
+  border-radius: 9px;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.mentor-profile-button:hover {
+  background: #4c4fd8;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 18px rgba(91, 95, 239, 0.2);
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
+
+.mentors-state {
+  min-height: 220px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  color: #85899a;
+
+  font-size: 13px;
+}
+
+.mentors-state p {
+  margin: 0;
+}
+
+.mentor-loading-dot {
+  width: 8px;
+  height: 8px;
+
+  background: #5b5fef;
+
+  border-radius: 50%;
+
+  animation: mentorPulse 1s infinite ease-in-out;
+}
+
+@keyframes mentorPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+.mentor-error {
+  padding: 13px 15px;
+
+  background: #fff1f1;
+
+  border: 1px solid #ffd5d5;
+
+  border-radius: 9px;
+
+  color: #b42318;
+
+  font-size: 12px;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.empty-mentors {
+  padding: 60px 20px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px dashed #dfe1e8;
+
+  border-radius: 16px;
+}
+
+.empty-mentor-icon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin: 0 auto 15px;
+
+  color: #5b5fef;
+
+  background: #f0f1ff;
+
+  border-radius: 15px;
+}
+
+.empty-mentors h3 {
+  margin: 0 0 8px;
+
+  color: #242536;
+
+  font-size: 17px;
+}
+
+.empty-mentors p {
+  margin: 0;
+
+  color: #85899a;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 950px) {
+  .mentors-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .mentors-navbar {
+    padding: 0 20px;
+  }
+
+  .mentors-content {
+    width: 92%;
+
+    padding: 35px 0 60px;
+  }
+
+  .mentors-hero h1 {
+    font-size: 32px;
+  }
+
+  .mentors-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mentor-card {
+    min-height: 330px;
+  }
+}
