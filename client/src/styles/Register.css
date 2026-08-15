@@ -1,0 +1,492 @@
+/* =========================================
+   SKILLBRIDGE REGISTER PAGE
+========================================= */
+
+.register-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #f7f8fc;
+  color: #171927;
+}
+
+/* =========================================
+   LEFT BRAND SECTION
+========================================= */
+
+.register-left {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 52px 8%;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.22), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba(124, 58, 237, 0.18), transparent 35%),
+    linear-gradient(145deg, #111426, #1b1d38 55%, #25204a);
+  color: white;
+}
+
+.register-left::before {
+  content: "";
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  right: -120px;
+  top: -100px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+
+.register-left::after {
+  content: "";
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  left: -260px;
+  bottom: -250px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+}
+
+.register-brand {
+  position: relative;
+  z-index: 2;
+
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.register-brand span {
+  color: #8b8df8;
+}
+
+.register-hero {
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
+  margin: auto 0;
+}
+
+.register-label {
+  margin-bottom: 20px;
+
+  color: #a5a7ff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.register-hero h1 {
+  margin: 0 0 24px;
+
+  font-size: clamp(42px, 5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -2.5px;
+  font-weight: 800;
+}
+
+.register-hero h1 span {
+  color: #9b9dfc;
+}
+
+.register-description {
+  max-width: 470px;
+  margin-bottom: 34px;
+
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.register-points {
+  display: grid;
+  gap: 15px;
+}
+
+.register-points div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 14px;
+}
+
+.register-points span {
+  width: 24px;
+  height: 24px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(139, 141, 248, 0.15);
+  color: #a5a7ff;
+
+  border: 1px solid rgba(139, 141, 248, 0.2);
+  border-radius: 50%;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.register-footer {
+  position: relative;
+  z-index: 2;
+
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 12px;
+}
+
+/* =========================================
+   RIGHT SECTION
+========================================= */
+
+.register-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 50px 7%;
+  background: #f8f9fd;
+}
+
+.register-card {
+  width: min(100%, 470px);
+}
+
+.register-heading {
+  margin-bottom: 28px;
+}
+
+.register-small-title {
+  margin-bottom: 9px;
+
+  color: #6366f1;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.register-heading h2 {
+  margin: 0 0 8px;
+
+  color: #171927;
+  font-size: 34px;
+  line-height: 1.15;
+  letter-spacing: -1.2px;
+  font-weight: 800;
+}
+
+.register-heading > p:last-child {
+  margin: 0;
+
+  color: #777b8d;
+  font-size: 14px;
+}
+
+/* =========================================
+   FORM
+========================================= */
+
+.register-card form {
+  display: grid;
+  gap: 18px;
+}
+
+.form-group {
+  display: grid;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #292b3a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.form-group input {
+  width: 100%;
+  height: 48px;
+
+  padding: 0 15px;
+
+  box-sizing: border-box;
+
+  background: white;
+  color: #191b2a;
+
+  border: 1px solid #e1e3eb;
+  border-radius: 11px;
+
+  outline: none;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #a6a9b6;
+}
+
+.form-group input:hover {
+  border-color: #c9cbd8;
+}
+
+.form-group input:focus {
+  border-color: #6366f1;
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px rgba(99, 102, 241, 0.09);
+}
+
+/* =========================================
+   ROLE SELECTION
+========================================= */
+
+.role-selection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.role-option {
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px;
+
+  background: white;
+  color: #242638;
+
+  border: 1px solid #e1e3eb;
+  border-radius: 11px;
+
+  cursor: pointer;
+  text-align: left;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.role-option:hover {
+  border-color: #bfc1f4;
+  transform: translateY(-1px);
+}
+
+.role-option.active {
+  background: #f5f5ff;
+  border-color: #6366f1;
+
+  box-shadow:
+    0 5px 16px rgba(99, 102, 241, 0.1);
+}
+
+.role-icon {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f0f1ff;
+  border-radius: 10px;
+
+  font-size: 17px;
+}
+
+.role-option > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.role-option strong {
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.role-option small {
+  color: #858898;
+  font-size: 11px;
+}
+
+/* =========================================
+   ERROR
+========================================= */
+
+.register-error {
+  padding: 11px 13px;
+
+  background: #fff2f2;
+  color: #c43d3d;
+
+  border: 1px solid #ffd7d7;
+  border-radius: 9px;
+
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* =========================================
+   SUBMIT BUTTON
+========================================= */
+
+.register-submit {
+  width: 100%;
+  height: 49px;
+
+  margin-top: 3px;
+
+  border: none;
+  border-radius: 11px;
+
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #7c3aed
+  );
+
+  color: white;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 24px rgba(99, 102, 241, 0.2);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.register-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 28px rgba(99, 102, 241, 0.28);
+}
+
+.register-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.register-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   LOGIN LINK
+========================================= */
+
+.register-login {
+  margin-top: 23px;
+
+  text-align: center;
+
+  color: #858898;
+  font-size: 13px;
+}
+
+.register-login a {
+  margin-left: 5px;
+
+  color: #6366f1;
+
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.register-login a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 950px) {
+  .register-page {
+    grid-template-columns: 1fr;
+  }
+
+  .register-left {
+    min-height: 390px;
+    padding: 35px 7%;
+  }
+
+  .register-hero {
+    margin: 60px 0 20px;
+  }
+
+  .register-hero h1 {
+    font-size: 44px;
+  }
+
+  .register-footer {
+    display: none;
+  }
+
+  .register-right {
+    min-height: 650px;
+  }
+}
+
+@media (max-width: 560px) {
+  .register-left {
+    min-height: 330px;
+    padding: 28px 24px;
+  }
+
+  .register-brand {
+    font-size: 23px;
+  }
+
+  .register-hero h1 {
+    font-size: 38px;
+    letter-spacing: -1.5px;
+  }
+
+  .register-description {
+    font-size: 14px;
+  }
+
+  .register-points {
+    display: none;
+  }
+
+  .register-right {
+    padding: 40px 20px;
+  }
+
+  .register-heading h2 {
+    font-size: 29px;
+  }
+
+  .role-selection {
+    grid-template-columns: 1fr;
+  }
+}

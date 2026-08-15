@@ -1,0 +1,486 @@
+.student-sessions-page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  color: #171827;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+/* NAVBAR */
+
+.student-sessions-navbar {
+  height: 72px;
+  padding: 0 7%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid #e8e9f0;
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  backdrop-filter: blur(14px);
+}
+
+.sessions-logo {
+  background: none;
+  border: none;
+
+  font-size: 25px;
+  font-weight: 850;
+
+  letter-spacing: -1px;
+
+  background: linear-gradient(
+    135deg,
+    #5558e8,
+    #8b5cf6
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  cursor: pointer;
+}
+
+.back-dashboard-btn {
+  padding: 9px 16px;
+
+  background: white;
+
+  color: #5558e8;
+
+  border: 1px solid #dfe1f5;
+
+  border-radius: 9px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.back-dashboard-btn:hover {
+  background: #f4f4ff;
+}
+
+/* CONTENT */
+
+.student-sessions-content {
+  width: min(1000px, 92%);
+
+  margin: auto;
+
+  padding: 55px 0 80px;
+}
+
+/* HEADER */
+
+.sessions-page-header {
+  margin-bottom: 35px;
+}
+
+.sessions-page-header span {
+  color: #7377d9;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.8px;
+}
+
+.sessions-page-header h1 {
+  margin: 8px 0 10px;
+
+  font-size: 36px;
+
+  color: #171827;
+
+  letter-spacing: -1px;
+}
+
+.sessions-page-header p {
+  margin: 0;
+
+  color: #777b8e;
+
+  font-size: 14px;
+}
+
+/* EMPTY */
+
+.student-empty-sessions {
+  padding: 70px 30px;
+
+  text-align: center;
+
+  background: white;
+
+  border: 1px solid #e7e8ef;
+
+  border-radius: 20px;
+
+  box-shadow: 0 8px 25px rgba(30, 32, 60, 0.05);
+}
+
+.empty-session-icon {
+  width: 60px;
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: auto auto 18px;
+
+  background: #eef0ff;
+
+  border-radius: 16px;
+
+  font-size: 25px;
+}
+
+.student-empty-sessions h2 {
+  margin: 0 0 8px;
+
+  font-size: 20px;
+}
+
+.student-empty-sessions p {
+  margin: 0 auto 22px;
+
+  max-width: 450px;
+
+  color: #85899a;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+.student-empty-sessions button,
+.learning-session-box button {
+  padding: 11px 18px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background: #595ce8;
+
+  color: white;
+
+  font-size: 12px;
+
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.student-empty-sessions button:hover,
+.learning-session-box button:hover {
+  background: #4c4fd8;
+
+  transform: translateY(-2px);
+}
+
+/* SESSION LIST */
+
+.student-sessions-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+/* SESSION CARD */
+
+.student-session-card {
+  padding: 25px;
+
+  background: white;
+
+  border: 1px solid #e7e8ef;
+
+  border-radius: 18px;
+
+  box-shadow: 0 7px 25px rgba(30, 32, 60, 0.05);
+
+  transition: 0.2s;
+}
+
+.student-session-card:hover {
+  border-color: #d6d8fb;
+
+  box-shadow: 0 12px 30px rgba(30, 32, 60, 0.08);
+}
+
+/* TOP */
+
+.student-session-top {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+.mentor-avatar {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  background: linear-gradient(
+    135deg,
+    #e9eaff,
+    #f1eaff
+  );
+
+  color: #5558e8;
+
+  border-radius: 14px;
+
+  font-size: 17px;
+
+  font-weight: 800;
+}
+
+.student-session-top h2 {
+  margin: 0 0 4px;
+
+  font-size: 16px;
+}
+
+.student-session-top p {
+  margin: 0;
+
+  color: #85899a;
+
+  font-size: 12px;
+}
+
+.student-session-status {
+  margin-left: auto;
+
+  padding: 7px 12px;
+
+  border-radius: 50px;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  text-transform: capitalize;
+}
+
+.student-session-status.pending {
+  color: #a16207;
+  background: #fff5d9;
+}
+
+.student-session-status.accepted {
+  color: #15803d;
+  background: #e5f8eb;
+}
+
+.student-session-status.rejected {
+  color: #b91c1c;
+  background: #ffe9e9;
+}
+
+.student-session-status.completed {
+  color: #4338ca;
+  background: #e9eaff;
+}
+
+/* DETAILS */
+
+.student-session-details {
+  display: flex;
+
+  gap: 60px;
+
+  margin-top: 25px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid #ececf2;
+}
+
+.student-session-details div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+.student-session-details span {
+  color: #a0a3b0;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.student-session-details strong {
+  color: #45495c;
+
+  font-size: 13px;
+}
+
+/* MESSAGE */
+
+.student-session-message-box {
+  margin-top: 20px;
+
+  padding: 13px 15px;
+
+  background: #fafafe;
+
+  border-left: 3px solid #6a6ded;
+
+  border-radius: 7px;
+}
+
+.student-session-message-box span {
+  color: #999cab;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.student-session-message-box p {
+  margin: 5px 0 0;
+
+  color: #515568;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+/* LEARNING SESSION */
+
+.learning-session-box {
+  margin-top: 20px;
+
+  padding: 18px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  background: linear-gradient(
+    135deg,
+    #f0f1ff,
+    #f8f4ff
+  );
+
+  border: 1px solid #dedfff;
+
+  border-radius: 13px;
+}
+
+.learning-session-box span {
+  color: #7377d9;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.learning-session-box h3 {
+  margin: 5px 0 0;
+
+  font-size: 14px;
+
+  color: #282942;
+}
+
+/* STATES */
+
+.student-session-message {
+  padding: 60px;
+
+  text-align: center;
+
+  color: #85899a;
+}
+
+.student-session-error {
+  padding: 14px;
+
+  background: #fff1f1;
+
+  border: 1px solid #ffd5d5;
+
+  border-radius: 9px;
+
+  color: #b42318;
+
+  font-size: 13px;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+  .student-sessions-navbar {
+    padding: 0 20px;
+  }
+
+  .student-sessions-content {
+    padding: 35px 0 60px;
+  }
+
+  .sessions-page-header h1 {
+    font-size: 29px;
+  }
+
+  .student-session-top {
+    align-items: flex-start;
+
+    flex-wrap: wrap;
+  }
+
+  .student-session-status {
+    margin-left: 0;
+  }
+
+  .student-session-details {
+    gap: 35px;
+  }
+
+  .learning-session-box {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+}

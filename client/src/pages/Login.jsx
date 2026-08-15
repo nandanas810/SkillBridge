@@ -29,12 +29,16 @@ function Login() {
                 JSON.stringify(response.data.user)
             );
 
-            navigate("/dashboard");
+           if (response.data.user.role === "mentor") {
+    navigate("/mentor-dashboard");
+} else {
+    navigate("/dashboard");
+}
 
         } catch (error) {
             setError(
                 error.response?.data?.message ||
-                "Login failed"
+                "Login failed. Please try again."
             );
         }
     };
@@ -42,69 +46,143 @@ function Login() {
     return (
         <div className="login-page">
 
-            <div className="login-card">
+            {/* LEFT BRANDING SECTION */}
+            <div className="login-left">
 
-                <div className="login-logo">
-                    SB
+                <div className="login-brand">
+                    Skill<span>Bridge</span>
                 </div>
 
-                <h1>Welcome Back</h1>
+                <div className="login-hero">
 
-                <p className="login-subtitle">
-                    Login to continue your SkillBridge journey.
-                </p>
-
-                {error && (
-                    <div className="login-error">
-                        {error}
-                    </div>
-                )}
-
-                <form onSubmit={handleSubmit}>
-
-                    <div className="form-group">
-                        <label>Email</label>
-
-                        <input
-                            type="email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) =>
-                                setEmail(e.target.value)
-                            }
-                            required
-                        />
+                    <div className="login-label">
+                        LEARN • SHARE • GROW
                     </div>
 
-                    <div className="form-group">
-                        <label>Password</label>
+                    <h1>
+                        Welcome<br />
+                        <span>back.</span>
+                    </h1>
 
-                        <input
-                            type="password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) =>
-                                setPassword(e.target.value)
-                            }
-                            required
-                        />
+                    <p className="login-description">
+                        Continue your learning journey and connect
+                        with students and mentors who help you grow.
+                    </p>
+
+                    <div className="login-points">
+
+                        <div>
+                            <span>✓</span>
+                            Learn from experienced peers
+                        </div>
+
+                        <div>
+                            <span>✓</span>
+                            Share your own skills
+                        </div>
+
+                        <div>
+                            <span>✓</span>
+                            Book personalized sessions
+                        </div>
+
                     </div>
 
-                    <button
-                        type="submit"
-                        className="login-button"
-                    >
-                        Login
-                    </button>
+                </div>
 
-                </form>
+                <div className="login-footer">
+                    © 2026 SkillBridge
+                </div>
 
-                <p className="login-register">
-                    Don't have an account?{" "}
-                    <Link to="/register">
-                        Create an account
-                    </Link>
-                </p>
+            </div>
+
+
+            {/* RIGHT LOGIN SECTION */}
+            <div className="login-right">
+
+                <div className="login-card">
+
+                    <div className="login-heading">
+
+                        <div className="login-small-title">
+                            WELCOME BACK
+                        </div>
+
+                        <h2>
+                            Sign in to SkillBridge
+                        </h2>
+
+                        <p>
+                            Continue where you left off.
+                        </p>
+
+                    </div>
+
+
+                    {error && (
+                        <div className="login-error">
+                            {error}
+                        </div>
+                    )}
+
+
+                    <form onSubmit={handleSubmit}>
+
+                        <div className="form-group">
+
+                            <label>Email Address</label>
+
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) =>
+                                    setEmail(e.target.value)
+                                }
+                                required
+                            />
+
+                        </div>
+
+
+                        <div className="form-group">
+
+                            <label>Password</label>
+
+                            <input
+                                type="password"
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) =>
+                                    setPassword(e.target.value)
+                                }
+                                required
+                            />
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            className="login-button"
+                        >
+                            Sign In →
+                        </button>
+
+                    </form>
+
+
+                    <p className="login-register">
+
+                        Don't have an account?
+
+                        <Link to="/register">
+                            Create an account
+                        </Link>
+
+                    </p>
+
+                </div>
 
             </div>
 

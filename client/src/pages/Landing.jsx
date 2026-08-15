@@ -27,14 +27,23 @@ function Landing() {
           </p>
 
           <div className="hero-buttons">
-            <button className="primary-btn">
-              Get Started
+
+            <button
+              className="primary-btn"
+              onClick={() => (window.location.href = "/register")}
+            >
+              Get Started →
             </button>
 
-            <button className="secondary-btn">
-              Browse Mentors
+            <button
+              className="secondary-btn"
+              onClick={() => (window.location.href = "/mentors")}
+            >
+              Browse Mentors →
             </button>
+
           </div>
+
 
           <div className="stats">
 
@@ -58,6 +67,7 @@ function Landing() {
         </div>
 
       </section>
+
     </>
   );
 }

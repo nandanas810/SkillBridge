@@ -20,9 +20,8 @@ function MentorProfile() {
       <div className="mentor-profile-page">
         <div className="mentor-profile-card">
           <h2>Mentor not found</h2>
-
           <button
-            className="request-button"
+            className="session-submit-button"
             onClick={() => navigate("/mentors")}
           >
             Back to Mentors
@@ -45,9 +44,9 @@ function MentorProfile() {
         "http://localhost:5000/api/sessions",
         {
           mentor: mentor._id,
-          date,
-          time,
-          message,
+          date: date,
+          time: time,
+          message: message,
         },
         {
           headers: {
@@ -56,7 +55,7 @@ function MentorProfile() {
         }
       );
 
-      setSuccess("Session request sent successfully! 🎉");
+      setSuccess("Session request sent successfully!");
 
       setDate("");
       setTime("");
@@ -71,13 +70,9 @@ function MentorProfile() {
 
   return (
     <div className="mentor-profile-page">
-
-      {/* Navigation */}
+      {/* NAVBAR */}
       <nav className="dashboard-navbar">
-        <div className="dashboard-logo">
-          SkillBridge
-        </div>
-
+        <div className="dashboard-logo">SkillBridge</div>
         <button
           className="logout-button"
           onClick={() => navigate("/mentors")}
@@ -86,184 +81,110 @@ function MentorProfile() {
         </button>
       </nav>
 
-      {/* Profile */}
+      {/* MAIN */}
       <main className="mentor-profile-content">
-
         <div className="mentor-profile-card">
+          {/* AVATAR */}
+          <div className="mentor-avatar">👨‍🏫</div>
 
-          {/* Mentor Avatar */}
-          <div className="mentor-avatar">
-            👨‍🏫
-          </div>
+          {/* NAME */}
+          <h1>{mentor.name}</h1>
 
-          {/* Mentor Name */}
-          <h1>
-            {mentor.name}
-          </h1>
+          {/* EMAIL */}
+          <p className="mentor-email">{mentor.email}</p>
 
-          {/* Email */}
-          <p className="mentor-email">
-            {mentor.email}
-          </p>
-
-          {/* About */}
+          {/* ABOUT */}
           <div className="mentor-section">
-            <h2>
-              About the Mentor
-            </h2>
-
+            <h2>About the Mentor</h2>
             <p>
-              {mentor.bio}
+              {mentor.bio ||
+                "Ready to share knowledge and help other students grow."}
             </p>
           </div>
 
-          {/* Skills */}
+          {/* SKILLS */}
           <div className="mentor-section">
-            <h2>
-              Skills
-            </h2>
-
+            <h2>Skills</h2>
             <div className="skills-list">
-
-              {mentor.skills?.map(
-                (skill, index) => (
-                  <span
-                    className="skill-tag"
-                    key={index}
-                  >
+              {mentor.skills && mentor.skills.length > 0 ? (
+                mentor.skills.map((skill, index) => (
+                  <span className="skill-tag" key={index}>
                     {skill}
                   </span>
-                )
-              )}
-
-            </div>
-          </div>
-
-          {/* Availability */}
-          <div className="mentor-section">
-            <h2>
-              Available Sessions
-            </h2>
-
-            <div className="availability-list">
-
-              {mentor.availability &&
-              mentor.availability.length > 0 ? (
-
-                mentor.availability.map(
-                  (slot, index) => (
-                    <div
-                      className="availability-item"
-                      key={index}
-                    >
-                      📅 {slot}
-                    </div>
-                  )
-                )
-
+                ))
               ) : (
-
-                <p>
-                  No availability added yet.
-                </p>
-
+                <p>No skills added yet.</p>
               )}
-
             </div>
           </div>
 
-          {/* Request Session */}
+          {/* AVAILABILITY */}
           <div className="mentor-section">
+            <h2>Available Sessions</h2>
+            <div className="availability-list">
+              {mentor.availability && mentor.availability.length > 0 ? (
+                mentor.availability.map((slot, index) => (
+                  <div className="availability-item" key={index}>
+                    📅 {slot}
+                  </div>
+                ))
+              ) : (
+                <p>No availability added yet.</p>
+              )}
+            </div>
+          </div>
 
-            <h2>
-              Request a Session
-            </h2>
+          {/* REQUEST SESSION */}
+          <div className="mentor-section">
+            <h2>Request a Session</h2>
 
             <form onSubmit={handleRequest}>
-
-              {/* Date */}
+              {/* DATE */}
               <div className="form-group">
-
-                <label>
-                  Date
-                </label>
-
+                <label>Date</label>
                 <input
                   type="date"
                   value={date}
-                  onChange={(e) =>
-                    setDate(e.target.value)
-                  }
+                  onChange={(e) => setDate(e.target.value)}
                   required
                 />
-
               </div>
 
-              {/* Time */}
+              {/* TIME */}
               <div className="form-group">
-
-                <label>
-                  Time
-                </label>
-
+                <label>Time</label>
                 <input
                   type="time"
                   value={time}
-                  onChange={(e) =>
-                    setTime(e.target.value)
-                  }
+                  onChange={(e) => setTime(e.target.value)}
                   required
                 />
-
               </div>
 
-              {/* Message */}
+              {/* MESSAGE */}
               <div className="form-group">
-
-                <label>
-                  Message
-                </label>
-
+                <label>Message</label>
                 <textarea
                   placeholder="Write a message to the mentor..."
                   value={message}
-                  onChange={(e) =>
-                    setMessage(e.target.value)
-                  }
+                  onChange={(e) => setMessage(e.target.value)}
                 />
-
               </div>
 
-              {/* Success */}
-              {success && (
-                <p className="success-message">
-                  {success}
-                </p>
-              )}
+              {/* SUCCESS */}
+              {success && <p className="success-message">{success}</p>}
 
-              {/* Error */}
-              {error && (
-                <p className="error-message">
-                  {error}
-                </p>
-              )}
+              {/* ERROR */}
+              {error && <p className="error-message">{error}</p>}
 
-              {/* Submit */}
-              <button
-                type="submit"
-                className="request-button"
-              >
+              {/* SUBMIT BUTTON */}
+              <button type="submit" className="session-submit-button">
                 Send Session Request
               </button>
-
             </form>
-
           </div>
-
         </div>
-
       </main>
-
     </div>
   );
 }

@@ -1,13 +1,13 @@
 /* =========================================
-   MENTOR PROFILE PAGE
+   SKILLBRIDGE - MENTOR PROFILE PAGE
 ========================================= */
 
 .mentor-profile-page {
   min-height: 100vh;
-  background: var(--background);
-  color: var(--text);
+  background: #f6f7fb;
+  color: #171827;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
-
 
 /* =========================================
    CONTENT
@@ -15,12 +15,9 @@
 
 .mentor-profile-content {
   width: min(900px, 92%);
-
   margin: 0 auto;
-
   padding: 55px 0 80px;
 }
-
 
 /* =========================================
    PROFILE CARD
@@ -28,52 +25,33 @@
 
 .mentor-profile-card {
   width: 100%;
-
-  background: var(--card);
-
-  border: 1px solid var(--border);
-
-  border-radius: var(--radius-xl);
-
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid #e5e6ee;
+  border-radius: 20px;
   padding: 45px;
-
-  box-shadow: var(--shadow);
-
+  box-shadow: 0 10px 35px rgba(28, 31, 49, 0.06);
   text-align: center;
 }
-
 
 /* =========================================
    AVATAR
 ========================================= */
 
-.mentor-avatar {
+.mentor-profile-card .mentor-avatar {
   width: 90px;
   height: 90px;
-
   margin: 0 auto 20px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-radius: 50%;
-
-  background: linear-gradient(
-    135deg,
-    rgba(91, 95, 239, 0.12),
-    rgba(139, 92, 246, 0.14)
-  );
-
-  color: var(--primary);
-
+  background: linear-gradient(135deg, #e9eaff, #f1eaff);
+  color: #595ce8;
   font-size: 30px;
-
   font-weight: 800;
-
-  border: 1px solid rgba(91, 95, 239, 0.15);
+  border: 1px solid #dedfff;
 }
-
 
 /* =========================================
    NAME
@@ -81,29 +59,21 @@
 
 .mentor-profile-card h1 {
   margin: 0 0 8px;
-
-  color: var(--text);
-
+  color: #1c1d2c;
   font-size: 32px;
-
   font-weight: 800;
-
   letter-spacing: -0.8px;
 }
-
 
 /* =========================================
    EMAIL
 ========================================= */
 
 .mentor-email {
-  margin-bottom: 38px;
-
-  color: var(--text-muted);
-
+  margin: 0 0 38px;
+  color: #777b8e;
   font-size: 14px;
 }
-
 
 /* =========================================
    SECTIONS
@@ -111,34 +81,25 @@
 
 .mentor-section {
   margin-top: 32px;
-
   padding-top: 28px;
-
-  border-top: 1px solid var(--border);
-
+  border-top: 1px solid #e6e7ee;
   text-align: left;
 }
 
 .mentor-section h2 {
   margin: 0 0 12px;
-
-  color: var(--text);
-
+  color: #242536;
   font-size: 18px;
-
   font-weight: 750;
-
   letter-spacing: -0.2px;
 }
 
 .mentor-section p {
-  color: var(--text-muted);
-
+  margin: 0;
+  color: #777b8e;
   font-size: 14px;
-
   line-height: 1.7;
 }
-
 
 /* =========================================
    SKILLS
@@ -146,40 +107,27 @@
 
 .skills-list {
   display: flex;
-
   flex-wrap: wrap;
-
   gap: 9px;
 }
 
-.skill-tag {
+.skills-list .skill-tag {
   display: inline-flex;
-
   align-items: center;
-
   padding: 8px 13px;
-
-  background: rgba(91, 95, 239, 0.08);
-
-  color: var(--primary);
-
-  border: 1px solid rgba(91, 95, 239, 0.14);
-
+  background: #f1f2ff;
+  color: #595ce8;
+  border: 1px solid #dfe1ff;
   border-radius: 50px;
-
   font-size: 12px;
-
   font-weight: 700;
-
   transition: all 0.2s ease;
 }
 
-.skill-tag:hover {
-  background: rgba(91, 95, 239, 0.14);
-
+.skills-list .skill-tag:hover {
+  background: #e9eaff;
   transform: translateY(-1px);
 }
-
 
 /* =========================================
    AVAILABILITY
@@ -187,36 +135,25 @@
 
 .availability-list {
   display: grid;
-
   grid-template-columns: repeat(2, 1fr);
-
   gap: 12px;
 }
 
 .availability-item {
   padding: 14px 16px;
-
-  background: var(--background);
-
-  border: 1px solid var(--border);
-
-  border-radius: var(--radius);
-
-  color: var(--text);
-
+  background: #f6f7fb;
+  border: 1px solid #e1e3eb;
+  border-radius: 10px;
+  color: #3f4254;
   font-size: 13px;
-
   font-weight: 600;
-
   transition: all 0.2s ease;
 }
 
 .availability-item:hover {
-  border-color: rgba(91, 95, 239, 0.3);
-
-  background: rgba(91, 95, 239, 0.04);
+  border-color: #bfc2f7;
+  background: #f1f2ff;
 }
-
 
 /* =========================================
    FORM
@@ -228,152 +165,119 @@
 
 .form-group {
   display: flex;
-
   flex-direction: column;
-
   margin-bottom: 18px;
 }
 
 .form-group label {
   margin-bottom: 7px;
-
-  color: var(--text);
-
+  color: #242536;
   font-size: 13px;
-
   font-weight: 700;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-
+  box-sizing: border-box;
   padding: 13px 14px;
-
-  background: var(--background);
-
-  border: 1px solid var(--border);
-
-  border-radius: var(--radius);
-
-  color: var(--text);
-
-  font-family: var(--font);
-
+  background: #f8f9fc;
+  border: 1px solid #dfe1e8;
+  border-radius: 10px;
+  color: #202131;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
   font-size: 14px;
-
   outline: none;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
-  background: var(--card);
-
-  border-color: var(--primary);
-
-  box-shadow:
-    0 0 0 3px rgba(91, 95, 239, 0.1);
+  background: #ffffff;
+  border-color: #595ce8;
+  box-shadow: 0 0 0 3px rgba(91, 95, 239, 0.1);
 }
 
 .form-group textarea {
   min-height: 110px;
-
   resize: vertical;
 }
 
-
 /* =========================================
-   REQUEST BUTTON
+   SESSION SUBMIT BUTTON (single source of truth)
 ========================================= */
 
-.request-button {
-  width: 100%;
-
-  margin-top: 10px;
-
-  padding: 13px 22px;
-
-  background: linear-gradient(
-    135deg,
-    var(--primary),
-    var(--accent)
-  );
-
-  color: white;
-
-  border: none;
-
-  border-radius: var(--radius);
-
-  font-family: var(--font);
-
-  font-size: 14px;
-
-  font-weight: 750;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 8px 20px rgba(91, 95, 239, 0.18);
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+.session-submit-button {
+  display: block !important;
+  width: 100% !important;
+  height: 52px !important;
+  margin-top: 20px !important;
+  padding: 14px 20px !important;
+  background: #595ce8 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  z-index: 10 !important;
+  box-shadow: 0 8px 20px rgba(91, 95, 239, 0.20);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.request-button:hover {
+.session-submit-button:hover {
+  background: #4c4fd8 !important;
   transform: translateY(-2px);
-
-  box-shadow:
-    0 12px 25px rgba(91, 95, 239, 0.25);
+  box-shadow: 0 12px 25px rgba(91, 95, 239, 0.25);
 }
 
+.session-submit-button:active {
+  transform: translateY(0);
+}
 
 /* =========================================
-   SUCCESS / ERROR
+   SUCCESS MESSAGE
 ========================================= */
 
 .success-message {
   margin: 15px 0;
-
   padding: 12px 15px;
-
-  background: #ECFDF5;
-
-  border: 1px solid #BBF7D0;
-
-  border-radius: var(--radius);
-
-  color: var(--success) !important;
-
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  color: #047857 !important;
   font-size: 13px !important;
-
   font-weight: 650;
 }
+
+/* =========================================
+   ERROR MESSAGE
+========================================= */
 
 .error-message {
   margin: 15px 0;
-
   padding: 12px 15px;
-
-  background: #FEF2F2;
-
-  border: 1px solid #FECACA;
-
-  border-radius: var(--radius);
-
-  color: var(--error) !important;
-
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  color: #b42318 !important;
   font-size: 13px !important;
-
   font-weight: 650;
 }
 
+/* =========================================
+   MENTOR NOT FOUND
+========================================= */
+
+.mentor-profile-card h2 {
+  color: #242536;
+}
 
 /* =========================================
    RESPONSIVE
@@ -382,7 +286,6 @@
 @media (max-width: 700px) {
   .mentor-profile-content {
     width: 94%;
-
     padding: 35px 0 60px;
   }
 

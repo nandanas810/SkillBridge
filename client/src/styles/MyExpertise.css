@@ -1,0 +1,365 @@
+/* =========================================
+   SKILLBRIDGE - MY EXPERTISE
+========================================= */
+
+.expertise-page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  color: #171827;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+/* =========================================
+   NAVBAR
+========================================= */
+
+.expertise-navbar {
+  height: 72px;
+  padding: 0 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 1px solid #e8e9f0;
+  box-sizing: border-box;
+}
+
+.expertise-logo {
+  font-size: 25px;
+  font-weight: 850;
+  letter-spacing: -1px;
+
+  background: linear-gradient(
+    135deg,
+    #5558e8,
+    #8b5cf6
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.expertise-back-button {
+  padding: 9px 17px;
+  background: #ffffff;
+  color: #555a6d;
+  border: 1px solid #dfe1e8;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.expertise-back-button:hover {
+  color: #5558e8;
+  border-color: #bfc2f7;
+  background: #f7f7ff;
+}
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.expertise-content {
+  width: min(900px, 92%);
+  margin: 0 auto;
+  padding: 55px 0 80px;
+}
+
+/* =========================================
+   HERO
+========================================= */
+
+.expertise-hero {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.expertise-label {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #7377d9;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.expertise-hero h1 {
+  margin: 0 0 12px;
+  color: #171827;
+  font-size: clamp(34px, 5vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  font-weight: 850;
+}
+
+.expertise-hero p {
+  margin: 0 auto;
+  max-width: 600px;
+  color: #74798c;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   FORM CARD
+========================================= */
+
+.expertise-card {
+  background: #ffffff;
+  border: 1px solid #e5e6ee;
+  border-radius: 20px;
+  padding: 38px;
+  box-shadow: 0 10px 35px rgba(28, 31, 49, 0.055);
+}
+
+/* =========================================
+   FORM SECTIONS
+========================================= */
+
+.expertise-section {
+  padding: 26px 0;
+  border-bottom: 1px solid #e9eaf0;
+}
+
+.expertise-section:first-child {
+  padding-top: 0;
+}
+
+.expertise-section:last-of-type {
+  border-bottom: none;
+}
+
+.expertise-section-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 18px;
+}
+
+.expertise-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f0f1ff;
+  color: #595ce8;
+  border-radius: 12px;
+
+  font-size: 19px;
+}
+
+.expertise-section-header h2 {
+  margin: 0;
+  color: #242536;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.expertise-section-header p {
+  margin: 4px 0 0;
+  color: #8a8e9f;
+  font-size: 12px;
+}
+
+/* =========================================
+   FORM GROUP
+========================================= */
+
+.expertise-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.expertise-form-group label {
+  margin-bottom: 8px;
+  color: #3b3e50;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.expertise-form-group input,
+.expertise-form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 13px 14px;
+
+  background: #f8f9fc;
+  color: #202131;
+
+  border: 1px solid #dfe1e8;
+  border-radius: 10px;
+
+  outline: none;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.expertise-form-group input {
+  height: 48px;
+}
+
+.expertise-form-group textarea {
+  min-height: 125px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.expertise-form-group input:focus,
+.expertise-form-group textarea:focus {
+  background: #ffffff;
+  border-color: #595ce8;
+  box-shadow: 0 0 0 4px rgba(91, 95, 239, 0.08);
+}
+
+.expertise-form-group input::placeholder,
+.expertise-form-group textarea::placeholder {
+  color: #a1a4b1;
+}
+
+/* =========================================
+   HELPER TEXT
+========================================= */
+
+.expertise-helper {
+  margin: 8px 0 0;
+  color: #999cab;
+  font-size: 11px;
+}
+
+/* =========================================
+   SAVE AREA
+========================================= */
+
+.expertise-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.expertise-save-button {
+  flex: 1;
+  height: 50px;
+
+  background: #595ce8;
+  color: #ffffff;
+
+  border: none;
+  border-radius: 10px;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.expertise-save-button:hover {
+  background: #4c4fd8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(91, 95, 239, 0.2);
+}
+
+.expertise-back-link {
+  flex: 1;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+  color: #555a6d;
+
+  border: 1px solid #dfe1e8;
+  border-radius: 10px;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.expertise-back-link:hover {
+  color: #5558e8;
+  border-color: #bfc2f7;
+  background: #f7f7ff;
+}
+
+/* =========================================
+   SUCCESS / ERROR
+========================================= */
+
+.expertise-success {
+  margin-top: 18px;
+  padding: 12px 15px;
+
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  border-radius: 9px;
+
+  color: #047857;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.expertise-error {
+  margin-top: 18px;
+  padding: 12px 15px;
+
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 9px;
+
+  color: #b42318;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 650px) {
+  .expertise-navbar {
+    padding: 0 20px;
+  }
+
+  .expertise-content {
+    width: 92%;
+    padding: 35px 0 60px;
+  }
+
+  .expertise-card {
+    padding: 25px 20px;
+  }
+
+  .expertise-actions {
+    flex-direction: column;
+  }
+
+  .expertise-save-button,
+  .expertise-back-link {
+    flex: none;
+    width: 100%;
+  }
+}

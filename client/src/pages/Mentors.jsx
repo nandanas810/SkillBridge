@@ -83,11 +83,14 @@ function Mentors() {
 
         setMentors(response.data.mentors || []);
       } catch (err) {
-        setError(
-          err.response?.data?.message ||
-            "Failed to load mentors"
-        );
-      } finally {
+  console.log("MENTOR FETCH ERROR:", err.response?.status, err.response?.data);
+
+  setError(
+    `Error ${err.response?.status || ""}: ${
+      err.response?.data?.message || err.message
+    }`
+  );
+}finally {
         setLoading(false);
       }
     };
@@ -149,6 +152,27 @@ function Mentors() {
             Learn from students and mentors who have
             experience in the skills you want to develop.
           </p>
+<div className="mentor-count">
+  {search
+    ? `${filteredMentors.length} mentor${
+        filteredMentors.length !== 1 ? "s" : ""
+      } found`
+    : `${mentors.length} mentor${
+        mentors.length !== 1 ? "s" : ""
+      } available`}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
 
         </section>
 

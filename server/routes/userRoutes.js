@@ -4,13 +4,15 @@ const router = express.Router();
 const {
     registerUser,
     loginUser,
+    getUsersForTesting,
+    getStudentPortfolio,
+    updateStudentPortfolio,
 } = require("../controllers/userController");
-
 const authMiddleware = require("../middleware/authMiddleware");
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-
+router.get("/test-users", getUsersForTesting);
 
 
 router.get("/profile", authMiddleware, (req, res) => {
@@ -21,7 +23,18 @@ router.get("/profile", authMiddleware, (req, res) => {
 });
 
 
+// Student Portfolio
+router.get(
+    "/student-portfolio",
+    authMiddleware,
+    getStudentPortfolio
+);
 
+router.put(
+    "/student-portfolio",
+    authMiddleware,
+    updateStudentPortfolio
+);
 
 
 module.exports = router;

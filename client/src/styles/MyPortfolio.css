@@ -1,0 +1,616 @@
+/* =========================================
+   SKILLBRIDGE - MY PORTFOLIO
+   ========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+.portfolio-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+  color: #172033;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================================
+   NAVBAR
+   ========================================= */
+
+.portfolio-navbar {
+  height: 72px;
+  padding: 0 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #111827;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.portfolio-logo {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+}
+
+.portfolio-dashboard-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9px;
+
+  background: transparent;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.portfolio-dashboard-btn:hover {
+  background: #ffffff;
+  color: #111827;
+  transform: translateX(-2px);
+}
+
+/* =========================================
+   MAIN CONTENT
+   ========================================= */
+
+.portfolio-content {
+  width: 100%;
+  max-width: 1050px;
+
+  margin: 0 auto;
+  padding: 55px 30px 80px;
+}
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.portfolio-header {
+  margin-bottom: 35px;
+}
+
+.portfolio-label {
+  display: inline-block;
+
+  margin-bottom: 10px;
+
+  color: #6366f1;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+.portfolio-header h1 {
+  margin: 0;
+
+  font-size: 42px;
+  line-height: 1.15;
+
+  color: #172033;
+  font-weight: 800;
+}
+
+.portfolio-header p {
+  max-width: 650px;
+
+  margin-top: 12px;
+
+  color: #687386;
+
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   SUCCESS / ERROR
+   ========================================= */
+
+.portfolio-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 14px 18px;
+  margin-bottom: 25px;
+
+  background: #ecfdf3;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+
+  color: #15803d;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.portfolio-message span {
+  font-size: 17px;
+}
+
+.portfolio-error {
+  padding: 14px 18px;
+  margin-bottom: 25px;
+
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+
+  color: #dc2626;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* =========================================
+   PORTFOLIO SECTIONS
+   ========================================= */
+
+.portfolio-section {
+  margin-top: 28px;
+
+  padding: 30px;
+
+  background: #ffffff;
+
+  border: 1px solid #e7eaf0;
+  border-radius: 18px;
+
+  box-shadow: 0 8px 25px rgba(20, 30, 50, 0.05);
+}
+
+/* =========================================
+   SECTION HEADER
+   ========================================= */
+
+.portfolio-section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  margin-bottom: 25px;
+}
+
+.portfolio-section-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 13px;
+
+  background: #eef0ff;
+
+  font-size: 23px;
+}
+
+.portfolio-section-icon.certificate-icon {
+  background: #f3efff;
+}
+
+.portfolio-section-header h2 {
+  margin: 0;
+
+  color: #20283a;
+
+  font-size: 22px;
+  font-weight: 750;
+}
+
+.portfolio-section-header p {
+  margin: 5px 0 0;
+
+  color: #7a8496;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* =========================================
+   FORM
+   ========================================= */
+
+.portfolio-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 20px;
+
+  background: #f8f9fc;
+
+  border: 1px solid #e9ebf2;
+  border-radius: 13px;
+}
+
+.portfolio-input,
+.portfolio-textarea {
+  width: 100%;
+
+  padding: 13px 15px;
+
+  border: 1px solid #dfe3eb;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color: #172033;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition: all 0.2s ease;
+}
+
+.portfolio-input {
+  height: 46px;
+}
+
+.portfolio-textarea {
+  resize: vertical;
+  min-height: 105px;
+  line-height: 1.5;
+}
+
+.portfolio-input::placeholder,
+.portfolio-textarea::placeholder {
+  color: #9aa2b1;
+}
+
+.portfolio-input:focus,
+.portfolio-textarea:focus {
+  border-color: #6366f1;
+
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* =========================================
+   ADD BUTTON
+   ========================================= */
+
+.portfolio-add-btn {
+  align-self: flex-start;
+
+  padding: 11px 20px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #6366f1;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.portfolio-add-btn:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(79, 70, 229, 0.2);
+}
+
+/* =========================================
+   ITEMS
+   ========================================= */
+
+.portfolio-items {
+  margin-top: 22px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* =========================================
+   ITEM CARD
+   ========================================= */
+
+.portfolio-item-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e7eaf0;
+  border-radius: 13px;
+
+  transition: all 0.25s ease;
+}
+
+.portfolio-item-card:hover {
+  border-color: #cfd2ff;
+
+  box-shadow: 0 6px 18px rgba(30, 40, 70, 0.06);
+
+  transform: translateY(-2px);
+}
+
+.portfolio-item-icon {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f0f1ff;
+
+  border-radius: 10px;
+
+  font-size: 19px;
+}
+
+.certificate-card .portfolio-item-icon {
+  background: #f4efff;
+}
+
+.portfolio-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.portfolio-item-content h3 {
+  margin: 2px 0 7px;
+
+  color: #20283a;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.portfolio-item-content p {
+  margin: 0;
+
+  color: #6f7889;
+
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* =========================================
+   DELETE BUTTON
+   ========================================= */
+
+.delete-btn {
+  padding: 8px 13px;
+
+  border: 1px solid #fee2e2;
+  border-radius: 8px;
+
+  background: #fff5f5;
+  color: #dc2626;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #fee2e2;
+  border-color: #fecaca;
+}
+
+/* =========================================
+   EMPTY STATE
+   ========================================= */
+
+.portfolio-empty {
+  padding: 35px 20px;
+
+  text-align: center;
+
+  background: #fafbfc;
+
+  border: 1px dashed #dfe3eb;
+  border-radius: 13px;
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+
+  margin: 0 auto 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eef0ff;
+
+  border-radius: 12px;
+
+  font-size: 21px;
+}
+
+.portfolio-empty h3 {
+  margin: 0 0 7px;
+
+  color: #333b4d;
+
+  font-size: 15px;
+}
+
+.portfolio-empty p {
+  margin: 0;
+
+  color: #8a93a3;
+
+  font-size: 13px;
+}
+
+/* =========================================
+   SAVE AREA
+   ========================================= */
+
+.portfolio-save-area {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-top: 30px;
+}
+
+.portfolio-save-btn {
+  min-width: 155px;
+
+  padding: 13px 25px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #111827;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.portfolio-save-btn:hover:not(:disabled) {
+  background: #6366f1;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 7px 18px rgba(99, 102, 241, 0.25);
+}
+
+.portfolio-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   LOADING
+   ========================================= */
+
+.portfolio-loading {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f5f7fb;
+}
+
+.portfolio-loading-card {
+  padding: 25px 35px;
+
+  background: #ffffff;
+
+  border: 1px solid #e7eaf0;
+  border-radius: 14px;
+
+  color: #5f6879;
+
+  font-size: 15px;
+
+  box-shadow: 0 8px 25px rgba(20, 30, 50, 0.06);
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 768px) {
+
+  .portfolio-navbar {
+    height: 65px;
+    padding: 0 20px;
+  }
+
+  .portfolio-logo {
+    font-size: 21px;
+  }
+
+  .portfolio-dashboard-btn {
+    padding: 9px 13px;
+    font-size: 13px;
+  }
+
+  .portfolio-content {
+    padding: 35px 18px 60px;
+  }
+
+  .portfolio-header h1 {
+    font-size: 34px;
+  }
+
+  .portfolio-section {
+    padding: 22px;
+  }
+
+  .portfolio-section-header {
+    align-items: flex-start;
+  }
+
+  .portfolio-item-card {
+    flex-wrap: wrap;
+  }
+
+  .delete-btn {
+    margin-left: 58px;
+  }
+
+  .portfolio-save-area {
+    justify-content: stretch;
+  }
+
+  .portfolio-save-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .portfolio-header h1 {
+    font-size: 29px;
+  }
+
+  .portfolio-section {
+    padding: 18px;
+  }
+
+  .portfolio-section-header h2 {
+    font-size: 19px;
+  }
+
+  .portfolio-form {
+    padding: 15px;
+  }
+
+  .portfolio-add-btn {
+    width: 100%;
+  }
+}

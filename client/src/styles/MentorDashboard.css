@@ -1,0 +1,508 @@
+/* =========================================
+   SKILLBRIDGE - MENTOR DASHBOARD
+========================================= */
+
+.mentor-dashboard-page {
+  min-height: 100vh;
+  background: #f6f7fb;
+  color: #171827;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+/* =========================================
+   NAVBAR
+========================================= */
+
+.mentor-dashboard-navbar {
+  height: 72px;
+  padding: 0 7%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #ffffff;
+  border-bottom: 1px solid #e8e9f0;
+
+  box-sizing: border-box;
+}
+
+.mentor-dashboard-logo {
+  font-size: 25px;
+  font-weight: 850;
+  letter-spacing: -1px;
+
+  background: linear-gradient(135deg, #5558e8, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mentor-logout-button {
+  padding: 9px 17px;
+
+  background: #ffffff;
+  color: #555a6d;
+
+  border: 1px solid #dfe1e8;
+  border-radius: 9px;
+
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mentor-logout-button:hover {
+  color: #5558e8;
+  border-color: #bfc2f7;
+  background: #f7f7ff;
+}
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.mentor-dashboard-content {
+  width: min(1120px, 92%);
+  margin: 0 auto;
+  padding: 48px 0 80px;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.mentor-dashboard-header {
+  margin-bottom: 32px;
+}
+
+.mentor-dashboard-label {
+  display: inline-block;
+  margin-bottom: 9px;
+
+  color: #7377d9;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.mentor-dashboard-header h1 {
+  margin: 0 0 9px;
+
+  color: #171827;
+  font-size: clamp(30px, 4vw, 42px);
+  line-height: 1.1;
+  letter-spacing: -1.2px;
+  font-weight: 850;
+}
+
+.mentor-dashboard-header h1 span {
+  color: #5b5fef;
+}
+
+.mentor-dashboard-header p {
+  margin: 0;
+
+  color: #74798c;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* =========================================
+   ERROR
+========================================= */
+
+.mentor-dashboard-error {
+  padding: 14px 16px;
+  margin-bottom: 25px;
+
+  background: #fff1f1;
+  border: 1px solid #ffd5d5;
+  border-radius: 10px;
+
+  color: #b42318;
+  font-size: 13px;
+}
+
+/* =========================================
+   LOADING
+========================================= */
+
+.mentor-dashboard-loading {
+  min-height: 250px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  color: #85899a;
+  font-size: 13px;
+}
+
+.mentor-loading-dot {
+  width: 8px;
+  height: 8px;
+
+  background: #5b5fef;
+  border-radius: 50%;
+
+  animation: mentorDashboardPulse 1s infinite ease-in-out;
+}
+
+@keyframes mentorDashboardPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =========================================
+   PROFILE SETUP CARD
+========================================= */
+
+.mentor-setup-card {
+  padding: 45px;
+  margin-top: 20px;
+
+  background: #ffffff;
+  border: 1px solid #e5e6ee;
+  border-radius: 20px;
+
+  text-align: center;
+
+  box-shadow: 0 10px 35px rgba(28, 31, 49, 0.055);
+}
+
+.mentor-setup-icon {
+  width: 68px;
+  height: 68px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 20px;
+
+  background: linear-gradient(135deg, #e9eaff, #f1eaff);
+  border-radius: 20px;
+
+  font-size: 30px;
+}
+
+.mentor-setup-card h2 {
+  margin: 0 0 10px;
+
+  color: #242536;
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.mentor-setup-card p {
+  max-width: 600px;
+  margin: 0 auto 25px;
+
+  color: #777b8e;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.mentor-primary-button {
+  padding: 12px 22px;
+
+  background: #595ce8;
+  color: #ffffff;
+
+  border: none;
+  border-radius: 9px;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 750;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mentor-primary-button:hover {
+  background: #4c4fd8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(91, 95, 239, 0.2);
+}
+
+/* =========================================
+   PROFILE OVERVIEW
+========================================= */
+
+.mentor-profile-overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* =========================================
+   PROFILE CARD
+========================================= */
+
+.mentor-dashboard-profile {
+  grid-column: span 2;
+
+  padding: 28px;
+
+  background: #ffffff;
+  border: 1px solid #e5e6ee;
+  border-radius: 18px;
+
+  box-shadow: 0 6px 24px rgba(28, 31, 49, 0.045);
+}
+
+.mentor-profile-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  margin-bottom: 22px;
+}
+
+.mentor-dashboard-avatar {
+  width: 62px;
+  height: 62px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  background: linear-gradient(135deg, #e9eaff, #f1eaff);
+  color: #595ce8;
+
+  border-radius: 17px;
+
+  font-size: 21px;
+  font-weight: 850;
+}
+
+.mentor-profile-heading h2 {
+  margin: 0 0 5px;
+
+  color: #1c1d2c;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.mentor-profile-heading span {
+  color: #85899a;
+  font-size: 12px;
+}
+
+/* =========================================
+   BIO
+========================================= */
+
+.mentor-dashboard-bio {
+  padding: 18px;
+
+  background: #f8f9fc;
+  border-radius: 12px;
+
+  color: #666b7e;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.mentor-dashboard-bio strong {
+  display: block;
+  margin-bottom: 6px;
+
+  color: #242536;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* =========================================
+   INFORMATION CARDS
+========================================= */
+
+.mentor-info-card {
+  padding: 24px;
+
+  background: #ffffff;
+  border: 1px solid #e5e6ee;
+  border-radius: 18px;
+
+  box-shadow: 0 6px 24px rgba(28, 31, 49, 0.045);
+}
+
+.mentor-info-card h3 {
+  margin: 0 0 17px;
+
+  color: #242536;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+/* =========================================
+   SKILLS
+========================================= */
+
+.mentor-dashboard-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mentor-dashboard-skill {
+  padding: 7px 11px;
+
+  background: #f1f2ff;
+  color: #595ce8;
+
+  border: 1px solid #dfe1ff;
+  border-radius: 50px;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.mentor-no-data {
+  margin: 0;
+
+  color: #999cab;
+  font-size: 12px;
+}
+
+/* =========================================
+   AVAILABILITY
+========================================= */
+
+.mentor-dashboard-availability {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.mentor-availability-slot {
+  padding: 10px 12px;
+
+  background: #f8f9fc;
+  border: 1px solid #e2e3ea;
+  border-radius: 9px;
+
+  color: #555a6d;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================================
+   NAVIGATION CARDS
+========================================= */
+
+.mentor-dashboard-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.mentor-action-card {
+  padding: 21px;
+
+  background: #ffffff;
+  border: 1px solid #e5e6ee;
+  border-radius: 16px;
+
+  cursor: pointer;
+  text-align: left;
+
+  transition: all 0.25s ease;
+}
+
+.mentor-action-card:hover {
+  transform: translateY(-4px);
+
+  border-color: #d6d8fb;
+
+  box-shadow: 0 12px 28px rgba(28, 31, 49, 0.08);
+}
+
+.mentor-action-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 15px;
+
+  background: #f1f2ff;
+  color: #595ce8;
+
+  border-radius: 11px;
+
+  font-size: 18px;
+}
+
+.mentor-action-card h3 {
+  margin: 0 0 5px;
+
+  color: #242536;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.mentor-action-card p {
+  margin: 0;
+
+  color: #85899a;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 800px) {
+  .mentor-profile-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .mentor-dashboard-profile {
+    grid-column: span 1;
+  }
+
+  .mentor-dashboard-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .mentor-dashboard-navbar {
+    padding: 0 20px;
+  }
+
+  .mentor-dashboard-content {
+    width: 92%;
+    padding: 35px 0 60px;
+  }
+
+  .mentor-setup-card {
+    padding: 30px 20px;
+  }
+
+  .mentor-dashboard-profile {
+    padding: 22px;
+  }
+}

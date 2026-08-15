@@ -601,3 +601,10 @@
     min-height: 330px;
   }
 }
+
+.mentor-count {
+  margin-top: 18px;
+  color: #5b5fef;
+  font-size: 13px;
+  font-weight: 700;
+}
