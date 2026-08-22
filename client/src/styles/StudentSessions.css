@@ -484,3 +484,246 @@
   }
 
 }
+
+/* =====================================================
+   COMPLETED SESSION
+===================================================== */
+
+.completed-session-box {
+  margin-top: 22px;
+  padding: 20px;
+  border-radius: 16px;
+  background: #f7f5ff;
+  border: 1px solid #e5defd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.completed-session-info span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #7657d9;
+}
+
+.completed-session-info h3 {
+  margin: 7px 0 5px;
+  font-size: 18px;
+}
+
+.completed-session-info p {
+  margin: 0;
+  color: #777;
+}
+
+.rate-review-button {
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: #7657d9;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rate-review-button:hover {
+  opacity: 0.9;
+}
+
+/* =====================================================
+   REVIEW MODAL
+===================================================== */
+
+.review-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 15, 35, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.review-modal {
+  width: 100%;
+  max-width: 520px;
+  background: white;
+  border-radius: 22px;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+}
+
+.review-close-button {
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: #f2f2f2;
+  border-radius: 50%;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.review-modal-header span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #7657d9;
+}
+
+.review-modal-header h2 {
+  margin: 8px 0;
+  font-size: 28px;
+}
+
+.review-modal-header p {
+  margin: 0;
+  color: #777;
+}
+
+/* =====================================================
+   STARS
+===================================================== */
+
+.rating-section {
+  margin-top: 25px;
+}
+
+.rating-section label,
+.review-comment-section label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 7px;
+}
+
+.star {
+  border: none;
+  background: transparent;
+  font-size: 36px;
+  color: #d5d5d5;
+  cursor: pointer;
+  padding: 0;
+}
+
+.star.active {
+  color: #f5b83d;
+}
+
+.rating-text {
+  margin: 5px 0 0;
+  font-size: 13px;
+  color: #777;
+}
+
+/* =====================================================
+   COMMENT
+===================================================== */
+
+.review-comment-section {
+  margin-top: 22px;
+}
+
+.review-comment-section textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 13px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.review-comment-section textarea:focus {
+  border-color: #7657d9;
+}
+
+/* =====================================================
+   REVIEW MESSAGES
+===================================================== */
+
+.review-success-message {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #eaf8ef;
+  color: #287a45;
+  font-size: 14px;
+}
+
+.review-error-message {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #fff0f0;
+  color: #c33b3b;
+  font-size: 14px;
+}
+
+/* =====================================================
+   MODAL ACTIONS
+===================================================== */
+
+.review-modal-actions {
+  margin-top: 22px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.review-cancel-button,
+.review-submit-button {
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.review-cancel-button {
+  background: #eeeeee;
+  color: #555;
+}
+
+.review-submit-button {
+  background: #7657d9;
+  color: white;
+}
+
+.review-submit-button:disabled,
+.review-cancel-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 650px) {
+  .completed-session-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rate-review-button {
+    width: 100%;
+  }
+
+  .review-modal {
+    padding: 23px;
+  }
+}

@@ -5,7 +5,11 @@ import "../styles/MentorDashboard.css";
 
 function MentorDashboard() {
     const navigate = useNavigate();
-
+const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+};
     const user = JSON.parse(localStorage.getItem("user"));
 
     const [mentor, setMentor] = useState(null);
@@ -58,9 +62,12 @@ function MentorDashboard() {
                     SkillBridge
                 </div>
 
-                <button className="mentor-logout-button">
-                    Mentor
-                </button>
+                <button
+    className="mentor-logout-button"
+    onClick={handleLogout}
+>
+    Logout
+</button>
 
             </nav>
 

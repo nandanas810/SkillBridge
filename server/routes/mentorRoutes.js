@@ -1,30 +1,13 @@
 const express = require("express");
 const router = express.Router();
-
-const {
-    createMentor,
-    getAllMentors,
-    getMyMentor,
-    updateMyMentor
-} = require("../controllers/mentorController");
-
+const { createMentor, getAllMentors, getMyMentor, updateMyMentor, ratePeer } = require("../controllers/mentorController");
 const authMiddleware = require("../middleware/authMiddleware");
 
-
-// Create mentor
-router.post("/", authMiddleware, createMentor);
-
-
-// Get all mentors
+// Compatibility route name: UI calls these users "peers".
 router.get("/", authMiddleware, getAllMentors);
-
-
-// Get logged-in mentor
 router.get("/me", authMiddleware, getMyMentor);
-
-
-// Update/Create logged-in mentor profile
+router.post("/", authMiddleware, createMentor);
 router.put("/me", authMiddleware, updateMyMentor);
-
+router.post("/:id/rate", authMiddleware, ratePeer);
 
 module.exports = router;

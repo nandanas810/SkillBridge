@@ -1,138 +1,264 @@
 const User = require("../models/userModel");
 const Session = require("../models/sessionModel");
-const Mentor = require("../models/Mentor");
 
-// ===============================
-// CREATE SESSION
-// ===============================
+// ======================================================
+// CREATE PEER LEARNING REQUEST
+// ======================================================
+
 const createSession = async (req, res) => {
   try {
-    const { mentor, date, time, message } = req.body;
-
-    if (!mentor || !date || !time) {
-      return res.status(400).json({
-        message: "Mentor, date and time are required",
-      });
-    }
-
-    const session = await Session.create({
-      student: req.user.id,
-      mentor,
+    const {
+      receiver,
       date,
       time,
       message,
+    } = req.body;
+
+    // -----------------------------------------------
+    // VALIDATION
+    // -----------------------------------------------
+
+    if (!receiver || !date || !time) {
+      return res.status(400).json({
+        message: "Peer, date and time are required",
+      });
+    }
+
+    // -----------------------------------------------
+    // FIND RECEIVING STUDENT
+    // -----------------------------------------------
+
+    const peer = await User.findById(receiver);
+
+    if (!peer) {
+      return res.status(404).json({
+        message: "Peer not found",
+      });
+    }
+
+    // -----------------------------------------------
+    // PREVENT SELF REQUEST
+    // -----------------------------------------------
+
+    if (
+      receiver.toString() ===
+      req.user.id.toString()
+    ) {
+      return res.status(400).json({
+        message:
+          "You cannot send a learning request to yourself",
+      });
+    }
+
+    // -----------------------------------------------
+    // CREATE SESSION
+    // -----------------------------------------------
+
+    const session = await Session.create({
+      sender: req.user.id,
+      receiver: receiver,
+      date,
+      time,
+      message: message || "",
+      status: "Pending",
+      meetingUrl: "",
     });
 
+    // -----------------------------------------------
+    // POPULATE USERS
+    // -----------------------------------------------
+
+    await session.populate(
+      "sender",
+      "name email"
+    );
+
+    await session.populate(
+      "receiver",
+      "name email"
+    );
+
     res.status(201).json({
-      message: "Session request sent successfully",
+      message:
+        "Peer learning request sent successfully",
       session,
     });
   } catch (error) {
-    console.error("Create session error:", error);
+    console.error(
+      "CREATE SESSION ERROR:",
+      error
+    );
 
     res.status(500).json({
-      message: "Failed to create session",
+      message:
+        "Failed to create peer learning request",
       error: error.message,
     });
   }
 };
 
-
-// ===============================
+// ======================================================
 // GET MY SESSIONS
-// ===============================
+// ======================================================
+//
+// Without type:
+//   returns BOTH sent and received
+//
+// ?type=sent:
+//   only requests I sent
+//
+// ?type=received:
+//   only requests I received
+//
+// ======================================================
+
 const getMySessions = async (req, res) => {
   try {
-    // Find logged-in user
-    const user = await User.findById(req.user.id);
+    const userId = req.user.id;
 
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
+    const type = String(
+      req.query.type || "all"
+    ).toLowerCase();
+
+    // ==================================================
+    // REQUESTS I SENT
+    // ==================================================
+
+    const sent = await Session.find({
+      sender: userId,
+    })
+      .populate(
+        "sender",
+        "name email"
+      )
+      .populate(
+        "receiver",
+        "name email"
+      )
+      .sort({
+        createdAt: -1,
+      });
+
+    // ==================================================
+    // REQUESTS I RECEIVED
+    // ==================================================
+
+    const received = await Session.find({
+      receiver: userId,
+    })
+      .populate(
+        "sender",
+        "name email"
+      )
+      .populate(
+        "receiver",
+        "name email"
+      )
+      .sort({
+        createdAt: -1,
+      });
+
+    // ==================================================
+    // ONLY SENT
+    // ==================================================
+
+    if (type === "sent") {
+      return res.json({
+        message:
+          "Sent requests fetched successfully",
+        sessions: sent,
+        sent: sent,
+        received: [],
       });
     }
 
-    let sessions;
+    // ==================================================
+    // ONLY RECEIVED
+    // ==================================================
 
-    // ===============================
-    // STUDENT
-    // ===============================
-    if (user.role === "student") {
-      sessions = await Session.find({
-        student: req.user.id,
-      })
-        .populate("mentor")
-        .populate("student", "name email")
-        .sort({ createdAt: -1 });
-    }
-
-    // ===============================
-    // MENTOR
-    // ===============================
-    else if (user.role === "mentor") {
-      // Find mentor profile belonging to logged-in user
-      const mentor = await Mentor.findOne({
-        email: user.email,
-      });
-
-      if (!mentor) {
-        return res.status(404).json({
-          message: `Mentor profile not found for email: ${user.email}`,
-        });
-      }
-
-      // Find requests sent to this mentor
-      sessions = await Session.find({
-        mentor: mentor._id,
-      })
-        .populate("mentor")
-        .populate("student", "name email")
-        .sort({ createdAt: -1 });
-    }
-
-    else {
-      return res.status(403).json({
-        message: "Invalid user role",
+    if (type === "received") {
+      return res.json({
+        message:
+          "Received requests fetched successfully",
+        sessions: received,
+        sent: [],
+        received: received,
       });
     }
 
-    res.status(200).json({
-      message: "Sessions fetched successfully",
-      sessions,
+    // ==================================================
+    // ALL
+    // ==================================================
+
+    return res.json({
+      message:
+        "Peer learning sessions fetched successfully",
+
+      // IMPORTANT:
+      // Dashboard uses sessions as SENT requests
+
+      sessions: sent,
+
+      sent: sent,
+
+      received: received,
     });
-
   } catch (error) {
-    console.error("Get sessions error:", error);
+    console.error(
+      "GET MY SESSIONS ERROR:",
+      error
+    );
 
     res.status(500).json({
-      message: "Failed to fetch sessions",
+      message:
+        "Failed to fetch peer learning sessions",
       error: error.message,
     });
   }
 };
 
-
-// ===============================
+// ======================================================
 // UPDATE SESSION STATUS
-// ===============================
-const updateSessionStatus = async (req, res) => {
+// ACCEPT / REJECT / COMPLETE
+// ======================================================
+
+const updateSessionStatus = async (
+  req,
+  res
+) => {
   try {
-    const { status } = req.body;
+    const requestedStatus = String(
+      req.body.status || ""
+    ).toLowerCase();
 
-    let newStatus;
+    let newStatus = null;
 
-    if (status && status.toLowerCase() === "accepted") {
+    if (requestedStatus === "accepted") {
       newStatus = "Accepted";
-    } else if (status && status.toLowerCase() === "rejected") {
+    }
+
+    if (requestedStatus === "rejected") {
       newStatus = "Rejected";
-    } else {
+    }
+
+    if (requestedStatus === "completed") {
+      newStatus = "Completed";
+    }
+
+    if (!newStatus) {
       return res.status(400).json({
-        message: "Invalid session status",
+        message:
+          "Invalid session status. Use Accepted, Rejected or Completed.",
       });
     }
 
-    // Find session
-    const session = await Session.findById(req.params.id);
+    // ==================================================
+    // FIND SESSION
+    // ==================================================
+
+    const session = await Session.findById(
+      req.params.id
+    );
 
     if (!session) {
       return res.status(404).json({
@@ -140,73 +266,355 @@ const updateSessionStatus = async (req, res) => {
       });
     }
 
-    // Find logged-in user
-    const user = await User.findById(req.user.id);
+    const currentUser =
+      req.user.id.toString();
 
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
+    const senderId =
+      session.sender.toString();
+
+    const receiverId =
+      session.receiver.toString();
+
+    // ==================================================
+    // ACCEPT / REJECT
+    // ==================================================
+    //
+    // ONLY RECEIVER CAN ACCEPT OR REJECT
+    //
+
+    if (
+      newStatus === "Accepted" ||
+      newStatus === "Rejected"
+    ) {
+      if (receiverId !== currentUser) {
+        return res.status(403).json({
+          message:
+            "Only the student who received this request can accept or reject it.",
+        });
+      }
     }
 
-    // Only mentors can accept/reject
-    if (user.role !== "mentor") {
-      return res.status(403).json({
-        message: "Only mentors can update sessions",
-      });
+    // ==================================================
+    // COMPLETE
+    // ==================================================
+    //
+    // Either participant can mark an accepted session
+    // as completed.
+    //
+
+    if (newStatus === "Completed") {
+      if (
+        senderId !== currentUser &&
+        receiverId !== currentUser
+      ) {
+        return res.status(403).json({
+          message:
+            "You are not part of this learning session.",
+        });
+      }
+
+      if (session.status !== "Accepted") {
+        return res.status(400).json({
+          message:
+            "Only an accepted session can be completed.",
+        });
+      }
     }
 
-    // Find mentor profile
-    const mentor = await Mentor.findOne({
-      email: user.email,
-    });
+    // ==================================================
+    // ACCEPT
+    // ==================================================
 
-    if (!mentor) {
-      return res.status(404).json({
-        message: `Mentor profile not found for email: ${user.email}`,
-      });
+    if (newStatus === "Accepted") {
+      session.status = "Accepted";
+
+      // Create ONE unique Jitsi room
+      // for this exact session.
+
+      if (!session.meetingUrl) {
+        session.meetingUrl =
+          `https://meet.jit.si/SkillBridge-${session._id}`;
+      }
     }
 
-    console.log("========== SESSION DEBUG ==========");
-    console.log("Session ID:", session._id.toString());
-    console.log("Session Mentor ID:", session.mentor.toString());
-    console.log("Logged-in Mentor ID:", mentor._id.toString());
-    console.log("Logged-in Mentor Email:", mentor.email);
-    console.log("==================================");
+    // ==================================================
+    // REJECT
+    // ==================================================
 
-    // Check whether this session belongs to logged-in mentor
-    if (session.mentor.toString() !== mentor._id.toString()) {
-      return res.status(403).json({
-        message: "You are not authorized to update this session",
-      });
+    if (newStatus === "Rejected") {
+      session.status = "Rejected";
+      session.meetingUrl = "";
     }
 
-    // Update status
-    session.status = newStatus;
+    // ==================================================
+    // COMPLETE
+    // ==================================================
+
+    if (newStatus === "Completed") {
+      session.status = "Completed";
+    }
+
+    // ==================================================
+    // SAVE
+    // ==================================================
 
     await session.save();
 
-    res.status(200).json({
-      message: `Session ${newStatus} successfully`,
+    // ==================================================
+    // POPULATE
+    // ==================================================
+
+    await session.populate(
+      "sender",
+      "name email"
+    );
+
+    await session.populate(
+      "receiver",
+      "name email"
+    );
+
+    // ==================================================
+    // RESPONSE
+    // ==================================================
+
+    res.json({
+      message:
+        `Session ${newStatus.toLowerCase()} successfully`,
+
       session,
     });
-
   } catch (error) {
-    console.error("Update session status error:", error);
+    console.error(
+      "UPDATE SESSION STATUS ERROR:",
+      error
+    );
 
     res.status(500).json({
-      message: "Failed to update session status",
+      message:
+        "Failed to update session status",
       error: error.message,
     });
   }
 };
 
+// ======================================================
+// RATE / REVIEW COMPLETED SESSION
+// ======================================================
+//
+// The student who SENT the request can review the
+// student who RECEIVED it.
+//
+// ======================================================
 
-// ===============================
+const rateCompletedSession = async (
+  req,
+  res
+) => {
+  try {
+    const {
+      rating,
+      comment = "",
+    } = req.body;
+
+    const value = Number(rating);
+
+    // ==================================================
+    // VALIDATE RATING
+    // ==================================================
+
+    if (
+      !Number.isInteger(value) ||
+      value < 1 ||
+      value > 5
+    ) {
+      return res.status(400).json({
+        message:
+          "Rating must be between 1 and 5",
+      });
+    }
+
+    // ==================================================
+    // FIND SESSION
+    // ==================================================
+
+    const session = await Session.findById(
+      req.params.id
+    );
+
+    if (!session) {
+      return res.status(404).json({
+        message: "Session not found",
+      });
+    }
+
+    // ==================================================
+    // MUST BE COMPLETED
+    // ==================================================
+
+    if (session.status !== "Completed") {
+      return res.status(400).json({
+        message:
+          "You can rate and review a peer only after the session is completed.",
+      });
+    }
+
+    // ==================================================
+    // ONLY SENDER CAN REVIEW
+    // ==================================================
+
+    if (
+      session.sender.toString() !==
+      req.user.id.toString()
+    ) {
+      return res.status(403).json({
+        message:
+          "Only the student who sent the request can submit the review.",
+      });
+    }
+
+    // ==================================================
+    // FIND RECEIVER
+    // ==================================================
+
+    const peer = await User.findById(
+      session.receiver
+    );
+
+    if (!peer) {
+      return res.status(404).json({
+        message:
+          "Receiving student not found",
+      });
+    }
+
+    // ==================================================
+    // FIND REVIEWER
+    // ==================================================
+
+    const reviewer = await User.findById(
+      req.user.id
+    );
+
+    if (!reviewer) {
+      return res.status(404).json({
+        message:
+          "Reviewer not found",
+      });
+    }
+
+    // ==================================================
+    // MAKE SURE REVIEWS EXISTS
+    // ==================================================
+
+    if (!peer.reviews) {
+      peer.reviews = [];
+    }
+
+    // ==================================================
+    // CHECK EXISTING REVIEW
+    // ==================================================
+
+    const existingIndex =
+      peer.reviews.findIndex(
+        (review) =>
+          review.reviewer &&
+          review.reviewer.toString() ===
+            req.user.id.toString()
+      );
+
+    // ==================================================
+    // NEW REVIEW
+    // ==================================================
+
+    const newReview = {
+      reviewer: reviewer._id,
+      reviewerName: reviewer.name,
+      rating: value,
+      comment: String(comment).trim(),
+    };
+
+    // ==================================================
+    // UPDATE EXISTING REVIEW
+    // ==================================================
+
+    if (existingIndex >= 0) {
+      peer.reviews[existingIndex] =
+        newReview;
+    } else {
+      peer.reviews.push(newReview);
+    }
+
+    // ==================================================
+    // REVIEW COUNT
+    // ==================================================
+
+    peer.reviewCount =
+      peer.reviews.length;
+
+    // ==================================================
+    // CALCULATE RATING
+    // ==================================================
+
+    const totalRating =
+      peer.reviews.reduce(
+        (sum, review) =>
+          sum +
+          Number(review.rating || 0),
+        0
+      );
+
+    peer.rating =
+      peer.reviewCount > 0
+        ? Number(
+            (
+              totalRating /
+              peer.reviewCount
+            ).toFixed(1)
+          )
+        : 0;
+
+    // ==================================================
+    // SAVE USER
+    // ==================================================
+
+    await peer.save();
+
+    // ==================================================
+    // RESPONSE
+    // ==================================================
+
+    res.json({
+      message:
+        "Rating and review submitted successfully",
+
+      rating: peer.rating,
+
+      reviewCount:
+        peer.reviewCount,
+    });
+  } catch (error) {
+    console.error(
+      "RATE COMPLETED SESSION ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      message:
+        "Failed to submit rating and review",
+
+      error: error.message,
+    });
+  }
+};
+
+// ======================================================
 // EXPORT
-// ===============================
+// ======================================================
+
 module.exports = {
   createSession,
   getMySessions,
   updateSessionStatus,
+  rateCompletedSession,
 };

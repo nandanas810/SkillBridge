@@ -45,7 +45,6 @@ function MySkills() {
 
         setSkillsToTeach(portfolio?.skillsToTeach || []);
         setSkillsToLearn(portfolio?.skillsToLearn || []);
-
       } catch (err) {
         console.error("MY SKILLS ERROR:", err);
 
@@ -79,7 +78,7 @@ function MySkills() {
       return;
     }
 
-    setSkillsToTeach([...skillsToTeach, skill]);
+    setSkillsToTeach((prev) => [...prev, skill]);
     setTeachInput("");
   };
 
@@ -101,7 +100,7 @@ function MySkills() {
       return;
     }
 
-    setSkillsToLearn([...skillsToLearn, skill]);
+    setSkillsToLearn((prev) => [...prev, skill]);
     setLearnInput("");
   };
 
@@ -110,8 +109,8 @@ function MySkills() {
   // =========================================
 
   const removeTeachSkill = (skill) => {
-    setSkillsToTeach(
-      skillsToTeach.filter((item) => item !== skill)
+    setSkillsToTeach((prev) =>
+      prev.filter((item) => item !== skill)
     );
   };
 
@@ -120,8 +119,8 @@ function MySkills() {
   // =========================================
 
   const removeLearnSkill = (skill) => {
-    setSkillsToLearn(
-      skillsToLearn.filter((item) => item !== skill)
+    setSkillsToLearn((prev) =>
+      prev.filter((item) => item !== skill)
     );
   };
 
@@ -132,11 +131,17 @@ function MySkills() {
   const handleSave = async () => {
     setMessage("");
     setError("");
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     setSaving(true);
 
     try {
-      const token = localStorage.getItem("token");
-
       await axios.put(
         "http://localhost:5000/api/users/student-portfolio",
         {
@@ -152,11 +157,9 @@ function MySkills() {
 
       setMessage("Skills updated successfully!");
 
-      // Remove success message after a few seconds
       setTimeout(() => {
         setMessage("");
       }, 3000);
-
     } catch (err) {
       console.error("SAVE SKILLS ERROR:", err);
 
@@ -176,9 +179,7 @@ function MySkills() {
   if (loading) {
     return (
       <div className="my-skills-page">
-
         <nav className="my-skills-navbar">
-
           <div className="my-skills-logo">
             SkillBridge
           </div>
@@ -189,17 +190,12 @@ function MySkills() {
           >
             ← Dashboard
           </button>
-
         </nav>
 
         <div className="skills-loading">
-
           <div className="skills-loading-dot"></div>
-
           <p>Loading your skills...</p>
-
         </div>
-
       </div>
     );
   }
@@ -405,7 +401,7 @@ function MySkills() {
 
               <p>
                 Add skills you want to learn from
-                other students and mentors.
+                other students in the peer-learning community.
               </p>
 
             </div>
@@ -488,7 +484,7 @@ function MySkills() {
 
 
         {/* ===================================
-            SAVE
+            SAVE BUTTON
         =================================== */}
 
         <div className="save-skills-area">

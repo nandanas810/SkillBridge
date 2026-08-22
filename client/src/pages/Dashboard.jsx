@@ -3,174 +3,114 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/Dashboard.css";
 
-// =======================
-// Icons
-// =======================
-
-function MentorIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="24"
-      height="24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="9" cy="8" r="3" />
-      <path d="M3.5 19c.7-3.2 2.5-5 5.5-5s4.8 1.8 5.5 5" />
-      <path d="M16 11a3 3 0 1 0 0-6" />
-      <path d="M16 14c2.7 0 4.3 1.7 4.8 4" />
-    </svg>
-  );
-}
-
-function SkillsIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="24"
-      height="24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z" />
-      <path d="M4 5.5v16" />
-      <path d="M8 7h8" />
-      <path d="M8 11h7" />
-    </svg>
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="24"
-      height="24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="3" y="5" width="18" height="16" rx="2" />
-      <path d="M16 3v4" />
-      <path d="M8 3v4" />
-      <path d="M3 10h18" />
-      <path d="M8 14h3" />
-      <path d="M8 17h5" />
-    </svg>
-  );
-}
-
-function PortfolioIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="24"
-      height="24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="3" y="5" width="18" height="15" rx="2" />
-      <path d="M8 5V3h8v2" />
-      <path d="M3 10h18" />
-      <path d="M9 14h6" />
-    </svg>
-  );
-}
-
-
-
-
-
-
-
-function ArrowIcon() {
-  return (
-    <svg
-      viewBox="0 0 20 20"
-      width="17"
-      height="17"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4 10h11" />
-      <path d="m11 6 4 4-4 4" />
-    </svg>
-  );
-}
-
-// =======================
-// Dashboard
-// =======================
-
 function Dashboard() {
   const navigate = useNavigate();
 
-  // Get logged-in user
-  const storedUser = localStorage.getItem("user");
+  // =====================================================
+  // USER
+  // =====================================================
+
+  const stored = localStorage.getItem("user");
 
   let user = null;
 
   try {
-    user = storedUser ? JSON.parse(storedUser) : null;
-  } catch (error) {
-    console.error("Invalid user data in localStorage");
+    user = stored ? JSON.parse(stored) : null;
+  } catch {
     user = null;
   }
 
-  // IMPORTANT:
-  // Read the actual role stored during login
-  const role = user?.role?.toLowerCase();
+  const token = localStorage.getItem("token");
 
-  const isMentor = role === "mentor";
-  const isStudent = role === "student";
+  // =====================================================
+  // STATES
+  // =====================================================
 
-  const [sessions, setSessions] = useState([]);
-  const [loadingSessions, setLoadingSessions] = useState(false);
-  const [sessionError, setSessionError] = useState("");
+  const [sentSessions, setSentSessions] = useState([]);
+  const [receivedSessions, setReceivedSessions] = useState([]);
+  const [peers, setPeers] = useState([]);
 
-  // =======================
-  // Logout
-  // =======================
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const handleLogout = () => {
+  // =====================================================
+  // GET ID SAFELY
+  // =====================================================
+
+  const getId = (value) => {
+    if (!value) return null;
+
+    if (typeof value === "string") {
+      return value;
+    }
+
+    if (value._id) {
+      return value._id.toString();
+    }
+
+    if (value.id) {
+      return value.id.toString();
+    }
+
+    return null;
+  };
+
+  // =====================================================
+  // GET MEETING URL
+  // =====================================================
+
+  const getMeetingUrl = (session) => {
+    return (
+      session.meetingUrl ||
+      `https://meet.jit.si/SkillBridge-${session._id}`
+    );
+  };
+
+  // =====================================================
+  // OPEN LEARNING SESSION
+  // =====================================================
+
+  const openLearningSession = (session) => {
+    navigate("/learning-session", {
+      state: {
+        session: {
+          ...session,
+          meetingUrl: getMeetingUrl(session),
+        },
+      },
+    });
+  };
+
+  // =====================================================
+  // LOGOUT
+  // =====================================================
+
+  const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
     navigate("/login");
   };
 
-  // =======================
-  // Fetch Sessions
-  // =======================
+  // =====================================================
+  // LOAD DASHBOARD
+  // =====================================================
 
-  const fetchSessions = async () => {
+  const loadDashboard = async () => {
     try {
-      setLoadingSessions(true);
-      setSessionError("");
-
-      const token = localStorage.getItem("token");
+      setLoading(true);
+      setError("");
 
       if (!token) {
         navigate("/login");
         return;
       }
 
-      const response = await axios.get(
+      // =================================================
+      // GET MY SESSIONS
+      // =================================================
+
+      const sessionResponse = await axios.get(
         "http://localhost:5000/api/sessions/my",
         {
           headers: {
@@ -179,53 +119,189 @@ function Dashboard() {
         }
       );
 
-      setSessions(response.data.sessions || []);
-    } catch (error) {
-      console.error("Session error:", error);
+      /*
+        Backend returns:
 
-      setSessionError(
-        error.response?.data?.message ||
-          "Failed to load sessions"
+        sessions = requests SENT by me
+        received = requests SENT TO me
+      */
+
+      const sent = sessionResponse.data.sessions || [];
+      const received = sessionResponse.data.received || [];
+
+      console.log("SENT SESSIONS:", sent);
+      console.log("RECEIVED SESSIONS:", received);
+
+      setSentSessions(sent);
+      setReceivedSessions(received);
+
+      // =================================================
+      // GET PEERS
+      // =================================================
+
+      const peerResponse = await axios.get(
+        "http://localhost:5000/api/mentors",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const peerList =
+        peerResponse.data.peers ||
+        peerResponse.data.mentors ||
+        [];
+
+      // Don't show yourself
+      const currentUserId = getId(
+        user?._id || user?.id
+      );
+
+      const otherPeers = peerList.filter((peer) => {
+        const peerUserId = getId(
+          peer.userId ||
+            peer.user ||
+            peer._id
+        );
+
+        return peerUserId !== currentUserId;
+      });
+
+      setPeers(otherPeers.slice(0, 3));
+    } catch (err) {
+      console.error(
+        "Dashboard loading error:",
+        err
+      );
+
+      setError(
+        err.response?.data?.message ||
+          "Could not load dashboard"
       );
     } finally {
-      setLoadingSessions(false);
+      setLoading(false);
     }
   };
 
-  // =======================
-  // Load sessions
-  // =======================
+  // =====================================================
+  // INITIAL LOAD
+  // =====================================================
 
   useEffect(() => {
-    fetchSessions();
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    loadDashboard();
   }, []);
 
-  // =======================
-  // Update Session Status
-  // =======================
+  // =====================================================
+  // ACCEPT / REJECT REQUEST
+  // =====================================================
 
-  const updateSessionStatus = async (sessionId, status) => {
+  const updateRequest = async (
+    sessionId,
+    status
+  ) => {
     try {
-      setSessionError("");
-      const token = localStorage.getItem("token");
-      await axios.put(`http://localhost:5000/api/sessions/${sessionId}/status`, { status }, { headers: { Authorization: `Bearer ${token}` } });
-      await fetchSessions();
-    } catch (error) {
-      console.error("Session status update error:", error);
-      setSessionError(error.response?.data?.message || "Failed to update session status");
+      setError("");
+
+      await axios.put(
+        `http://localhost:5000/api/sessions/${sessionId}/status`,
+        {
+          status,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      await loadDashboard();
+    } catch (err) {
+      console.error(
+        "Update request error:",
+        err
+      );
+
+      setError(
+        err.response?.data?.message ||
+          "Could not update request"
+      );
     }
   };
 
-  // =======================
-  // Dashboard
-  // =======================
+  // =====================================================
+  // MARK COMPLETED
+  // =====================================================
+
+  const markCompleted = async (
+    sessionId
+  ) => {
+    try {
+      setError("");
+
+      await axios.put(
+        `http://localhost:5000/api/sessions/${sessionId}/status`,
+        {
+          status: "Completed",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      await loadDashboard();
+    } catch (err) {
+      console.error(
+        "Complete session error:",
+        err
+      );
+
+      setError(
+        err.response?.data?.message ||
+          "Could not complete session"
+      );
+    }
+  };
+
+  // =====================================================
+  // COUNTS
+  // =====================================================
+
+  const pendingReceived =
+    receivedSessions.filter(
+      (session) =>
+        session.status === "Pending"
+    );
+
+  const acceptedSent =
+    sentSessions.filter(
+      (session) =>
+        session.status === "Accepted"
+    );
+
+  const completedSent =
+    sentSessions.filter(
+      (session) =>
+        session.status === "Completed"
+    );
+
+  // =====================================================
+  // UI
+  // =====================================================
 
   return (
     <div className="dashboard-page">
 
-      {/* =======================
-          Navbar
-      ======================= */}
+      {/* =================================================
+          NAVBAR
+      ================================================= */}
 
       <nav className="dashboard-navbar">
 
@@ -236,12 +312,12 @@ function Dashboard() {
         <div className="dashboard-nav-right">
 
           <span className="dashboard-user-name">
-            {user?.name || "User"}
+            {user?.name || "Peer"}
           </span>
 
           <button
             className="logout-button"
-            onClick={handleLogout}
+            onClick={logout}
           >
             Logout
           </button>
@@ -250,62 +326,83 @@ function Dashboard() {
 
       </nav>
 
-
-      {/* =======================
-          Main Content
-      ======================= */}
+      {/* =================================================
+          MAIN
+      ================================================= */}
 
       <main className="dashboard-content">
 
-
-        {/* =======================
-            Hero Section
-        ======================= */}
+        {/* =================================================
+            HERO
+        ================================================= */}
 
         <section className="dashboard-hero">
 
           <div className="hero-content">
 
             <span className="hero-label">
-              {isMentor
-                ? "MENTOR DASHBOARD"
-                : "STUDENT DASHBOARD"}
+              PEER DASHBOARD
             </span>
 
             <h1>
               Welcome back,{" "}
               <span>
-                {user?.name || "User"}
+                {user?.name || "Peer"}
               </span>
             </h1>
 
             <p>
-              {isMentor
-                ? "Share your expertise, connect with students and help others grow."
-                : "Discover mentors, build your skills and make meaningful learning connections."}
+              Teach what you know, learn what you need,
+              and build meaningful skill exchanges
+              with fellow students.
             </p>
+
+            <div className="dashboard-hero-actions">
+
+              <button
+                onClick={() =>
+                  navigate("/mentors")
+                }
+              >
+                Find Skill Partners →
+              </button>
+
+              <button
+                onClick={() =>
+                  navigate("/my-skills")
+                }
+                className="secondary-action"
+              >
+                Update My Skills
+              </button>
+
+            </div>
 
           </div>
 
-
           <div className="hero-decoration">
 
-            <div className="hero-orbit orbit-one"></div>
-
-            <div className="hero-orbit orbit-two"></div>
-
             <div className="hero-center">
-              SB
+              ↔
             </div>
 
           </div>
 
         </section>
 
+        {/* =================================================
+            ERROR
+        ================================================= */}
 
-        {/* =======================
-            Quick Actions
-        ======================= */}
+        {error && (
+          <div className="dashboard-error">
+            {error}
+          </div>
+        )}
+
+        {/* =================================================
+            QUICK CARDS
+        ================================================= */}
 
         <section className="quick-section">
 
@@ -314,322 +411,274 @@ function Dashboard() {
             <div>
 
               <span className="section-label">
-                EXPLORE
+                YOUR PEER NETWORK
               </span>
 
               <h2>
-                What would you like to do?
+                Everything in one place
               </h2>
 
             </div>
 
           </div>
 
-
           <div className="dashboard-cards">
 
+            {/* FIND PEERS */}
 
-            {/* =================================
-                MENTOR DASHBOARD
-            ================================= */}
+            <div className="dashboard-card">
 
-            {isMentor ? (
-              <>
+              <div className="card-top">
 
+                <span className="card-icon">
+                  🔎
+                </span>
 
-                {/* Student Requests */}
+                <span className="card-number">
+                  01
+                </span>
 
-                <div className="dashboard-card">
+              </div>
 
-                  <div className="card-top">
+              <h3>
+                Find Skill Partners
+              </h3>
 
-                    <div className="card-icon mentor-icon">
-                      <MentorIcon />
-                    </div>
+              <p>
+                Search by skill and see students
+                who can teach it.
+              </p>
 
-                    <span className="card-number">
-                      01
-                    </span>
+              <button
+                onClick={() =>
+                  navigate("/mentors")
+                }
+              >
+                Browse peers <span>→</span>
+              </button>
 
-                  </div>
+            </div>
 
-                  <h3>
-                    Student Requests
-                  </h3>
+            {/* MY SKILLS */}
 
-                  <p>
-                    View students who are looking for
-                    guidance and mentoring in your skills.
-                  </p>
+            <div className="dashboard-card">
 
-                  <button
-                    className="card-action"
-                    onClick={() => navigate("/sessions")}
-                  >
-                    <span>
-                      View requests
-                    </span>
+              <div className="card-top">
 
-                    <ArrowIcon />
-                  </button>
+                <span className="card-icon">
+                  🔄
+                </span>
 
-                </div>
+                <span className="card-number">
+                  02
+                </span>
 
+              </div>
 
-                {/* My Expertise */}
+              <h3>
+                My Skill Exchange
+              </h3>
 
-                <div className="dashboard-card">
+              <p>
+                Set the skills you can teach and
+                the skills you want to learn.
+              </p>
 
-                  <div className="card-top">
+              <button
+                onClick={() =>
+                  navigate("/my-skills")
+                }
+              >
+                Manage skills <span>→</span>
+              </button>
 
-                    <div className="card-icon skills-icon">
-                      <SkillsIcon />
-                    </div>
+            </div>
 
-                    <span className="card-number">
-                      02
-                    </span>
+            {/* PORTFOLIO */}
 
-                  </div>
+            <div className="dashboard-card">
 
-                  <h3>
-                    My Expertise
-                  </h3>
+              <div className="card-top">
 
-                  <p>
-                    Manage the skills you teach and
-                    share your knowledge with students.
-                  </p>
+                <span className="card-icon">
+                  ⭐
+                </span>
 
-                  <button
-                    className="card-action"
-                    onClick={() => navigate("/my-expertise")}
-                  >
-                    <span>
-                      Manage expertise
-                    </span>
+                <span className="card-number">
+                  03
+                </span>
 
-                    <ArrowIcon />
-                  </button>
+              </div>
 
-                </div>
+              <h3>
+                My Portfolio
+              </h3>
 
+              <p>
+                Show projects and certificates
+                that build trust with peers.
+              </p>
 
-                {/* My Sessions */}
+              <button
+                onClick={() =>
+                  navigate("/my-portfolio")
+                }
+              >
+                Open portfolio <span>→</span>
+              </button>
 
-                <div className="dashboard-card">
+            </div>
 
-                  <div className="card-top">
+          </div>
 
-                    <div className="card-icon session-icon">
-                      <CalendarIcon />
-                    </div>
+        </section>
 
-                    <span className="card-number">
-                      03
-                    </span>
+        {/* =================================================
+            STATS
+        ================================================= */}
 
-                  </div>
+        <section className="dashboard-stats">
 
-                  <h3>
-                    My Sessions
-                  </h3>
+          <div>
 
-                  <p>
-                    Manage your upcoming mentoring
-                    sessions and student requests.
-                  </p>
+            <strong>
+              {pendingReceived.length}
+            </strong>
 
-                  <button
-                    className="card-action"
-                    onClick={fetchSessions}
-                  >
-                    <span>
-                      View sessions
-                    </span>
+            <span>
+              Requests received
+            </span>
 
-                    <ArrowIcon />
-                  </button>
+          </div>
 
-                </div>
+          <div>
 
-              </>
+            <strong>
+              {acceptedSent.length}
+            </strong>
+
+            <span>
+              Accepted sessions
+            </span>
+
+          </div>
+
+          <div>
+
+            <strong>
+              {completedSent.length}
+            </strong>
+
+            <span>
+              Completed sessions
+            </span>
+
+          </div>
+
+        </section>
+
+        {/* =================================================
+            RECOMMENDED PEERS
+        ================================================= */}
+
+        <section className="dashboard-panel">
+
+          <div className="panel-heading">
+
+            <div>
+
+              <span className="section-label">
+                RECOMMENDED
+              </span>
+
+              <h2>
+                Top peer matches
+              </h2>
+
+            </div>
+
+            <button
+              onClick={() =>
+                navigate("/mentors")
+              }
+            >
+              View all →
+            </button>
+
+          </div>
+
+          <div className="mini-peer-grid">
+
+            {peers.length === 0 ? (
+
+              <div className="empty-dashboard">
+
+                <h3>
+                  No peer matches yet
+                </h3>
+
+                <p>
+                  Other students will appear here.
+                </p>
+
+              </div>
+
             ) : (
 
+              peers.map((peer) => (
 
-              /* =================================
-                 STUDENT DASHBOARD
-              ================================= */
+                <div
+                  className="mini-peer"
+                  key={peer._id}
+                >
 
-              <>
+                  <div className="mini-avatar">
+                    {peer.name?.[0] || "P"}
+                  </div>
 
+                  <div>
 
-                {/* Find Mentors */}
+                    <h3>
+                      {peer.name}
+                    </h3>
 
-                <div className="dashboard-card">
+                    <p>
+                      ★{" "}
+                      {Number(
+                        peer.rating || 0
+                      ).toFixed(1)}
+                      {" · "}
+                      {peer.reviewCount || 0}
+                      {" reviews"}
+                    </p>
 
-                  <div className="card-top">
-
-                    <div className="card-icon mentor-icon">
-                      <MentorIcon />
-                    </div>
-
-                    <span className="card-number">
-                      01
-                    </span>
+                    <small>
+                      Teaches:{" "}
+                      {(peer.skillsToTeach || [])
+                        .slice(0, 2)
+                        .join(", ") || "—"}
+                    </small>
 
                   </div>
 
-                  <h3>
-                    Find Mentors
-                  </h3>
-
-                  <p>
-                    Connect with experienced mentors who
-                    can help you develop the skills you want.
-                  </p>
-
                   <button
-                    className="card-action"
-                    onClick={() => navigate("/mentors")}
+                    onClick={() =>
+                      navigate(
+                        "/mentor-profile",
+                        {
+                          state: {
+                            mentor: peer,
+                          },
+                        }
+                      )
+                    }
                   >
-                    <span>
-                      Browse mentors
-                    </span>
-
-                    <ArrowIcon />
+                    View
                   </button>
 
                 </div>
 
-
-                {/* My Skills */}
-
-                <div className="dashboard-card">
-
-                  <div className="card-top">
-
-                    <div className="card-icon skills-icon">
-                      <SkillsIcon />
-                    </div>
-
-                    <span className="card-number">
-                      02
-                    </span>
-
-                  </div>
-
-                  <h3>
-                    My Skills
-                  </h3>
-
-                  <p>
-                    Manage the skills you know and share
-                    your knowledge with other students.
-                  </p>
-
-                  <button
-  className="card-action"
-  onClick={() => navigate("/my-skills")}
->
-                    <span>
-                      Manage skills
-                    </span>
-
-                    <ArrowIcon />
-                  </button>
-
-                </div>
-
-
-                {/* My Sessions */}
-
-                <div className="dashboard-card">
-
-                  <div className="card-top">
-
-                    <div className="card-icon session-icon">
-                      <CalendarIcon />
-                    </div>
-
-                    <span className="card-number">
-                      03
-                    </span>
-
-                  </div>
-
-                  <h3>
-                    My Sessions
-                  </h3>
-
-                  <p>
-                    Keep track of your learning and
-                    mentoring sessions in one place.
-                  </p>
-
-                 <button
-  className="card-action"
-  onClick={() => navigate("/student-sessions")}
->
-                    <span>
-                      View sessions
-                    </span>
-
-                    <ArrowIcon />
-                  </button>
-
-
-
-</div>
-
-
-
-{/* My Portfolio */}
-
-<div className="dashboard-card portfolio-card">
-
-  <div className="card-top">
-
-    <div className="card-icon portfolio-icon">
-      <PortfolioIcon />
-    </div>
-
-    <span className="card-number">
-      04
-    </span>
-
-  </div>
-
-  <h3>
-    My Portfolio
-  </h3>
-
-  <p>
-    Showcase your academic projects, certificates
-    and achievements in one professional profile.
-  </p>
-
-  <button
-    className="card-action"
-    onClick={() => navigate("/my-portfolio")}
-  >
-    <span>
-      View portfolio
-    </span>
-
-    <ArrowIcon />
-  </button>
-
-
-
-
-
-
-
-
-                </div>
-
-              </>
+              ))
 
             )}
 
@@ -637,259 +686,279 @@ function Dashboard() {
 
         </section>
 
+        {/* =================================================
+            REQUESTS RECEIVED
+        ================================================= */}
 
-        {/* =======================
-            Sessions Section
-        ======================= */}
+        <section className="dashboard-panel">
 
-        <section className="sessions-section">
-
-          <div className="sessions-header">
+          <div className="panel-heading">
 
             <div>
 
               <span className="section-label">
-                ACTIVITY
+                REQUESTS RECEIVED
               </span>
 
               <h2>
-                My Sessions
+                Requests sent to you
               </h2>
 
-              <p>
-                Your recent mentoring requests and sessions.
-              </p>
-
             </div>
-
-
-            <button
-              className="refresh-button"
-              onClick={fetchSessions}
-            >
-              Refresh
-            </button>
 
           </div>
 
+          {loading ? (
 
-          {/* =======================
-              Loading
-          ======================= */}
+            <p>
+              Loading requests...
+            </p>
 
-          {loadingSessions && (
+          ) : receivedSessions.length === 0 ? (
 
-            <div className="session-state">
+            <div className="empty-dashboard">
 
-              <div className="loading-dot"></div>
+              <h3>
+                No requests received
+              </h3>
 
               <p>
-                Loading your sessions...
+                When another student sends you
+                a learning request, it will appear here.
               </p>
 
             </div>
 
-          )}
+          ) : (
 
+            <div className="session-list">
 
-          {/* =======================
-              Error
-          ======================= */}
-
-          {sessionError && (
-
-            <div className="session-error">
-              {sessionError}
-            </div>
-
-          )}
-
-
-          {/* =======================
-              No Sessions
-          ======================= */}
-
-          {!loadingSessions &&
-            !sessionError &&
-            sessions.length === 0 && (
-
-              <div className="no-sessions">
-
-                <div className="empty-icon">
-                  <CalendarIcon />
-                </div>
-
-                <h3>
-                  No sessions yet
-                </h3>
-
-                <p>
-                  {isMentor
-                    ? "Your mentoring requests and sessions will appear here."
-                    : "Start your learning journey by finding a mentor."}
-                </p>
-
-
-                {/* Only students get Find Mentor button */}
-
-                {isStudent && (
-
-                  <button
-                    onClick={() => navigate("/mentors")}
-                  >
-                    Find a mentor
-
-                    <ArrowIcon />
-                  </button>
-
-                )}
-
-              </div>
-
-            )}
-
-
-          {/* =======================
-              Sessions List
-          ======================= */}
-
-          {!loadingSessions &&
-            !sessionError &&
-            sessions.length > 0 && (
-
-              <div className="sessions-list">
-
-                {sessions.map((session) => (
+              {receivedSessions
+                .slice(0, 5)
+                .map((session) => (
 
                   <div
-                    className="session-card"
+                    className="session-row"
                     key={session._id}
                   >
 
+                    <div>
 
-                    {/* Session Main */}
+                      <strong>
+                        {session.sender?.name ||
+                          "Peer"}
+                      </strong>
 
-                    <div className="session-main">
-
-                      <div className="session-avatar">
-
-                        {isMentor
-                          ? session.student?.name
-                              ?.charAt(0)
-                              ?.toUpperCase() || "S"
-                          : session.mentor?.name
-                              ?.charAt(0)
-                              ?.toUpperCase() || "M"}
-
-                      </div>
-
-
-                      <div className="session-info">
-
-                        <h3>
-
-                          {isMentor
-                            ? session.student?.name ||
-                              "Student Request"
-                            : session.mentor?.name ||
-                              "Mentor Session"}
-
-                        </h3>
-
-                        <p>
-
-                          {isMentor
-                            ? "Student mentoring request"
-                            : "Mentoring session"}
-
-                        </p>
-
-                      </div>
+                      <p>
+                        {session.date}
+                        {" · "}
+                        {session.time}
+                        {" · "}
+                        {session.message ||
+                          "Peer-learning request"}
+                      </p>
 
                     </div>
-
-
-                    {/* Session Meta */}
-
-                    <div className="session-meta">
-
-
-                      <div className="meta-item">
-
-                        <span className="meta-label">
-                          DATE
-                        </span>
-
-                        <span>
-                          {session.date || "Not set"}
-                        </span>
-
-                      </div>
-
-
-                      <div className="meta-item">
-
-                        <span className="meta-label">
-                          TIME
-                        </span>
-
-                        <span>
-                          {session.time || "Not set"}
-                        </span>
-
-                      </div>
-
-
-                    </div>
-
-
-                    {/* Status */}
 
                     <span
                       className={`session-status ${
                         session.status?.toLowerCase() || ""
                       }`}
                     >
-                      {session.status || "Pending"}
+                      {session.status}
                     </span>
 
+                    {/* PENDING */}
 
-                    {/* Message */}
+                    {session.status === "Pending" && (
 
-                    {session.message && (
+                      <div className="request-actions">
 
-                      <div className="session-message-box">
+                        <button
+                          onClick={() =>
+                            updateRequest(
+                              session._id,
+                              "Accepted"
+                            )
+                          }
+                        >
+                          Accept
+                        </button>
 
-                        <span>
-                          Message
-                        </span>
-
-                        <p>
-                          {session.message}
-                        </p>
+                        <button
+                          onClick={() =>
+                            updateRequest(
+                              session._id,
+                              "Rejected"
+                            )
+                          }
+                        >
+                          Reject
+                        </button>
 
                       </div>
 
                     )}
 
-                    {isMentor && session.status?.toLowerCase() === "pending" && (
-                      <div className="session-actions" style={{ display: "flex", gap: "10px", marginTop: "18px" }}>
-                        <button type="button" onClick={() => updateSessionStatus(session._id, "Accepted")} style={{ padding: "10px 18px", border: "none", borderRadius: "8px", background: "#16a34a", color: "#fff", fontWeight: 700, cursor: "pointer" }}>
-                          Accept
+                    {/* ACCEPTED */}
+
+                    {session.status === "Accepted" && (
+
+                      <div className="request-actions">
+
+                        <button
+                          className="join-session-link"
+                          onClick={() =>
+                            openLearningSession(
+                              session
+                            )
+                          }
+                        >
+                          Join Learning Session →
                         </button>
-                        <button type="button" onClick={() => updateSessionStatus(session._id, "Rejected")} style={{ padding: "10px 18px", border: "none", borderRadius: "8px", background: "#dc2626", color: "#fff", fontWeight: 700, cursor: "pointer" }}>
-                          Reject
-                        </button>
+
                       </div>
+
                     )}
 
                   </div>
 
                 ))}
 
-              </div>
+            </div>
 
-            )}
+          )}
+
+        </section>
+
+        {/* =================================================
+            REQUESTS SENT
+        ================================================= */}
+
+        <section className="dashboard-panel">
+
+          <div className="panel-heading">
+
+            <div>
+
+              <span className="section-label">
+                MY REQUESTS
+              </span>
+
+              <h2>
+                Requests you sent
+              </h2>
+
+            </div>
+
+            <button
+              onClick={() =>
+                navigate("/student-sessions")
+              }
+            >
+              Open sessions →
+            </button>
+
+          </div>
+
+          {loading ? (
+
+            <p>
+              Loading sessions...
+            </p>
+
+          ) : sentSessions.length === 0 ? (
+
+            <div className="empty-dashboard">
+
+              <h3>
+                No requests sent
+              </h3>
+
+              <p>
+                Find a peer and start your first
+                skill exchange.
+              </p>
+
+            </div>
+
+          ) : (
+
+            <div className="session-list">
+
+              {sentSessions
+                .slice(0, 5)
+                .map((session) => (
+
+                  <div
+                    className="session-row"
+                    key={session._id}
+                  >
+
+                    <div>
+
+                      <strong>
+                        {session.receiver?.name ||
+                          "Peer"}
+                      </strong>
+
+                      <p>
+                        {session.date}
+                        {" · "}
+                        {session.time}
+                        {" · "}
+                        {session.message ||
+                          "Peer-learning request"}
+                      </p>
+
+                    </div>
+
+                    <span
+                      className={`session-status ${
+                        session.status?.toLowerCase() || ""
+                      }`}
+                    >
+                      {session.status}
+                    </span>
+
+                    {/* ACCEPTED */}
+
+                    {session.status === "Accepted" && (
+
+                      <div className="request-actions">
+
+                        <button
+                          className="join-session-link"
+                          onClick={() =>
+                            openLearningSession(
+                              session
+                            )
+                          }
+                        >
+                          Join Learning Session →
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            markCompleted(
+                              session._id
+                            )
+                          }
+                        >
+                          Mark Completed
+                        </button>
+
+                      </div>
+
+                    )}
+
+                  </div>
+
+                ))}
+
+            </div>
+
+          )}
 
         </section>
 

@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Mentor = require("../models/Mentor");
 
 // =======================
 // Register User
@@ -26,9 +27,7 @@ const registerUser = async (req, res) => {
     }
 
     // Allow only valid roles
-    const userRole = ["student", "mentor"].includes(role)
-      ? role
-      : "student";
+    const userRole = "student";
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -39,6 +38,16 @@ const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       role: userRole,
+    });
+
+    // Every student gets a peer profile so other students can discover them.
+    await Mentor.create({
+      user: user._id,
+      name: user.name,
+      email: user.email,
+      skills: [],
+      skillsToLearn: [],
+      bio: "New SkillBridge peer",
     });
 
     res.status(201).json({
@@ -238,4 +247,7 @@ module.exports = {
   getStudentPortfolio,
   updateStudentPortfolio,
 };
+
+
+
 

@@ -2,15 +2,17 @@ const mongoose = require("mongoose");
 
 const sessionSchema = new mongoose.Schema(
   {
-    student: {
+    // Student/peer who SENDS the request
+    sender: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
-    mentor: {
+    // Student/peer who RECEIVES the request
+    receiver: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Mentor",
+      ref: "User",
       required: true,
     },
 
@@ -33,6 +35,11 @@ const sessionSchema = new mongoose.Schema(
       type: String,
       enum: ["Pending", "Accepted", "Rejected", "Completed"],
       default: "Pending",
+    },
+
+    meetingUrl: {
+      type: String,
+      default: "",
     },
   },
   {

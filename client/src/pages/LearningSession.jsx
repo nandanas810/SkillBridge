@@ -1,17 +1,27 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 import "../styles/LearningSession.css";
 
 function LearningSession() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Session data passed from StudentSessions
   const session = location.state?.session;
+
+  const [completing, setCompleting] = useState(false);
+  const [error, setError] = useState("");
+
+  // =====================================================
+  // SESSION NOT FOUND
+  // =====================================================
 
   if (!session) {
     return (
       <div className="learning-page">
+
         <nav className="learning-navbar">
+
           <button
             className="learning-logo"
             onClick={() => navigate("/dashboard")}
@@ -25,15 +35,20 @@ function LearningSession() {
           >
             ← My Sessions
           </button>
+
         </nav>
 
         <main className="learning-content">
+
           <div className="learning-empty">
-            <h2>Session not found</h2>
+
+            <h2>
+              Session not found
+            </h2>
 
             <p>
-              Please open the learning session from your
-              My Sessions page.
+              Please open the learning session
+              from your My Sessions page.
             </p>
 
             <button
@@ -41,154 +56,282 @@ function LearningSession() {
             >
               Go to My Sessions →
             </button>
+
           </div>
+
         </main>
+
       </div>
     );
   }
 
+  // =====================================================
+  // CURRENT USER
+  // =====================================================
+
+  const storedUser =
+    localStorage.getItem("user");
+
+  let currentUser = null;
+
+  try {
+    currentUser = storedUser
+      ? JSON.parse(storedUser)
+      : null;
+  } catch {
+    currentUser = null;
+  }
+
+  const currentUserId =
+    currentUser?._id ||
+    currentUser?.id;
+
+  // =====================================================
+  // GET ID SAFELY
+  // =====================================================
+
+  const getId = (value) => {
+    if (!value) return null;
+
+    if (typeof value === "string") {
+      return value;
+    }
+
+    if (value._id) {
+      return value._id.toString();
+    }
+
+    if (value.id) {
+      return value.id.toString();
+    }
+
+    return null;
+  };
+
+  // =====================================================
+  // FIND THE OTHER PERSON
+  // =====================================================
+
+  const senderId =
+    getId(session.sender);
+
+  const receiverId =
+    getId(session.receiver);
+
+  let peer = null;
+
+  if (
+    senderId &&
+    currentUserId &&
+    senderId === currentUserId.toString()
+  ) {
+    // Logged-in user sent the request
+    peer = session.receiver;
+
+  } else if (
+    receiverId &&
+    currentUserId &&
+    receiverId === currentUserId.toString()
+  ) {
+    // Logged-in user received the request
+    peer = session.sender;
+
+  } else {
+    // Fallback
+    peer =
+      session.receiver ||
+      session.sender;
+  }
+
+  const peerName =
+    peer?.name || "Your Peer";
+
+  // =====================================================
+  // SAME JITSI ROOM FOR BOTH USERS
+  // =====================================================
+
+  const meetingUrl =
+    session.meetingUrl ||
+    `https://meet.jit.si/SkillBridge-${session._id}`;
+
+  // =====================================================
+  // MARK COMPLETED
+  // =====================================================
+
+  const markCompleted = async () => {
+    try {
+      setCompleting(true);
+      setError("");
+
+      const token =
+        localStorage.getItem("token");
+
+      await axios.put(
+        `http://localhost:5000/api/sessions/${session._id}/status`,
+        {
+          status: "Completed",
+        },
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
+      );
+
+      navigate("/student-sessions");
+
+    } catch (err) {
+      console.error(
+        "COMPLETE SESSION ERROR:",
+        err
+      );
+
+      setError(
+        err.response?.data?.message ||
+          "Could not complete the session."
+      );
+
+    } finally {
+      setCompleting(false);
+    }
+  };
+
+  // =====================================================
+  // UI
+  // =====================================================
+
   return (
     <div className="learning-page">
 
-      {/* Navbar */}
+      {/* NAVBAR */}
+
       <nav className="learning-navbar">
 
         <button
           className="learning-logo"
-          onClick={() => navigate("/dashboard")}
+          onClick={() =>
+            navigate("/dashboard")
+          }
         >
           SkillBridge
         </button>
 
         <button
           className="back-btn"
-          onClick={() => navigate("/student-sessions")}
+          onClick={() =>
+            navigate("/student-sessions")
+          }
         >
           ← My Sessions
         </button>
 
       </nav>
 
-      {/* Main */}
+      {/* MAIN */}
+
       <main className="learning-content">
 
-        {/* Header */}
+        {/* HEADER */}
+
         <div className="learning-header">
 
-          <span>LEARNING SESSION</span>
+          <span>
+            PEER LEARNING SESSION
+          </span>
 
           <h1>
-            Your session is confirmed.
+            Ready to learn?
           </h1>
 
           <p>
-            Connect with your mentor and continue your
-            learning journey.
+            Connect with your peer and
+            exchange your skills.
           </p>
 
         </div>
 
-        {/* Main Session Card */}
+        {/* SESSION CARD */}
+
         <div className="learning-card">
 
-          {/* Mentor */}
+          {/* PEER */}
+
           <div className="learning-top">
 
             <div className="learning-avatar">
-              {session.mentor?.name
+              {peerName
                 ?.charAt(0)
-                ?.toUpperCase() || "M"}
+                ?.toUpperCase() || "P"}
             </div>
 
             <div>
+
               <span className="small-label">
-                YOUR MENTOR
+                YOUR PEER
               </span>
 
               <h2>
-                {session.mentor?.name || "Mentor"}
+                {peerName}
               </h2>
-            </div>
-
-            <span className="confirmed-status">
-              ● Accepted
-            </span>
-
-          </div>
-
-          {/* Details */}
-          <div className="learning-details">
-
-            <div className="learning-detail">
-
-              <span>DATE</span>
-
-              <strong>
-                {session.date || "Not set"}
-              </strong>
-
-            </div>
-
-            <div className="learning-detail">
-
-              <span>TIME</span>
-
-              <strong>
-                {session.time || "Not set"}
-              </strong>
-
-            </div>
-
-            <div className="learning-detail">
-
-              <span>SESSION TYPE</span>
-
-              <strong>
-                Mentoring
-              </strong>
 
             </div>
 
           </div>
 
-          {/* Message */}
-          {session.message && (
-            <div className="learning-message">
+          {/* JOIN AREA */}
 
-              <span>YOUR MESSAGE</span>
-
-              <p>
-                {session.message}
-              </p>
-
-            </div>
-          )}
-
-          {/* Session Area */}
           <div className="session-start-area">
 
             <div className="session-start-icon">
-              🎓
+              🤝
             </div>
 
             <h2>
-              Ready to learn?
+              Start your skill exchange
             </h2>
 
             <p>
-              Your mentor has accepted your request.
-              You can start your learning session here.
+              Join the meeting with{" "}
+              <strong>
+                {peerName}
+              </strong>{" "}
+              to start your peer-learning
+              session.
             </p>
 
-            <button
+            {error && (
+              <div className="learning-error">
+                {error}
+              </div>
+            )}
+
+            {/* JOIN MEETING */}
+
+            <a
               className="start-session-btn"
-              onClick={() =>
-                alert(
-                  "Live learning session will be connected here next."
-                )
-              }
+              href={meetingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Start Learning Session →
+              Join Meeting →
+            </a>
+
+            <p className="session-room-note">
+              You and your peer will join the
+              same private SkillBridge meeting room.
+            </p>
+
+            {/* COMPLETE */}
+
+            <button
+              className="complete-session-btn"
+              onClick={markCompleted}
+              disabled={completing}
+            >
+              {completing
+                ? "Completing..."
+                : "✓ Mark Session Completed"}
             </button>
 
           </div>

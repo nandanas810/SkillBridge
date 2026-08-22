@@ -7,32 +7,31 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 
 import Mentors from "./pages/Mentors";
-import MentorProfile from "./pages/MentorProfile";
+import MentorProfile from "./pages/Mentorprofile";
 
-import MentorDashboard from "./pages/MentorDashboard";
-import MyExpertise from "./pages/MyExpertise";
-import StudentRequests from "./pages/StudentRequests";
-import MySessions from "./pages/MySessions";
 import MySkills from "./pages/MySkills";
 import MyPortfolio from "./pages/MyPortfolio";
 import StudentSessions from "./pages/StudentSessions";
 import LearningSession from "./pages/LearningSession";
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
         {/* =========================
-            Landing
+            LANDING
         ========================= */}
+
         <Route
           path="/"
           element={<Landing />}
         />
 
         {/* =========================
-            Authentication
+            AUTHENTICATION
         ========================= */}
+
         <Route
           path="/login"
           element={<Login />}
@@ -44,92 +43,73 @@ function App() {
         />
 
         {/* =========================
-            Student Dashboard
+            PEER DASHBOARD
         ========================= */}
+
         <Route
           path="/dashboard"
           element={<Dashboard />}
         />
 
         {/* =========================
-            Student - Browse Mentors
+            FIND PEERS
         ========================= */}
+
         <Route
           path="/mentors"
           element={<Mentors />}
         />
 
+        {/* Peer-friendly URL */}
+        <Route
+          path="/peers"
+          element={<Mentors />}
+        />
+
         {/* =========================
-            Student - Mentor Profile
+            PEER PROFILE
         ========================= */}
+
         <Route
           path="/mentor-profile"
           element={<MentorProfile />}
         />
 
         {/* =========================
-            Mentor Dashboard
+            MY SKILLS
         ========================= */}
+
         <Route
-          path="/mentor-dashboard"
-          element={<MentorDashboard />}
+          path="/my-skills"
+          element={<MySkills />}
         />
 
         {/* =========================
-            Mentor - My Expertise
+            MY PORTFOLIO
         ========================= */}
+
         <Route
-          path="/my-expertise"
-          element={<MyExpertise />}
-        />
-
-
-
-{/* Student - Manage Skills */}
-<Route
-  path="/my-skills"
-  element={<MySkills />}
-/>
-
-
-
-
-<Route
-  path="/my-portfolio"
-  element={<MyPortfolio />}
-/>
-
-
-
-        {/* =========================
-            Mentor - Student Requests
-        ========================= */}
-        <Route
-          path="/student-requests"
-          element={<StudentRequests />}
+          path="/my-portfolio"
+          element={<MyPortfolio />}
         />
 
         {/* =========================
-            Mentor - My Sessions
+            MY LEARNING SESSIONS
         ========================= */}
+
         <Route
-          path="/my-sessions"
-          element={<MySessions />}
+          path="/student-sessions"
+          element={<StudentSessions />}
         />
 
+        {/* =========================
+            LEARNING SESSION
+        ========================= */}
 
-<Route
-  path="/student-sessions"
-  element={<StudentSessions />}
-/>
-
-
-<Route
-  path="/learning-session"
-  element={<LearningSession />}
-/>
-
-
+        <Route
+          path="/learning-session"
+          element={<LearningSession />}
+        />
 
       </Routes>
     </BrowserRouter>

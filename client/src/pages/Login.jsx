@@ -29,11 +29,7 @@ function Login() {
                 JSON.stringify(response.data.user)
             );
 
-           if (response.data.user.role === "mentor") {
-    navigate("/mentor-dashboard");
-} else {
-    navigate("/dashboard");
-}
+            navigate("/dashboard");
 
         } catch (error) {
             setError(
@@ -132,15 +128,17 @@ function Login() {
 
                             <label>Email Address</label>
 
-                            <input
-                                type="email"
-                                placeholder="Enter your email"
-                                value={email}
-                                onChange={(e) =>
-                                    setEmail(e.target.value)
-                                }
-                                required
-                            />
+                           <input
+    type="email"
+    name="login-email"
+    placeholder="Enter your email"
+    value={email}
+    onChange={(e) =>
+        setEmail(e.target.value)
+    }
+    autoComplete="off"
+    required
+/>
 
                         </div>
 
@@ -148,16 +146,17 @@ function Login() {
                         <div className="form-group">
 
                             <label>Password</label>
-
-                            <input
-                                type="password"
-                                placeholder="Enter your password"
-                                value={password}
-                                onChange={(e) =>
-                                    setPassword(e.target.value)
-                                }
-                                required
-                            />
+<input
+    type="password"
+    name="login-password"
+    placeholder="Enter your password"
+    value={password}
+    onChange={(e) =>
+        setPassword(e.target.value)
+    }
+    autoComplete="new-password"
+    required
+/>
 
                         </div>
 
