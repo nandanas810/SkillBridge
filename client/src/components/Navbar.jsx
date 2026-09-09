@@ -10,6 +10,7 @@ function Navbar() {
       </Link>
 
       <ul className="nav-links">
+
         <li>
           <Link to="/">Home</Link>
         </li>
@@ -19,16 +20,23 @@ function Navbar() {
         </li>
 
         <li>
-          <Link to="/mentors">Mentors</Link>
+          <Link to="/mentors">
+            Mentors
+          </Link>
         </li>
 
         <li>
-          <Link to="/login">Login</Link>
+          <Link to="/login">
+            Login
+          </Link>
         </li>
 
         <li>
-          <Link to="/register">Register</Link>
+          <Link to="/register">
+            Register
+          </Link>
         </li>
+
       </ul>
 
     </nav>

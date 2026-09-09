@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/Dashboard.css";
@@ -32,6 +32,17 @@ function Dashboard() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // =====================================================
+  // NOTIFICATION STATES
+  // =====================================================
+
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] =
+    useState(false);
+
+  const notificationRef = useRef(null);
 
   // =====================================================
   // GET ID SAFELY
@@ -93,6 +104,36 @@ function Dashboard() {
   };
 
   // =====================================================
+  // LOAD NOTIFICATIONS
+  // =====================================================
+
+  const loadNotifications = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/notifications",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setNotifications(
+        response.data.notifications || []
+      );
+
+      setUnreadCount(
+        response.data.unreadCount || 0
+      );
+    } catch (err) {
+      console.error(
+        "Notification loading error:",
+        err
+      );
+    }
+  };
+
+  // =====================================================
   // LOAD DASHBOARD
   // =====================================================
 
@@ -126,11 +167,21 @@ function Dashboard() {
         received = requests SENT TO me
       */
 
-      const sent = sessionResponse.data.sessions || [];
-      const received = sessionResponse.data.received || [];
+      const sent =
+        sessionResponse.data.sessions || [];
 
-      console.log("SENT SESSIONS:", sent);
-      console.log("RECEIVED SESSIONS:", received);
+      const received =
+        sessionResponse.data.received || [];
+
+      console.log(
+        "SENT SESSIONS:",
+        sent
+      );
+
+      console.log(
+        "RECEIVED SESSIONS:",
+        received
+      );
 
       setSentSessions(sent);
       setReceivedSessions(received);
@@ -158,15 +209,19 @@ function Dashboard() {
         user?._id || user?.id
       );
 
-      const otherPeers = peerList.filter((peer) => {
-        const peerUserId = getId(
-          peer.userId ||
-            peer.user ||
-            peer._id
-        );
+      const otherPeers = peerList.filter(
+        (peer) => {
+          const peerUserId = getId(
+            peer.userId ||
+              peer.user ||
+              peer._id
+          );
 
-        return peerUserId !== currentUserId;
-      });
+          return (
+            peerUserId !== currentUserId
+          );
+        }
+      );
 
       setPeers(otherPeers.slice(0, 3));
     } catch (err) {
@@ -198,6 +253,132 @@ function Dashboard() {
   }, []);
 
   // =====================================================
+  // NOTIFICATION CHECK
+  // =====================================================
+
+  useEffect(() => {
+    if (!token) return;
+
+    loadNotifications();
+
+    // Check for new notifications every 5 seconds
+    const notificationInterval =
+      setInterval(() => {
+        loadNotifications();
+      }, 5000);
+
+    return () => {
+      clearInterval(
+        notificationInterval
+      );
+    };
+  }, [token]);
+
+  // =====================================================
+  // CLOSE NOTIFICATION DROPDOWN
+  // =====================================================
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(
+          event.target
+        )
+      ) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
+
+  // =====================================================
+  // MARK ONE NOTIFICATION AS READ
+  // =====================================================
+
+  const markNotificationAsRead = async (
+    notificationId
+  ) => {
+    try {
+      await axios.put(
+        `http://localhost:5000/api/notifications/${notificationId}/read`,
+        {},
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
+      );
+
+      await loadNotifications();
+    } catch (err) {
+      console.error(
+        "Mark notification read error:",
+        err
+      );
+    }
+  };
+
+  // =====================================================
+  // MARK ALL NOTIFICATIONS AS READ
+  // =====================================================
+
+  const markAllNotificationsAsRead =
+    async () => {
+      try {
+        await axios.put(
+          "http://localhost:5000/api/notifications/read-all",
+          {},
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
+
+        await loadNotifications();
+      } catch (err) {
+        console.error(
+          "Mark all notifications read error:",
+          err
+        );
+      }
+    };
+
+  // =====================================================
+  // FORMAT NOTIFICATION TIME
+  // =====================================================
+
+  const formatNotificationTime = (
+    date
+  ) => {
+    if (!date) return "";
+
+    return new Date(date).toLocaleString(
+      "en-IN",
+      {
+        day: "numeric",
+        month: "short",
+        hour: "numeric",
+        minute: "2-digit",
+      }
+    );
+  };
+
+  // =====================================================
   // ACCEPT / REJECT REQUEST
   // =====================================================
 
@@ -215,7 +396,8 @@ function Dashboard() {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization:
+              `Bearer ${token}`,
           },
         }
       );
@@ -251,7 +433,8 @@ function Dashboard() {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization:
+              `Bearer ${token}`,
           },
         }
       );
@@ -311,9 +494,163 @@ function Dashboard() {
 
         <div className="dashboard-nav-right">
 
+          {/* =================================================
+              NOTIFICATION BELL
+          ================================================= */}
+
+          <div
+            className="dashboard-notification-wrapper"
+            ref={notificationRef}
+          >
+
+            <button
+              className="dashboard-notification-button"
+              onClick={() =>
+                setShowNotifications(
+                  !showNotifications
+                )
+              }
+              aria-label="Notifications"
+            >
+
+              <span className="dashboard-bell">
+                🔔
+              </span>
+
+              {unreadCount > 0 && (
+                <span className="dashboard-notification-count">
+                  {unreadCount > 9
+                    ? "9+"
+                    : unreadCount}
+                </span>
+              )}
+
+            </button>
+
+            {/* =================================================
+                NOTIFICATION DROPDOWN
+            ================================================= */}
+
+            {showNotifications && (
+              <div className="dashboard-notification-dropdown">
+
+                <div className="dashboard-notification-header">
+
+                  <h3>
+                    Notifications
+                  </h3>
+
+                  {unreadCount > 0 && (
+                    <button
+                      onClick={
+                        markAllNotificationsAsRead
+                      }
+                    >
+                      Mark all read
+                    </button>
+                  )}
+
+                </div>
+
+                <div className="dashboard-notification-list">
+
+                  {notifications.length ===
+                  0 ? (
+
+                    <div className="dashboard-no-notifications">
+
+                      <div>
+                        🔔
+                      </div>
+
+                      <p>
+                        No notifications yet
+                      </p>
+
+                    </div>
+
+                  ) : (
+
+                    notifications.map(
+                      (notification) => (
+
+                        <div
+                          key={
+                            notification._id
+                          }
+                          className={`dashboard-notification-item ${
+                            notification.read
+                              ? "read"
+                              : "unread"
+                          }`}
+                          onClick={() => {
+                            if (
+                              !notification.read
+                            ) {
+                              markNotificationAsRead(
+                                notification._id
+                              );
+                            }
+                          }}
+                        >
+
+                          <div className="dashboard-notification-icon">
+
+                            {notification.type ===
+                            "session_request"
+                              ? "📩"
+                              : notification.type ===
+                                "session_accepted"
+                              ? "✅"
+                              : "❌"}
+
+                          </div>
+
+                          <div className="dashboard-notification-content">
+
+                            <p>
+                              {
+                                notification.message
+                              }
+                            </p>
+
+                            <span>
+                              {formatNotificationTime(
+                                notification.createdAt
+                              )}
+                            </span>
+
+                          </div>
+
+                          {!notification.read && (
+                            <span className="dashboard-unread-dot" />
+                          )}
+
+                        </div>
+
+                      )
+                    )
+
+                  )}
+
+                </div>
+
+              </div>
+            )}
+
+          </div>
+
+          {/* =================================================
+              EXISTING USER NAME
+          ================================================= */}
+
           <span className="dashboard-user-name">
             {user?.name || "Peer"}
           </span>
+
+          {/* =================================================
+              EXISTING LOGOUT
+          ================================================= */}
 
           <button
             className="logout-button"
@@ -352,9 +689,10 @@ function Dashboard() {
             </h1>
 
             <p>
-              Teach what you know, learn what you need,
-              and build meaningful skill exchanges
-              with fellow students.
+              Teach what you know, learn what
+              you need, and build meaningful
+              skill exchanges with fellow
+              students.
             </p>
 
             <div className="dashboard-hero-actions">
@@ -445,8 +783,8 @@ function Dashboard() {
               </h3>
 
               <p>
-                Search by skill and see students
-                who can teach it.
+                Search by skill and see
+                students who can teach it.
               </p>
 
               <button
@@ -454,7 +792,8 @@ function Dashboard() {
                   navigate("/mentors")
                 }
               >
-                Browse peers <span>→</span>
+                Browse peers{" "}
+                <span>→</span>
               </button>
 
             </div>
@@ -480,8 +819,8 @@ function Dashboard() {
               </h3>
 
               <p>
-                Set the skills you can teach and
-                the skills you want to learn.
+                Set the skills you can teach
+                and the skills you want to learn.
               </p>
 
               <button
@@ -489,7 +828,8 @@ function Dashboard() {
                   navigate("/my-skills")
                 }
               >
-                Manage skills <span>→</span>
+                Manage skills{" "}
+                <span>→</span>
               </button>
 
             </div>
@@ -524,7 +864,8 @@ function Dashboard() {
                   navigate("/my-portfolio")
                 }
               >
-                Open portfolio <span>→</span>
+                Open portfolio{" "}
+                <span>→</span>
               </button>
 
             </div>
@@ -618,7 +959,8 @@ function Dashboard() {
                 </h3>
 
                 <p>
-                  Other students will appear here.
+                  Other students will appear
+                  here.
                 </p>
 
               </div>
@@ -724,7 +1066,8 @@ function Dashboard() {
 
               <p>
                 When another student sends you
-                a learning request, it will appear here.
+                a learning request, it will
+                appear here.
               </p>
 
             </div>
@@ -762,7 +1105,8 @@ function Dashboard() {
 
                     <span
                       className={`session-status ${
-                        session.status?.toLowerCase() || ""
+                        session.status?.toLowerCase() ||
+                        ""
                       }`}
                     >
                       {session.status}
@@ -770,7 +1114,8 @@ function Dashboard() {
 
                     {/* PENDING */}
 
-                    {session.status === "Pending" && (
+                    {session.status ===
+                      "Pending" && (
 
                       <div className="request-actions">
 
@@ -802,7 +1147,8 @@ function Dashboard() {
 
                     {/* ACCEPTED */}
 
-                    {session.status === "Accepted" && (
+                    {session.status ===
+                      "Accepted" && (
 
                       <div className="request-actions">
 
@@ -853,7 +1199,9 @@ function Dashboard() {
 
             <button
               onClick={() =>
-                navigate("/student-sessions")
+                navigate(
+                  "/student-sessions"
+                )
               }
             >
               Open sessions →
@@ -876,8 +1224,8 @@ function Dashboard() {
               </h3>
 
               <p>
-                Find a peer and start your first
-                skill exchange.
+                Find a peer and start your
+                first skill exchange.
               </p>
 
             </div>
@@ -915,7 +1263,8 @@ function Dashboard() {
 
                     <span
                       className={`session-status ${
-                        session.status?.toLowerCase() || ""
+                        session.status?.toLowerCase() ||
+                        ""
                       }`}
                     >
                       {session.status}
@@ -923,7 +1272,8 @@ function Dashboard() {
 
                     {/* ACCEPTED */}
 
-                    {session.status === "Accepted" && (
+                    {session.status ===
+                      "Accepted" && (
 
                       <div className="request-actions">
 

@@ -65,3 +65,21 @@
     font-size: 22px;
   }
 }
+
+/* =====================================================
+   LOGOUT BUTTON
+===================================================== */
+
+.logout-button {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.logout-button:hover {
+  opacity: 0.75;
+}
