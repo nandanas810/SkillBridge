@@ -1,6 +1,8 @@
 const User = require("../models/userModel");
 const Session = require("../models/sessionModel");
-
+const {
+  createNotification,
+} = require("./notificationController");
 // ======================================================
 // CREATE PEER LEARNING REQUEST
 // ======================================================
@@ -63,7 +65,20 @@ const createSession = async (req, res) => {
       status: "Pending",
       meetingUrl: "",
     });
+// ==================================================
+// CREATE NOTIFICATION FOR RECEIVING STUDENT
+// ==================================================
 
+const senderUser =
+  await User.findById(req.user.id);
+
+await createNotification({
+  recipient: receiver,
+  sender: req.user.id,
+  type: "session_request",
+  message: `${senderUser.name} sent you a learning session request.`,
+  session: session._id,
+});
     // -----------------------------------------------
     // POPULATE USERS
     // -----------------------------------------------
@@ -359,7 +374,42 @@ const updateSessionStatus = async (
     // ==================================================
 
     await session.save();
+// ==================================================
+// CREATE NOTIFICATION FOR SENDER
+// ==================================================
 
+if (
+  newStatus === "Accepted" ||
+  newStatus === "Rejected"
+) {
+  const receiverUser =
+    await User.findById(receiverId);
+
+  if (receiverUser) {
+    let notificationMessage = "";
+
+    if (newStatus === "Accepted") {
+      notificationMessage =
+        `${receiverUser.name} accepted your learning session request.`;
+    }
+
+    if (newStatus === "Rejected") {
+      notificationMessage =
+        `${receiverUser.name} rejected your learning session request.`;
+    }
+
+    await createNotification({
+      recipient: senderId,
+      sender: receiverId,
+      type:
+        newStatus === "Accepted"
+          ? "session_accepted"
+          : "session_rejected",
+      message: notificationMessage,
+      session: session._id,
+    });
+  }
+}
     // ==================================================
     // POPULATE
     // ==================================================

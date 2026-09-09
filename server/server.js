@@ -7,7 +7,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const mentorRoutes = require("./routes/mentorRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
-
+const notificationRoutes = require("./routes/notificationRoutes");
 const app = express();
 
 app.use(cors());
@@ -24,7 +24,10 @@ connectDB();
 app.use("/api/users", userRoutes);
 app.use("/api/mentors", mentorRoutes);
 app.use("/api/sessions", sessionRoutes);
-
+app.use(
+  "/api/notifications",
+  notificationRoutes
+);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
