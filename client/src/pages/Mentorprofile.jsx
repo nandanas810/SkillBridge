@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../styles/Mentorprofile.css";
 
@@ -19,13 +19,50 @@ function MentorProfile() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
+  // Custom time dropdown
+  const [timeDropdownOpen, setTimeDropdownOpen] =
+    useState(false);
+
+  const timeDropdownRef = useRef(null);
+
+  // =========================================
+  // CLOSE TIME DROPDOWN WHEN CLICKING OUTSIDE
+  // =========================================
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        timeDropdownRef.current &&
+        !timeDropdownRef.current.contains(event.target)
+      ) {
+        setTimeDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
+
   if (!peer) {
     return (
       <div className="mentor-profile-page">
         <div className="mentor-profile-card not-found">
-          <div className="not-found-icon">🔍</div>
+          <div className="not-found-icon">
+            🔍
+          </div>
 
-          <h2>Peer not found</h2>
+          <h2>
+            Peer not found
+          </h2>
 
           <p>
             The peer profile could not be loaded.
@@ -69,10 +106,441 @@ function MentorProfile() {
     peer.matchScore || 0;
 
   // =====================================================
+  // GENERATE TIME OPTIONS WITH AM / PM
+  // =====================================================
+
+  const generateTimeOptions = () => {
+    const options = [];
+
+    for (
+      let hour = 0;
+      hour < 24;
+      hour++
+    ) {
+      for (
+        let minute = 0;
+        minute < 60;
+        minute += 30
+      ) {
+        const period =
+          hour >= 12 ? "PM" : "AM";
+
+        let displayHour =
+          hour % 12;
+
+        if (displayHour === 0) {
+          displayHour = 12;
+        }
+
+        const displayMinute =
+          String(minute).padStart(
+            2,
+            "0"
+          );
+
+        options.push(
+          `${String(displayHour).padStart(
+            2,
+            "0"
+          )}:${displayMinute} ${period}`
+        );
+      }
+    }
+
+    return options;
+  };
+
+  const timeOptions =
+    generateTimeOptions();
+
+  // =====================================================
+  // FRONTEND AVAILABILITY HELPERS
+  // =====================================================
+
+  const getDayName = (dateString) => {
+    if (!dateString) {
+      return null;
+    }
+
+    const [year, month, day] =
+      dateString
+        .split("-")
+        .map(Number);
+
+    const selectedDate =
+      new Date(
+        Date.UTC(
+          year,
+          month - 1,
+          day
+        )
+      );
+
+    const days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+
+    return days[
+      selectedDate.getUTCDay()
+    ];
+  };
+
+  const parseTimeToMinutes = (
+    timeText
+  ) => {
+    if (!timeText) {
+      return null;
+    }
+
+    const text = String(timeText)
+      .trim()
+      .toUpperCase()
+      .replace(/\./g, "");
+
+    // =========================================
+    // 12-HOUR FORMAT
+    // Example: 6:00 PM
+    // =========================================
+
+    const twelveHourMatch =
+      text.match(
+        /^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/
+      );
+
+    if (twelveHourMatch) {
+      let hour = Number(
+        twelveHourMatch[1]
+      );
+
+      const minute = Number(
+        twelveHourMatch[2] || 0
+      );
+
+      const period =
+        twelveHourMatch[3];
+
+      if (
+        hour < 1 ||
+        hour > 12 ||
+        minute < 0 ||
+        minute > 59
+      ) {
+        return null;
+      }
+
+      if (
+        period === "AM" &&
+        hour === 12
+      ) {
+        hour = 0;
+      }
+
+      if (
+        period === "PM" &&
+        hour !== 12
+      ) {
+        hour += 12;
+      }
+
+      return (
+        hour * 60 + minute
+      );
+    }
+
+    // =========================================
+    // 24-HOUR FORMAT
+    // Example: 18:00
+    // =========================================
+
+    const twentyFourHourMatch =
+      text.match(
+        /^(\d{1,2}):(\d{2})$/
+      );
+
+    if (twentyFourHourMatch) {
+      const hour = Number(
+        twentyFourHourMatch[1]
+      );
+
+      const minute = Number(
+        twentyFourHourMatch[2]
+      );
+
+      if (
+        hour < 0 ||
+        hour > 23 ||
+        minute < 0 ||
+        minute > 59
+      ) {
+        return null;
+      }
+
+      return (
+        hour * 60 + minute
+      );
+    }
+
+    return null;
+  };
+
+  const availabilityMatchesDay = (
+    availabilityText,
+    selectedDay
+  ) => {
+    const text = String(
+      availabilityText
+    )
+      .trim()
+      .toLowerCase();
+
+    const day =
+      selectedDay.toLowerCase();
+
+    if (text.includes(day)) {
+      return true;
+    }
+
+    // Weekdays = Monday-Friday
+    if (
+      text.includes("weekday") &&
+      [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+      ].includes(day)
+    ) {
+      return true;
+    }
+
+    // Weekends = Saturday-Sunday
+    if (
+      text.includes("weekend") &&
+      [
+        "saturday",
+        "sunday",
+      ].includes(day)
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const getAvailabilityRange = (
+    availabilityText
+  ) => {
+    const text = String(
+      availabilityText
+    )
+      .trim()
+      .toUpperCase();
+
+    // Supports:
+    // Monday 6:00 PM - 8:00 PM
+    // Monday 18:00 - 20:00
+    // Saturday 10 AM - 1 PM
+
+    const rangeMatch =
+      text.match(
+        /(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)\s*(?:-|–|—|TO)\s*(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)/
+      );
+
+    if (rangeMatch) {
+      let startText =
+        rangeMatch[1].trim();
+
+      let endText =
+        rangeMatch[2].trim();
+
+      // Example:
+      // 6 - 8 PM
+      //
+      // Apply PM to starting time.
+      if (
+        /(?:AM|PM)$/i.test(
+          endText
+        ) &&
+        !/(?:AM|PM)$/i.test(
+          startText
+        )
+      ) {
+        const period =
+          endText.match(
+            /(AM|PM)$/i
+          );
+
+        if (period) {
+          startText =
+            `${startText} ${period[1]}`;
+        }
+      }
+
+      const startMinutes =
+        parseTimeToMinutes(
+          startText
+        );
+
+      const endMinutes =
+        parseTimeToMinutes(
+          endText
+        );
+
+      if (
+        startMinutes !== null &&
+        endMinutes !== null &&
+        startMinutes < endMinutes
+      ) {
+        return {
+          start: startMinutes,
+          end: endMinutes,
+        };
+      }
+    }
+
+    // =========================================
+    // COMMON TIME PERIODS
+    // =========================================
+
+    if (
+      text.includes("MORNING")
+    ) {
+      return {
+        start: 6 * 60,
+        end: 12 * 60,
+      };
+    }
+
+    if (
+      text.includes("AFTERNOON")
+    ) {
+      return {
+        start: 12 * 60,
+        end: 17 * 60,
+      };
+    }
+
+    if (
+      text.includes("EVENING")
+    ) {
+      return {
+        start: 17 * 60,
+        end: 22 * 60,
+      };
+    }
+
+    if (
+      text.includes("NIGHT")
+    ) {
+      return {
+        start: 18 * 60,
+        end: 23 * 60,
+      };
+    }
+
+    return null;
+  };
+
+  const checkPeerAvailability = () => {
+    if (
+      !Array.isArray(
+        availability
+      ) ||
+      availability.length === 0
+    ) {
+      return {
+        available: false,
+        reason:
+          "This peer has not added any availability yet.",
+      };
+    }
+
+    if (!date || !time) {
+      return {
+        available: false,
+        reason:
+          "Please select a date and time.",
+      };
+    }
+
+    const selectedDay =
+      getDayName(date);
+
+    const selectedMinutes =
+      parseTimeToMinutes(time);
+
+    if (!selectedDay) {
+      return {
+        available: false,
+        reason:
+          "Invalid session date.",
+      };
+    }
+
+    if (
+      selectedMinutes === null
+    ) {
+      return {
+        available: false,
+        reason:
+          "Invalid session time.",
+      };
+    }
+
+    for (
+      const slot of availability
+    ) {
+      if (
+        !availabilityMatchesDay(
+          slot,
+          selectedDay
+        )
+      ) {
+        continue;
+      }
+
+      const range =
+        getAvailabilityRange(
+          slot
+        );
+
+      if (!range) {
+        continue;
+      }
+
+      if (
+        selectedMinutes >=
+          range.start &&
+        selectedMinutes <=
+          range.end
+      ) {
+        return {
+          available: true,
+        };
+      }
+    }
+
+    return {
+      available: false,
+      reason:
+        `The peer is not available on ${selectedDay} at ${time}. Please choose a time within the peer's available slots.`,
+    };
+  };
+
+  // =====================================================
   // SEND PEER REQUEST
   // =====================================================
 
-  const requestSession = async (e) => {
+  const requestSession = async (
+    e
+  ) => {
     e.preventDefault();
 
     setNotice("");
@@ -80,21 +548,29 @@ function MentorProfile() {
 
     try {
       const token =
-        localStorage.getItem("token");
+        localStorage.getItem(
+          "token"
+        );
 
       if (!token) {
         navigate("/login");
         return;
       }
 
-      // IMPORTANT:
-      // The backend now expects receiver = USER ID.
-      //
-      // peer.userId is the actual User ID.
-      //
-      // Do NOT send peer._id here because that
-      // can be the old profile ID.
+      // Check frontend availability
+      const availabilityCheck =
+        checkPeerAvailability();
 
+      if (
+        !availabilityCheck.available
+      ) {
+        setError(
+          availabilityCheck.reason
+        );
+        return;
+      }
+
+      // Check user ID
       if (!peer.userId) {
         setError(
           "Peer user ID is missing. Please refresh the peer list."
@@ -102,6 +578,7 @@ function MentorProfile() {
         return;
       }
 
+      // Send request to backend
       await axios.post(
         "http://localhost:5000/api/sessions",
         {
@@ -469,7 +946,9 @@ function MentorProfile() {
                         key={index}
                       >
                         <span>✓</span>
-                        <p>{slot}</p>
+                        <p>
+                          {slot}
+                        </p>
                       </div>
                     )
                   )}
@@ -482,9 +961,8 @@ function MentorProfile() {
                   <span>✓</span>
 
                   <p>
-                    Availability can be
-                    discussed through a
-                    session request.
+                    This peer has not added
+                    any availability yet.
                   </p>
                 </div>
 
@@ -630,6 +1108,8 @@ function MentorProfile() {
                 onSubmit={requestSession}
               >
 
+                {/* DATE */}
+
                 <div className="form-group">
 
                   <label>
@@ -644,15 +1124,20 @@ function MentorProfile() {
                         .toISOString()
                         .split("T")[0]
                     }
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setDate(
                         e.target.value
-                      )
-                    }
+                      );
+                      setError("");
+                    }}
                     required
                   />
 
                 </div>
+
+                {/* =================================
+                    TIME - CUSTOM AM / PM DROPDOWN
+                ================================= */}
 
                 <div className="form-group">
 
@@ -660,18 +1145,88 @@ function MentorProfile() {
                     Time
                   </label>
 
-                  <input
-                    type="time"
-                    value={time}
-                    onChange={(e) =>
-                      setTime(
-                        e.target.value
-                      )
-                    }
-                    required
-                  />
+                  <div
+                    className="custom-time-picker"
+                    ref={timeDropdownRef}
+                  >
+
+                    <button
+                      type="button"
+                      className={`custom-time-button ${
+                        timeDropdownOpen
+                          ? "active"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        setTimeDropdownOpen(
+                          (previous) =>
+                            !previous
+                        );
+                        setError("");
+                      }}
+                    >
+
+                      <span
+                        className={
+                          time
+                            ? "selected-time"
+                            : "time-placeholder"
+                        }
+                      >
+                        {time ||
+                          "Select time"}
+                      </span>
+
+                      <span
+                        className={`time-arrow ${
+                          timeDropdownOpen
+                            ? "open"
+                            : ""
+                        }`}
+                      >
+                        ▾
+                      </span>
+
+                    </button>
+
+                    {timeDropdownOpen && (
+                      <div className="custom-time-menu">
+
+                        {timeOptions.map(
+                          (option) => (
+                            <button
+                              type="button"
+                              key={option}
+                              className={`custom-time-option ${
+                                time === option
+                                  ? "selected"
+                                  : ""
+                              }`}
+                              onClick={() => {
+                                setTime(
+                                  option
+                                );
+
+                                setTimeDropdownOpen(
+                                  false
+                                );
+
+                                setError("");
+                              }}
+                            >
+                              {option}
+                            </button>
+                          )
+                        )}
+
+                      </div>
+                    )}
+
+                  </div>
 
                 </div>
+
+                {/* MESSAGE */}
 
                 <div className="form-group">
 
@@ -707,9 +1262,9 @@ function MentorProfile() {
               </form>
 
               <div className="request-note">
-                💡 Once the request is
-                accepted, you can join the
-                online learning session.
+                💡 Select a date and time
+                that falls within this
+                peer's availability.
               </div>
 
             </section>

@@ -9,6 +9,9 @@ function MySkills() {
   const [skillsToTeach, setSkillsToTeach] = useState([]);
   const [skillsToLearn, setSkillsToLearn] = useState([]);
 
+  // Availability is stored as one slot per line
+  const [availability, setAvailability] = useState("");
+
   const [teachInput, setTeachInput] = useState("");
   const [learnInput, setLearnInput] = useState("");
 
@@ -19,7 +22,7 @@ function MySkills() {
   const [error, setError] = useState("");
 
   // =========================================
-  // GET STUDENT PORTFOLIO
+  // GET MY SKILLS + AVAILABILITY
   // =========================================
 
   useEffect(() => {
@@ -33,7 +36,7 @@ function MySkills() {
         }
 
         const response = await axios.get(
-          "http://localhost:5000/api/users/student-portfolio",
+          "http://localhost:5000/api/mentors/me",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -41,10 +44,15 @@ function MySkills() {
           }
         );
 
-        const portfolio = response.data.portfolio;
+        const profile = response.data.mentor;
 
-        setSkillsToTeach(portfolio?.skillsToTeach || []);
-        setSkillsToLearn(portfolio?.skillsToLearn || []);
+        setSkillsToTeach(profile?.skillsToTeach || []);
+        setSkillsToLearn(profile?.skillsToLearn || []);
+
+        // Convert saved availability array into textarea lines
+        setAvailability(
+          (profile?.availability || []).join("\n")
+        );
       } catch (err) {
         console.error("MY SKILLS ERROR:", err);
 
@@ -70,7 +78,8 @@ function MySkills() {
     if (!skill) return;
 
     const alreadyExists = skillsToTeach.some(
-      (item) => item.toLowerCase() === skill.toLowerCase()
+      (item) =>
+        item.toLowerCase() === skill.toLowerCase()
     );
 
     if (alreadyExists) {
@@ -92,7 +101,8 @@ function MySkills() {
     if (!skill) return;
 
     const alreadyExists = skillsToLearn.some(
-      (item) => item.toLowerCase() === skill.toLowerCase()
+      (item) =>
+        item.toLowerCase() === skill.toLowerCase()
     );
 
     if (alreadyExists) {
@@ -125,7 +135,7 @@ function MySkills() {
   };
 
   // =========================================
-  // SAVE SKILLS
+  // SAVE SKILLS + AVAILABILITY
   // =========================================
 
   const handleSave = async () => {
@@ -142,11 +152,19 @@ function MySkills() {
     setSaving(true);
 
     try {
+      // Convert textarea into an array.
+      // Each line represents one availability slot.
+      const availabilityList = availability
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean);
+
       await axios.put(
-        "http://localhost:5000/api/users/student-portfolio",
+        "http://localhost:5000/api/mentors/me",
         {
           skillsToTeach,
           skillsToLearn,
+          availability: availabilityList,
         },
         {
           headers: {
@@ -155,7 +173,9 @@ function MySkills() {
         }
       );
 
-      setMessage("Skills updated successfully!");
+      setMessage(
+        "Skills and availability updated successfully!"
+      );
 
       setTimeout(() => {
         setMessage("");
@@ -226,13 +246,11 @@ function MySkills() {
 
       </nav>
 
-
       {/* =====================================
           MAIN CONTENT
       ===================================== */}
 
       <main className="my-skills-content">
-
 
         {/* ===================================
             PAGE HEADER
@@ -255,7 +273,6 @@ function MySkills() {
 
         </section>
 
-
         {/* ===================================
             SUCCESS MESSAGE
         =================================== */}
@@ -267,7 +284,6 @@ function MySkills() {
           </div>
         )}
 
-
         {/* ===================================
             ERROR MESSAGE
         =================================== */}
@@ -277,7 +293,6 @@ function MySkills() {
             {error}
           </div>
         )}
-
 
         {/* ===================================
             SKILLS I CAN TEACH
@@ -306,9 +321,6 @@ function MySkills() {
 
           </div>
 
-
-          {/* INPUT */}
-
           <div className="skill-input-row">
 
             <input
@@ -336,9 +348,6 @@ function MySkills() {
             </button>
 
           </div>
-
-
-          {/* SKILL TAGS */}
 
           <div className="skill-tags-container">
 
@@ -380,7 +389,6 @@ function MySkills() {
 
         </section>
 
-
         {/* ===================================
             SKILLS I WANT TO LEARN
         =================================== */}
@@ -407,9 +415,6 @@ function MySkills() {
             </div>
 
           </div>
-
-
-          {/* INPUT */}
 
           <div className="skill-input-row">
 
@@ -438,9 +443,6 @@ function MySkills() {
             </button>
 
           </div>
-
-
-          {/* SKILL TAGS */}
 
           <div className="skill-tags-container">
 
@@ -482,6 +484,51 @@ function MySkills() {
 
         </section>
 
+        {/* ===================================
+            AVAILABILITY
+        =================================== */}
+
+        <section className="skill-section">
+
+          <div className="skill-section-header">
+
+            <div className="skill-section-icon">
+              🕒
+            </div>
+
+            <div className="skill-section-title">
+
+              <h2>
+                My Availability
+              </h2>
+
+              <p>
+                Add the days and times when you are
+                available for peer-learning sessions.
+              </p>
+
+            </div>
+
+          </div>
+
+          <textarea
+            className="skill-input"
+            rows="5"
+            placeholder={`Example:
+Monday 6:00 PM - 8:00 PM
+Tuesday 6:00 PM - 8:00 PM
+Saturday 10:00 AM - 1:00 PM`}
+            value={availability}
+            onChange={(e) =>
+              setAvailability(e.target.value)
+            }
+          />
+
+          <p className="no-skills-text">
+            Add one availability slot per line.
+          </p>
+
+        </section>
 
         {/* ===================================
             SAVE BUTTON
@@ -508,7 +555,6 @@ function MySkills() {
           </button>
 
         </div>
-
 
       </main>
 

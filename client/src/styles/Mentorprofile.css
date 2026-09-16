@@ -1013,3 +1013,181 @@
     font-size: 12px;
   }
 }
+/* your existing CSS above */
+
+
+/* =========================================
+   TIME DROPDOWN - MATCH DATE INPUT
+========================================= */
+
+.request-card .form-group select {
+  width: 100%;
+  height: 64px;
+  padding: 0 18px;
+  border: 1px solid #e2e5ef;
+  border-radius: 14px;
+  background-color: #f8f9fc;
+  color: #344054;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  outline: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.request-card .form-group select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.request-card .form-group select option {
+  background: white;
+  color: #344054;
+  font-family: inherit;
+  font-size: 16px;
+}
+/* =========================================
+   CUSTOM TIME PICKER
+========================================= */
+
+.custom-time-picker {
+  position: relative;
+  width: 100%;
+}
+
+.custom-time-button {
+  width: 100%;
+  height: 64px;
+  padding: 0 18px;
+  border: 1px solid #e2e5ef;
+  border-radius: 14px;
+  background: #f8f9fc;
+  color: #344054;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.custom-time-button:hover {
+  border-color: #cfd3e2;
+}
+
+.custom-time-button.active {
+  border-color: #6366f1;
+  box-shadow:
+    0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.time-placeholder {
+  color: #667085;
+}
+
+.selected-time {
+  color: #344054;
+}
+
+.time-arrow {
+  font-size: 18px;
+  color: #667085;
+
+  transition:
+    transform 0.2s ease;
+}
+
+.time-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* =========================================
+   TIME OPTIONS MENU
+========================================= */
+
+.custom-time-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+
+  max-height: 260px;
+  overflow-y: auto;
+
+  background: #ffffff;
+  border: 1px solid #e2e5ef;
+  border-radius: 14px;
+
+  padding: 8px;
+
+  box-shadow:
+    0 12px 30px rgba(16, 24, 40, 0.12);
+
+  z-index: 1000;
+}
+
+/* =========================================
+   TIME OPTION
+========================================= */
+
+.custom-time-option {
+  width: 100%;
+  padding: 11px 14px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: transparent;
+  color: #344054;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.custom-time-option:hover {
+  background: #f1f2ff;
+  color: #4f46e5;
+}
+
+.custom-time-option.selected {
+  background: #eef0ff;
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+/* =========================================
+   SCROLLBAR
+========================================= */
+
+.custom-time-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-time-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-time-menu::-webkit-scrollbar-thumb {
+  background: #d0d5dd;
+  border-radius: 10px;
+}
