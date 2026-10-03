@@ -10,7 +10,7 @@ function StudentRequests() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   // ===============================
   // GET STUDENT REQUESTS
@@ -86,9 +86,9 @@ function StudentRequests() {
         {/* BACK BUTTON */}
         <button
           className="student-requests-back"
-          onClick={() => navigate("/mentor-dashboard")}
+          onClick={() => navigate("/dashboard")}
         >
-          ← Back to Mentor Dashboard
+          ← Back to  Dashboard
         </button>
 
 
@@ -96,7 +96,7 @@ function StudentRequests() {
         <div className="student-requests-header">
 
           <span className="student-requests-label">
-            MENTOR ACTIVITY
+            PEER ACTIVITY
           </span>
 
           <h1>Student Requests</h1>

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const mentorSchema = new mongoose.Schema(
+const peerSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", unique: true },
     name: { type: String, required: true },
@@ -16,4 +16,4 @@ const mentorSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Mentor", mentorSchema);
+module.exports = mongoose.model("Peer", peerSchema, "mentors");

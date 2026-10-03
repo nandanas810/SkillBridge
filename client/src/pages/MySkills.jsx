@@ -28,7 +28,7 @@ function MySkills() {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("token");
 
         if (!token) {
           navigate("/login");
@@ -36,7 +36,7 @@ function MySkills() {
         }
 
         const response = await axios.get(
-          "http://localhost:5000/api/mentors/me",
+          "http://localhost:5000/api/peers/me",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -44,7 +44,8 @@ function MySkills() {
           }
         );
 
-        const profile = response.data.mentor;
+        
+const profile = response.data.Peer;
 
         setSkillsToTeach(profile?.skillsToTeach || []);
         setSkillsToLearn(profile?.skillsToLearn || []);
@@ -142,7 +143,7 @@ function MySkills() {
     setMessage("");
     setError("");
 
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     if (!token) {
       navigate("/login");
@@ -160,7 +161,7 @@ function MySkills() {
         .filter(Boolean);
 
       await axios.put(
-        "http://localhost:5000/api/mentors/me",
+        "http://localhost:5000/api/peers/me",
         {
           skillsToTeach,
           skillsToLearn,

@@ -298,3 +298,8 @@
     width: 150px;
   }
 }
+
+/* Landing page hero button spacing */
+.hero-buttons {
+  margin-top: 28px;
+}

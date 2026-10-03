@@ -3,7 +3,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 
 const User = require("./models/userModel");
-const Mentor = require("./models/Mentor");
+const Peer = require("./models/Peer");
 
 // =====================================================
 // SKILL + BIO DATA
@@ -293,19 +293,6 @@ async function improveExistingUsers() {
 
       await user.save();
 
-      // =================================================
-      // 4. FIND EXISTING MENTOR PROFILE
-      // =================================================
-      //
-      // FIRST:
-      // Find by user ID.
-      //
-      // SECOND:
-      // If not found, find by email.
-      //
-      // This fixes the duplicate email error.
-      // =================================================
-
       let profile = await Mentor.findOne({
         user: user._id,
       });
@@ -373,7 +360,7 @@ async function improveExistingUsers() {
       }
 
       // =================================================
-      // SAVE MENTOR PROFILE
+      // SAVE PEER PROFILE
       // =================================================
 
       await profile.save();

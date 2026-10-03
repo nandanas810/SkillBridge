@@ -5,9 +5,8 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-
-import Mentors from "./pages/Mentors";
-import MentorProfile from "./pages/Mentorprofile";
+import Peers from "./pages/Peers";
+import Peerprofile from "./pages/Peerprofile";
 
 import MySkills from "./pages/MySkills";
 import MyPortfolio from "./pages/MyPortfolio";
@@ -56,24 +55,18 @@ function App() {
         ========================= */}
 
         <Route
-          path="/mentors"
-          element={<Mentors />}
-        />
-
-        {/* Peer-friendly URL */}
-        <Route
-          path="/peers"
-          element={<Mentors />}
-        />
+  path="/peers"
+  element={<Peers />}
+/>
 
         {/* =========================
             PEER PROFILE
         ========================= */}
 
-        <Route
-          path="/mentor-profile"
-          element={<MentorProfile />}
-        />
+      <Route
+  path="/peer-profile"
+  element={<Peerprofile />}
+/>
 
         {/* =========================
             MY SKILLS

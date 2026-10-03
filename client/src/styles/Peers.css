@@ -1,8 +1,8 @@
 /* =========================================
-   SKILLBRIDGE - MENTORS PAGE
+   SKILLBRIDGE - peers PAGE
 ========================================= */
 
-.mentors-page {
+.peers-page {
   min-height: 100vh;
   background: #f6f7fb;
   color: #171827;
@@ -14,7 +14,7 @@
    NAVBAR
 ========================================= */
 
-.mentors-navbar {
+.peers-navbar {
   height: 72px;
   padding: 0 7%;
 
@@ -33,7 +33,7 @@
   box-sizing: border-box;
 }
 
-.mentors-logo {
+.peers-logo {
   font-size: 25px;
   font-weight: 850;
   letter-spacing: -1px;
@@ -80,7 +80,7 @@
    MAIN CONTENT
 ========================================= */
 
-.mentors-content {
+.peers-content {
   width: min(1120px, 92%);
 
   margin: 0 auto;
@@ -93,11 +93,11 @@
    HERO
 ========================================= */
 
-.mentors-hero {
+.peers-hero {
   padding: 15px 0 35px;
 }
 
-.mentors-label {
+.peers-label {
   display: inline-block;
 
   margin-bottom: 10px;
@@ -111,7 +111,7 @@
   letter-spacing: 1.8px;
 }
 
-.mentors-hero h1 {
+.peers-hero h1 {
   max-width: 700px;
 
   margin: 0 0 13px;
@@ -127,11 +127,11 @@
   font-weight: 850;
 }
 
-.mentors-hero h1 span {
+.peers-hero h1 span {
   color: #5b5fef;
 }
 
-.mentors-hero p {
+.peers-hero p {
   max-width: 620px;
 
   margin: 0;
@@ -148,7 +148,7 @@
    SEARCH BAR
 ========================================= */
 
-.mentor-search-wrapper {
+.peers-search-wrapper {
   width: 100%;
 
   position: relative;
@@ -156,7 +156,7 @@
   margin-bottom: 38px;
 }
 
-.mentor-search-wrapper svg {
+.peers-search-wrapper svg {
   position: absolute;
 
   left: 18px;
@@ -167,7 +167,7 @@
   pointer-events: none;
 }
 
-.mentor-search-wrapper input {
+.peers-search-wrapper input {
   width: 100%;
 
   height: 52px;
@@ -198,11 +198,11 @@
     box-shadow 0.2s ease;
 }
 
-.mentor-search-wrapper input::placeholder {
+.peers-search-wrapper input::placeholder {
   color: #a1a4b1;
 }
 
-.mentor-search-wrapper input:focus {
+.peers-search-wrapper input:focus {
   border-color: #aeb1f5;
 
   box-shadow:
@@ -211,10 +211,10 @@
 
 
 /* =========================================
-   MENTOR GRID
+   peers GRID
 ========================================= */
 
-.mentors-grid {
+.peers-grid {
   display: grid;
 
   grid-template-columns: repeat(3, 1fr);
@@ -224,10 +224,10 @@
 
 
 /* =========================================
-   MENTOR CARD
+   peers  CARD
 ========================================= */
 
-.mentor-card {
+.peers-card {
   min-height: 355px;
 
   display: flex;
@@ -253,7 +253,7 @@
     border-color 0.25s ease;
 }
 
-.mentor-card:hover {
+.peers-card:hover {
   transform: translateY(-5px);
 
   border-color: #d6d8fb;
@@ -267,7 +267,7 @@
    CARD TOP
 ========================================= */
 
-.mentor-card-top {
+.peers-card-top {
   display: flex;
 
   align-items: center;
@@ -277,7 +277,7 @@
   margin-bottom: 22px;
 }
 
-.mentor-avatar {
+.peers-avatar {
   width: 58px;
   height: 58px;
 
@@ -302,7 +302,7 @@
   font-weight: 850;
 }
 
-.mentor-badge {
+.peers-badge {
   padding: 6px 10px;
 
   color: #5558e8;
@@ -320,10 +320,10 @@
 
 
 /* =========================================
-   MENTOR INFORMATION
+   peers INFORMATION
 ========================================= */
 
-.mentor-info h2 {
+.peers-info h2 {
   margin: 0 0 8px;
 
   color: #1c1d2c;
@@ -335,7 +335,7 @@
   letter-spacing: -0.3px;
 }
 
-.mentor-bio {
+.peers-bio {
   min-height: 63px;
 
   margin: 0;
@@ -352,7 +352,7 @@
    SKILLS
 ========================================= */
 
-.mentor-skills {
+.peers-skills {
   margin-top: 20px;
 }
 
@@ -401,7 +401,7 @@
    VIEW PROFILE BUTTON
 ========================================= */
 
-.mentor-profile-button {
+.peers-profile-button {
   width: 100%;
 
   display: flex;
@@ -438,7 +438,7 @@
     box-shadow 0.2s ease;
 }
 
-.mentor-profile-button:hover {
+.peers-profile-button:hover {
   background: #4c4fd8;
 
   transform: translateY(-2px);
@@ -452,7 +452,7 @@
    LOADING
 ========================================= */
 
-.mentors-state {
+.peers-state {
   min-height: 220px;
 
   display: flex;
@@ -468,11 +468,11 @@
   font-size: 13px;
 }
 
-.mentors-state p {
+.peers-state p {
   margin: 0;
 }
 
-.mentor-loading-dot {
+.peers-loading-dot {
   width: 8px;
   height: 8px;
 
@@ -480,10 +480,10 @@
 
   border-radius: 50%;
 
-  animation: mentorPulse 1s infinite ease-in-out;
+  animation: peersPulse 1s infinite ease-in-out;
 }
 
-@keyframes mentorPulse {
+@keyframes peersPulse {
   0%,
   100% {
     opacity: 0.35;
@@ -501,7 +501,7 @@
    ERROR
 ========================================= */
 
-.mentor-error {
+.peers-error {
   padding: 13px 15px;
 
   background: #fff1f1;
@@ -520,7 +520,7 @@
    EMPTY STATE
 ========================================= */
 
-.empty-mentors {
+.empty-peers {
   padding: 60px 20px;
 
   text-align: center;
@@ -532,7 +532,7 @@
   border-radius: 16px;
 }
 
-.empty-mentor-icon {
+.empty-peers-icon {
   width: 52px;
   height: 52px;
 
@@ -551,7 +551,7 @@
   border-radius: 15px;
 }
 
-.empty-mentors h3 {
+.empty-peers h3 {
   margin: 0 0 8px;
 
   color: #242536;
@@ -559,7 +559,7 @@
   font-size: 17px;
 }
 
-.empty-mentors p {
+.empty-peers p {
   margin: 0;
 
   color: #85899a;
@@ -573,41 +573,41 @@
 ========================================= */
 
 @media (max-width: 950px) {
-  .mentors-grid {
+  .peers-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 650px) {
-  .mentors-navbar {
+  .peers-navbar {
     padding: 0 20px;
   }
 
-  .mentors-content {
+  .peers-content {
     width: 92%;
 
     padding: 35px 0 60px;
   }
 
-  .mentors-hero h1 {
+  .peers-hero h1 {
     font-size: 32px;
   }
 
-  .mentors-grid {
+  .peers-grid {
     grid-template-columns: 1fr;
   }
 
-  .mentor-card {
+  .peers-card {
     min-height: 330px;
   }
 }
 
-.mentor-count {
+.peers-count {
   margin-top: 18px;
   color: #5b5fef;
   font-size: 13px;
   font-weight: 700;
 }
-.peer-rating{font-weight:800;color:#d58a00}.peer-meta{display:flex;gap:8px;align-items:center;font-size:12px;color:#777b8b}.peer-match-badge{font-size:10px;font-weight:800;padding:6px 9px;border-radius:999px;background:#f0efff;color:#5558e8}.peer-skill-block{display:grid;gap:12px;margin-top:12px}.peer-skill-block small{display:block;font-size:9px;font-weight:800;letter-spacing:1px;color:#8a8d9b;margin-bottom:6px}.learn-tag{display:inline-flex;padding:6px 9px;border-radius:999px;background:#effbf6;color:#17865f;font-size:11px;margin:0 5px 5px 0}.peer-match-line{margin-top:14px;padding:9px 11px;background:#faf9ff;border-radius:10px;font-size:11px;font-weight:700;color:#5a5e91}.peer-search-button{position:absolute;right:8px;top:7px;height:38px;padding:0 16px;border:0;border-radius:9px;background:#5b5fef;color:#fff;font-weight:700;cursor:pointer}.mentor-search-wrapper input{padding-right:110px}.peer-results-heading{display:flex;justify-content:space-between;gap:15px;margin:0 0 16px;color:#73778a;font-size:12px}.peer-results-heading strong{color:#202131}.peer-results-heading span{font-size:11px}.mentor-card h2{margin:0}.mentor-skills{display:flex;flex-wrap:wrap}.skill-tag{display:inline-flex!important}.empty-mentors{padding:40px;text-align:center;background:#fff;border:1px solid #e6e7ee;border-radius:18px}
-@media(max-width:800px){.mentors-grid{grid-template-columns:1fr 1fr}.peer-results-heading{flex-direction:column}.peer-search-button{position:static;margin-top:8px;width:100%}.mentor-search-wrapper{display:flex;flex-direction:column}.mentor-search-wrapper input{padding-right:20px}}
-@media(max-width:520px){.mentors-grid{grid-template-columns:1fr}.mentors-content{padding-top:30px}.mentor-card{min-height:auto}}
+.peers-rating{font-weight:800;color:#d58a00}.peers-meta{display:flex;gap:8px;align-items:center;font-size:12px;color:#777b8b}.peers-match-badge{font-size:10px;font-weight:800;padding:6px 9px;border-radius:999px;background:#f0efff;color:#5558e8}.peers-skill-block{display:grid;gap:12px;margin-top:12px}.peers-skill-block small{display:block;font-size:9px;font-weight:800;letter-spacing:1px;color:#8a8d9b;margin-bottom:6px}.learn-tag{display:inline-flex;padding:6px 9px;border-radius:999px;background:#effbf6;color:#17865f;font-size:11px;margin:0 5px 5px 0}.peers-match-line{margin-top:14px;padding:9px 11px;background:#faf9ff;border-radius:10px;font-size:11px;font-weight:700;color:#5a5e91}.peers-search-button{position:absolute;right:8px;top:7px;height:38px;padding:0 16px;border:0;border-radius:9px;background:#5b5fef;color:#fff;font-weight:700;cursor:pointer}.peers-search-wrapper input{padding-right:110px}.peers-results-heading{display:flex;justify-content:space-between;gap:15px;margin:0 0 16px;color:#73778a;font-size:12px}.peers-results-heading strong{color:#202131}.peers-results-heading span{font-size:11px}.peers-card h2{margin:0}.peers-skills{display:flex;flex-wrap:wrap}.skill-tag{display:inline-flex!important}.empty-peers{padding:40px;text-align:center;background:#fff;border:1px solid #e6e7ee;border-radius:18px}
+@media(max-width:800px){.peers-grid{grid-template-columns:1fr 1fr}.peers-results-heading{flex-direction:column}.peers-search-button{position:static;margin-top:8px;width:100%}.peers-search-wrapper{display:flex;flex-direction:column}.peers-search-wrapper input{padding-right:20px}}
+@media(max-width:520px){.peers-grid{grid-template-columns:1fr}.peers-content{padding-top:30px}.peers-card{min-height:auto}}

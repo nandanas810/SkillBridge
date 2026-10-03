@@ -4,7 +4,7 @@ A Peer Learning and Skill Exchange Platform built using the MERN Stack.
 
 ## 📌 Project Description
 
-SkillBridge is a platform where students can teach skills they know and learn new skills from other students. Users can create profiles, register, log in, search for mentors, book learning sessions, and track their learning progress.
+SkillBridge is a platform where students can teach skills they know and learn new skills from other students. Users can create profiles, register, log in, search for peers and book learning sessions.
 
 ## 🚀 Technologies Used
 
@@ -48,7 +48,7 @@ SkillBridge/
 - JWT Authentication
 - Student Profile
 - Skill Management
-- Mentor Search
+- Peer Search
 - Session Booking
 - Ratings & Reviews
 

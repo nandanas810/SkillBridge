@@ -1,14 +1,14 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const Mentor = require("../models/Mentor");
+const Peer = require("../models/Peers");
 
 // =======================
 // Register User
 // =======================
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     // Check required fields
     if (!name || !email || !password) {
@@ -26,7 +26,7 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Allow only valid roles
+    // All registered users are students/peers
     const userRole = "student";
 
     // Hash password
@@ -40,8 +40,9 @@ const registerUser = async (req, res) => {
       role: userRole,
     });
 
-    // Every student gets a peer profile so other students can discover them.
-    await Mentor.create({
+    // Every student gets a peer profile
+    // so other students can discover them.
+    await Peer.create({
       user: user._id,
       name: user.name,
       email: user.email,
@@ -86,7 +87,10 @@ const loginUser = async (req, res) => {
     }
 
     // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
 
     if (!isMatch) {
       return res.status(401).json({
@@ -125,6 +129,7 @@ const loginUser = async (req, res) => {
     });
   }
 };
+
 // =======================
 // CHECK USERS - TEMPORARY
 // =======================
@@ -144,14 +149,13 @@ const getUsersForTesting = async (req, res) => {
   }
 };
 
-
 // =======================
 // GET STUDENT PORTFOLIO
 // =======================
 const getStudentPortfolio = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select(
-      "name email role skillsToTeach skillsToLearn academicProjects certificates"
+      "name email role bio academicProjects certificates"
     );
 
     if (!user) {
@@ -160,11 +164,9 @@ const getStudentPortfolio = async (req, res) => {
       });
     }
 
-    if (user.role !== "student") {
-      return res.status(403).json({
-        message: "Only students can access the student portfolio",
-      });
-    }
+    // No role check here.
+    // SkillBridge is peer-to-peer and every user
+    // can have a portfolio.
 
     res.status(200).json({
       message: "Portfolio fetched successfully",
@@ -179,15 +181,13 @@ const getStudentPortfolio = async (req, res) => {
   }
 };
 
-
 // =======================
 // UPDATE STUDENT PORTFOLIO
 // =======================
 const updateStudentPortfolio = async (req, res) => {
   try {
     const {
-      skillsToTeach,
-      skillsToLearn,
+      bio,
       academicProjects,
       certificates,
     } = req.body;
@@ -200,33 +200,48 @@ const updateStudentPortfolio = async (req, res) => {
       });
     }
 
-    if (user.role !== "student") {
-      return res.status(403).json({
-        message: "Only students can update the student portfolio",
-      });
-    }
+    // No role check here.
+    // Every SkillBridge peer can maintain a portfolio.
 
-    user.skillsToTeach = skillsToTeach || [];
-    user.skillsToLearn = skillsToLearn || [];
-    user.academicProjects = academicProjects || [];
-    user.certificates = certificates || [];
+    // Update ONLY portfolio fields.
+    //
+    // IMPORTANT:
+    // Do not update skillsToTeach or skillsToLearn here.
+    // Those belong to Skill Exchange.
+
+    user.bio = bio || "";
+
+    user.academicProjects =
+      Array.isArray(academicProjects)
+        ? academicProjects
+        : [];
+
+    user.certificates =
+      Array.isArray(certificates)
+        ? certificates
+        : [];
 
     await user.save();
 
     res.status(200).json({
       message: "Portfolio updated successfully",
+
       portfolio: {
         name: user.name,
         email: user.email,
         role: user.role,
-        skillsToTeach: user.skillsToTeach,
-        skillsToLearn: user.skillsToLearn,
-        academicProjects: user.academicProjects,
-        certificates: user.certificates,
+        bio: user.bio,
+        academicProjects:
+          user.academicProjects,
+        certificates:
+          user.certificates,
       },
     });
   } catch (error) {
-    console.error("Update portfolio error:", error);
+    console.error(
+      "Update portfolio error:",
+      error
+    );
 
     res.status(500).json({
       message: "Failed to update portfolio",
@@ -234,12 +249,9 @@ const updateStudentPortfolio = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
+// =======================
+// EXPORT
+// =======================
 module.exports = {
   registerUser,
   loginUser,
@@ -247,7 +259,6 @@ module.exports = {
   getStudentPortfolio,
   updateStudentPortfolio,
 };
-
 
 
 

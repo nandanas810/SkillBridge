@@ -22,7 +22,7 @@ function Landing() {
 
           <p>
             SkillBridge connects students who want to learn with students
-            who can teach. Find mentors, share your knowledge, build your
+            who can teach. Find Peers, share your knowledge, build your
             skills, and grow together.
           </p>
 
@@ -35,12 +35,7 @@ function Landing() {
               Get Started →
             </button>
 
-            <button
-              className="secondary-btn"
-              onClick={() => (window.location.href = "/mentors")}
-            >
-              Browse Mentors →
-            </button>
+           
 
           </div>
 
@@ -54,7 +49,7 @@ function Landing() {
 
             <div className="stat-card">
               <h3>100+</h3>
-              <p>Mentors</p>
+              <p>Peers</p>
             </div>
 
             <div className="stat-card">

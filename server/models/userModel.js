@@ -4,6 +4,7 @@ const reviewSchema = new mongoose.Schema(
   {
     reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     reviewerName: { type: String, required: true },
+    sessionId: { type: mongoose.Schema.Types.ObjectId, ref: "Session", default: null },
     rating: { type: Number, min: 1, max: 5, required: true },
     comment: { type: String, default: "" },
   },
@@ -29,11 +30,23 @@ const userSchema = new mongoose.Schema(
     reviews: { type: [reviewSchema], default: [] },
 
     academicProjects: {
-      type: [{ title: { type: String, default: "" }, description: { type: String, default: "" } }],
+      type: [
+        {
+          title: { type: String, default: "" },
+          description: { type: String, default: "" },
+        },
+      ],
       default: [],
     },
+
     certificates: {
-      type: [{ name: { type: String, default: "" }, issuer: { type: String, default: "" } }],
+      type: [
+        {
+          name: { type: String, default: "" },
+          issuer: { type: String, default: "" },
+          issuedDate: { type: String, default: "" },
+        },
+      ],
       default: [],
     },
   },
@@ -41,3 +54,4 @@ const userSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("User", userSchema);
+

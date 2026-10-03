@@ -1,3 +1,4 @@
+
 /* =========================================
    SKILLBRIDGE - MY PORTFOLIO
    ========================================= */
@@ -8,9 +9,9 @@
 
 .portfolio-page {
   min-height: 100vh;
-  background: #f5f7fb;
-  color: #172033;
-  font-family: Arial, Helvetica, sans-serif;
+  background: #f6f7fb;
+  color: #171827;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
 
 /* =========================================
@@ -19,47 +20,58 @@
 
 .portfolio-navbar {
   height: 72px;
-  padding: 0 55px;
+  padding: 0 7%;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  background: #111827;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  border-bottom: 1px solid #e8e9f0;
+  box-sizing: border-box;
 }
 
 .portfolio-logo {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: #ffffff;
+  font-size: 25px;
+  font-weight: 850;
+  letter-spacing: -1px;
+
+  background: linear-gradient(
+    135deg,
+    #5558e8,
+    #8b5cf6
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .portfolio-dashboard-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 
-  padding: 10px 18px;
+  padding: 9px 17px;
 
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  color: #555a6d;
+
+  border: 1px solid #dfe1e8;
   border-radius: 9px;
 
-  background: transparent;
-  color: #ffffff;
-
-  font-size: 14px;
-  font-weight: 600;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
 
   cursor: pointer;
-  transition: all 0.25s ease;
+
+  transition: all 0.2s ease;
 }
 
 .portfolio-dashboard-btn:hover {
-  background: #ffffff;
-  color: #111827;
-  transform: translateX(-2px);
+  color: #5558e8;
+  border-color: #bfc2f7;
+  background: #f7f7ff;
 }
 
 /* =========================================
@@ -67,11 +79,10 @@
    ========================================= */
 
 .portfolio-content {
-  width: 100%;
-  max-width: 1050px;
-
+  width: min(1000px, 92%);
   margin: 0 auto;
-  padding: 55px 30px 80px;
+
+  padding: 50px 0 80px;
 }
 
 /* =========================================
@@ -79,7 +90,8 @@
    ========================================= */
 
 .portfolio-header {
-  margin-bottom: 35px;
+  text-align: center;
+  margin-bottom: 38px;
 }
 
 .portfolio-label {
@@ -87,89 +99,103 @@
 
   margin-bottom: 10px;
 
-  color: #6366f1;
+  color: #7377d9;
 
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 800;
-
-  letter-spacing: 2px;
+  letter-spacing: 1.8px;
 }
 
 .portfolio-header h1 {
-  margin: 0;
+  margin: 0 0 12px;
 
-  font-size: 42px;
-  line-height: 1.15;
+  color: #171827;
 
-  color: #172033;
-  font-weight: 800;
+  font-size: clamp(34px, 4vw, 46px);
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  font-weight: 850;
 }
 
 .portfolio-header p {
-  max-width: 650px;
+  max-width: 620px;
 
-  margin-top: 12px;
+  margin: 0 auto;
 
-  color: #687386;
+  color: #74798c;
 
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.7;
 }
 
 /* =========================================
-   SUCCESS / ERROR
+   SUCCESS MESSAGE
    ========================================= */
 
 .portfolio-message {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  margin-bottom: 20px;
 
-  padding: 14px 18px;
-  margin-bottom: 25px;
+  padding: 12px 15px;
 
-  background: #ecfdf3;
-  border: 1px solid #bbf7d0;
+  background: #effbf3;
+  border: 1px solid #ccefd8;
   border-radius: 10px;
 
-  color: #15803d;
-  font-size: 14px;
+  color: #16803c;
+
+  font-size: 13px;
   font-weight: 600;
 }
 
 .portfolio-message span {
-  font-size: 17px;
-}
-
-.portfolio-error {
-  padding: 14px 18px;
-  margin-bottom: 25px;
-
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 10px;
-
-  color: #dc2626;
-
-  font-size: 14px;
-  font-weight: 600;
+  margin-right: 8px;
 }
 
 /* =========================================
-   PORTFOLIO SECTIONS
+   ERROR MESSAGE
+   ========================================= */
+
+.portfolio-error {
+  margin-bottom: 20px;
+
+  padding: 12px 15px;
+
+  background: #fff1f1;
+  border: 1px solid #ffd5d5;
+  border-radius: 10px;
+
+  color: #b42318;
+
+  font-size: 13px;
+}
+
+/* =========================================
+   PORTFOLIO SECTION
    ========================================= */
 
 .portfolio-section {
-  margin-top: 28px;
+  margin-bottom: 22px;
 
-  padding: 30px;
+  padding: 28px;
 
   background: #ffffff;
 
-  border: 1px solid #e7eaf0;
+  border: 1px solid #e6e7ee;
   border-radius: 18px;
 
-  box-shadow: 0 8px 25px rgba(20, 30, 50, 0.05);
+  box-shadow:
+    0 5px 20px rgba(28, 31, 49, 0.045);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.portfolio-section:hover {
+  border-color: #dcdcff;
+
+  box-shadow:
+    0 10px 28px rgba(28, 31, 49, 0.065);
 }
 
 /* =========================================
@@ -179,9 +205,9 @@
 .portfolio-section-header {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 15px;
 
-  margin-bottom: 25px;
+  margin-bottom: 22px;
 }
 
 .portfolio-section-icon {
@@ -192,32 +218,37 @@
   align-items: center;
   justify-content: center;
 
-  border-radius: 13px;
+  flex-shrink: 0;
 
-  background: #eef0ff;
+  background: #f0f1ff;
+  color: #5558e8;
+
+  border-radius: 14px;
 
   font-size: 23px;
 }
 
 .portfolio-section-icon.certificate-icon {
-  background: #f3efff;
+  background: #f4efff;
 }
 
 .portfolio-section-header h2 {
-  margin: 0;
+  margin: 0 0 5px;
 
-  color: #20283a;
+  color: #1c1d2c;
 
-  font-size: 22px;
-  font-weight: 750;
+  font-size: 20px;
+  font-weight: 800;
+
+  letter-spacing: -0.3px;
 }
 
 .portfolio-section-header p {
-  margin: 5px 0 0;
+  margin: 0;
 
-  color: #7a8496;
+  color: #85899a;
 
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
 }
 
@@ -228,6 +259,7 @@
 .portfolio-form {
   display: flex;
   flex-direction: column;
+
   gap: 12px;
 
   padding: 20px;
@@ -242,21 +274,22 @@
 .portfolio-textarea {
   width: 100%;
 
-  padding: 13px 15px;
-
-  border: 1px solid #dfe3eb;
-  border-radius: 9px;
+  padding: 13px 14px;
 
   background: #ffffff;
+  color: #202131;
 
-  color: #172033;
-
-  font-family: inherit;
-  font-size: 14px;
+  border: 1px solid #dfe1e8;
+  border-radius: 9px;
 
   outline: none;
 
-  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: 13px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .portfolio-input {
@@ -264,21 +297,35 @@
 }
 
 .portfolio-textarea {
-  resize: vertical;
   min-height: 105px;
+
+  resize: vertical;
+
   line-height: 1.5;
 }
 
 .portfolio-input::placeholder,
 .portfolio-textarea::placeholder {
-  color: #9aa2b1;
+  color: #a1a4b1;
 }
 
 .portfolio-input:focus,
 .portfolio-textarea:focus {
-  border-color: #6366f1;
+  border-color: #aeb1f5;
 
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  box-shadow:
+    0 0 0 4px rgba(91, 95, 239, 0.08);
+}
+
+/* =========================================
+   DATE LABEL
+   ========================================= */
+
+.portfolio-form label {
+  color: #555a6d;
+
+  font-size: 13px;
+  font-weight: 650;
 }
 
 /* =========================================
@@ -288,26 +335,35 @@
 .portfolio-add-btn {
   align-self: flex-start;
 
-  padding: 11px 20px;
+  height: 46px;
+
+  padding: 0 20px;
+
+  background: #595ce8;
+  color: #ffffff;
 
   border: none;
   border-radius: 9px;
 
-  background: #6366f1;
-  color: #ffffff;
-
-  font-size: 14px;
-  font-weight: 700;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 750;
 
   cursor: pointer;
 
-  transition: all 0.25s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .portfolio-add-btn:hover {
-  background: #4f46e5;
+  background: #4c4fd8;
+
   transform: translateY(-1px);
-  box-shadow: 0 5px 12px rgba(79, 70, 229, 0.2);
+
+  box-shadow:
+    0 7px 16px rgba(91, 95, 239, 0.2);
 }
 
 /* =========================================
@@ -315,11 +371,12 @@
    ========================================= */
 
 .portfolio-items {
-  margin-top: 22px;
-
   display: flex;
   flex-direction: column;
-  gap: 12px;
+
+  gap: 10px;
+
+  margin-top: 18px;
 }
 
 /* =========================================
@@ -329,35 +386,40 @@
 .portfolio-item-card {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
 
-  padding: 20px;
+  gap: 15px;
+
+  padding: 18px;
 
   background: #ffffff;
 
-  border: 1px solid #e7eaf0;
+  border: 1px solid #e6e7ee;
   border-radius: 13px;
 
-  transition: all 0.25s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .portfolio-item-card:hover {
-  border-color: #cfd2ff;
+  border-color: #dcdcff;
 
-  box-shadow: 0 6px 18px rgba(30, 40, 70, 0.06);
+  box-shadow:
+    0 7px 18px rgba(28, 31, 49, 0.06);
 
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .portfolio-item-icon {
   width: 42px;
   height: 42px;
 
-  flex-shrink: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
+
+  flex-shrink: 0;
 
   background: #f0f1ff;
 
@@ -378,19 +440,29 @@
 .portfolio-item-content h3 {
   margin: 2px 0 7px;
 
-  color: #20283a;
+  color: #1c1d2c;
 
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 750;
+
+  letter-spacing: -0.2px;
 }
 
 .portfolio-item-content p {
   margin: 0;
 
-  color: #6f7889;
+  color: #74798c;
 
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.6;
+}
+
+.portfolio-item-content p + p {
+  margin-top: 4px;
+}
+
+.portfolio-item-content strong {
+  color: #5e6376;
 }
 
 /* =========================================
@@ -400,12 +472,13 @@
 .delete-btn {
   padding: 8px 13px;
 
-  border: 1px solid #fee2e2;
-  border-radius: 8px;
-
   background: #fff5f5;
   color: #dc2626;
 
+  border: 1px solid #fee2e2;
+  border-radius: 8px;
+
+  font-family: inherit;
   font-size: 12px;
   font-weight: 700;
 
@@ -444,7 +517,9 @@
   align-items: center;
   justify-content: center;
 
-  background: #eef0ff;
+  background: #f0f1ff;
+
+  color: #5558e8;
 
   border-radius: 12px;
 
@@ -473,40 +548,49 @@
 
 .portfolio-save-area {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 
-  margin-top: 30px;
+  margin-top: 32px;
 }
 
 .portfolio-save-btn {
-  min-width: 155px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  padding: 13px 25px;
+  gap: 8px;
+
+  padding: 12px 25px;
+
+  background: #595ce8;
+  color: #ffffff;
 
   border: none;
   border-radius: 10px;
 
-  background: #111827;
-  color: #ffffff;
-
-  font-size: 14px;
-  font-weight: 700;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 750;
 
   cursor: pointer;
 
-  transition: all 0.25s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .portfolio-save-btn:hover:not(:disabled) {
-  background: #6366f1;
+  background: #4c4fd8;
 
   transform: translateY(-2px);
 
-  box-shadow: 0 7px 18px rgba(99, 102, 241, 0.25);
+  box-shadow:
+    0 8px 18px rgba(91, 95, 239, 0.2);
 }
 
 .portfolio-save-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.65;
   cursor: not-allowed;
 }
 
@@ -521,7 +605,15 @@
   align-items: center;
   justify-content: center;
 
-  background: #f5f7fb;
+  background: #f6f7fb;
+
+  color: #74798c;
+
+  font-family:
+    "Inter",
+    "Segoe UI",
+    Arial,
+    sans-serif;
 }
 
 .portfolio-loading-card {
@@ -529,38 +621,35 @@
 
   background: #ffffff;
 
-  border: 1px solid #e7eaf0;
+  border: 1px solid #e6e7ee;
   border-radius: 14px;
 
-  color: #5f6879;
+  color: #74798c;
 
-  font-size: 15px;
+  font-size: 14px;
 
-  box-shadow: 0 8px 25px rgba(20, 30, 50, 0.06);
+  box-shadow:
+    0 8px 25px rgba(28, 31, 49, 0.05);
 }
 
 /* =========================================
    RESPONSIVE
    ========================================= */
 
-@media (max-width: 768px) {
+@media (max-width: 650px) {
 
   .portfolio-navbar {
-    height: 65px;
     padding: 0 20px;
   }
 
   .portfolio-logo {
-    font-size: 21px;
-  }
-
-  .portfolio-dashboard-btn {
-    padding: 9px 13px;
-    font-size: 13px;
+    font-size: 22px;
   }
 
   .portfolio-content {
-    padding: 35px 18px 60px;
+    width: 92%;
+
+    padding: 35px 0 60px;
   }
 
   .portfolio-header h1 {
@@ -580,22 +669,26 @@
   }
 
   .delete-btn {
-    margin-left: 58px;
+    margin-left: 57px;
+  }
+
+  .portfolio-add-btn {
+    width: 100%;
   }
 
   .portfolio-save-area {
-    justify-content: stretch;
+    justify-content: center;
   }
 
   .portfolio-save-btn {
-    width: 100%;
+    width: auto;
   }
 }
 
 @media (max-width: 480px) {
 
   .portfolio-header h1 {
-    font-size: 29px;
+    font-size: 31px;
   }
 
   .portfolio-section {
@@ -611,6 +704,10 @@
   }
 
   .portfolio-add-btn {
+    width: 100%;
+  }
+
+  .portfolio-save-btn {
     width: 100%;
   }
 }

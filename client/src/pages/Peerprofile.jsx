@@ -1,17 +1,15 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import "../styles/Mentorprofile.css";
+import "../styles/Peerprofile.css";
 
-function MentorProfile() {
+
+function Peerprofile() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // This page is now a PEER profile.
-  // The old route/state name "mentor" is kept only
-  // so the existing navigation continues to work.
-  const peer = location.state?.mentor;
-
+  const peer = location.state?.peer;
+console.log("Received peer:", peer);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [message, setMessage] = useState("");
@@ -54,8 +52,8 @@ function MentorProfile() {
 
   if (!peer) {
     return (
-      <div className="mentor-profile-page">
-        <div className="mentor-profile-card not-found">
+      <div className="peer-profile-page">
+        <div className="peer-profile-card not-found">
           <div className="not-found-icon">
             🔍
           </div>
@@ -70,7 +68,7 @@ function MentorProfile() {
 
           <button
             className="back-button"
-            onClick={() => navigate("/mentors")}
+            onClick={() => navigate("/peers")}
           >
             ← Back to Peers
           </button>
@@ -103,7 +101,11 @@ function MentorProfile() {
     peer.reviewCount || 0;
 
   const matchScore =
-    peer.matchScore || 0;
+    Number.isFinite(Number(peer.matchScore)) &&
+    peer.matchScore !== null &&
+    peer.matchScore !== undefined
+      ? Number(peer.matchScore)
+      : null;
 
   // =====================================================
   // GENERATE TIME OPTIONS WITH AM / PM
@@ -191,103 +193,71 @@ function MentorProfile() {
     ];
   };
 
-  const parseTimeToMinutes = (
-    timeText
-  ) => {
-    if (!timeText) {
+const parseTimeToMinutes = (timeText) => {
+  if (!timeText) {
+    return null;
+  }
+
+  const text = String(timeText)
+    .trim()
+    .toUpperCase()
+    .replace(/\./g, "");
+
+  
+const twelveHourMatch = text.match(
+  /^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/
+);
+
+
+  if (twelveHourMatch) {
+    let hour = Number(twelveHourMatch[1]);
+    const minute = Number(twelveHourMatch[2] || 0);
+    const period = twelveHourMatch[3];
+
+    if (
+      hour < 1 ||
+      hour > 12 ||
+      minute < 0 ||
+      minute > 59
+    ) {
       return null;
     }
 
-    const text = String(timeText)
-      .trim()
-      .toUpperCase()
-      .replace(/\./g, "");
-
-    // =========================================
-    // 12-HOUR FORMAT
-    // Example: 6:00 PM
-    // =========================================
-
-    const twelveHourMatch =
-      text.match(
-        /^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/
-      );
-
-    if (twelveHourMatch) {
-      let hour = Number(
-        twelveHourMatch[1]
-      );
-
-      const minute = Number(
-        twelveHourMatch[2] || 0
-      );
-
-      const period =
-        twelveHourMatch[3];
-
-      if (
-        hour < 1 ||
-        hour > 12 ||
-        minute < 0 ||
-        minute > 59
-      ) {
-        return null;
-      }
-
-      if (
-        period === "AM" &&
-        hour === 12
-      ) {
-        hour = 0;
-      }
-
-      if (
-        period === "PM" &&
-        hour !== 12
-      ) {
-        hour += 12;
-      }
-
-      return (
-        hour * 60 + minute
-      );
+    if (period === "AM" && hour === 12) {
+      hour = 0;
     }
 
-    // =========================================
-    // 24-HOUR FORMAT
-    // Example: 18:00
-    // =========================================
-
-    const twentyFourHourMatch =
-      text.match(
-        /^(\d{1,2}):(\d{2})$/
-      );
-
-    if (twentyFourHourMatch) {
-      const hour = Number(
-        twentyFourHourMatch[1]
-      );
-
-      const minute = Number(
-        twentyFourHourMatch[2]
-      );
-
-      if (
-        hour < 0 ||
-        hour > 23 ||
-        minute < 0 ||
-        minute > 59
-      ) {
-        return null;
-      }
-
-      return (
-        hour * 60 + minute
-      );
+    if (period === "PM" && hour !== 12) {
+      hour += 12;
     }
 
-    return null;
-  };
+    return hour * 60 + minute;
+  }
+
+  // 24-hour format: 18:00
+  const twentyFourHourMatch = text.match(
+    /^(\d{1,2}):(\d{2})$/
+  );
+
+  if (twentyFourHourMatch) {
+    const hour = Number(twentyFourHourMatch[1]);
+    const minute = Number(twentyFourHourMatch[2]);
+
+    if (
+      hour < 0 ||
+      hour > 23 ||
+      minute < 0 ||
+      minute > 59
+    ) {
+      return null;
+    }
+
+    return hour * 60 + minute;
+  }
+
+  return null;
+};
+
 
   const availabilityMatchesDay = (
     availabilityText,
@@ -334,119 +304,66 @@ function MentorProfile() {
     return false;
   };
 
-  const getAvailabilityRange = (
-    availabilityText
-  ) => {
-    const text = String(
-      availabilityText
-    )
-      .trim()
-      .toUpperCase();
+ 
+const getAvailabilityRange = (availabilityText) => {
+  const text = String(availabilityText || "")
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, " ");
 
-    // Supports:
-    // Monday 6:00 PM - 8:00 PM
-    // Monday 18:00 - 20:00
-    // Saturday 10 AM - 1 PM
+  const rangeMatch = text.match(
+    /(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)\s*(?:-|–|—|TO)\s*(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)/i
+  );
 
-    const rangeMatch =
-      text.match(
-        /(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)\s*(?:-|–|—|TO)\s*(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)/
-      );
+  if (rangeMatch) {
+    let startText = rangeMatch[1].trim();
+    const endText = rangeMatch[2].trim();
 
-    if (rangeMatch) {
-      let startText =
-        rangeMatch[1].trim();
+    const period = endText.match(/(AM|PM)$/i);
 
-      let endText =
-        rangeMatch[2].trim();
-
-      // Example:
-      // 6 - 8 PM
-      //
-      // Apply PM to starting time.
-      if (
-        /(?:AM|PM)$/i.test(
-          endText
-        ) &&
-        !/(?:AM|PM)$/i.test(
-          startText
-        )
-      ) {
-        const period =
-          endText.match(
-            /(AM|PM)$/i
-          );
-
-        if (period) {
-          startText =
-            `${startText} ${period[1]}`;
-        }
-      }
-
-      const startMinutes =
-        parseTimeToMinutes(
-          startText
-        );
-
-      const endMinutes =
-        parseTimeToMinutes(
-          endText
-        );
-
-      if (
-        startMinutes !== null &&
-        endMinutes !== null &&
-        startMinutes < endMinutes
-      ) {
-        return {
-          start: startMinutes,
-          end: endMinutes,
-        };
-      }
+    if (period && !/(AM|PM)$/i.test(startText)) {
+      startText += ` ${period[1]}`;
     }
 
-    // =========================================
-    // COMMON TIME PERIODS
-    // =========================================
+    const start = parseTimeToMinutes(startText);
+    const end = parseTimeToMinutes(endText);
 
-    if (
-      text.includes("MORNING")
-    ) {
-      return {
-        start: 6 * 60,
-        end: 12 * 60,
-      };
+    if (start !== null && end !== null && start < end) {
+      return { start, end };
     }
+  }
 
-    if (
-      text.includes("AFTERNOON")
-    ) {
-      return {
-        start: 12 * 60,
-        end: 17 * 60,
-      };
+  const singleMatch = text.match(
+    /(?:^|\s)(\d{1,2}(?::\d{2})?\s*(?:AM|PM))\s*$/i
+  );
+
+  if (singleMatch) {
+    const start = parseTimeToMinutes(singleMatch[1]);
+
+    if (start !== null) {
+      return { start, end: start };
     }
+  }
 
-    if (
-      text.includes("EVENING")
-    ) {
-      return {
-        start: 17 * 60,
-        end: 22 * 60,
-      };
-    }
+  if (text.includes("MORNING")) {
+    return { start: 6 * 60, end: 12 * 60 };
+  }
 
-    if (
-      text.includes("NIGHT")
-    ) {
-      return {
-        start: 18 * 60,
-        end: 23 * 60,
-      };
-    }
+  if (text.includes("AFTERNOON")) {
+    return { start: 12 * 60, end: 17 * 60 };
+  }
 
-    return null;
-  };
+  if (text.includes("EVENING")) {
+    return { start: 17 * 60, end: 22 * 60 };
+  }
+
+  if (text.includes("NIGHT")) {
+    return { start: 18 * 60, end: 23 * 60 };
+  }
+
+  return null;
+};
+
 
   const checkPeerAvailability = () => {
     if (
@@ -515,16 +432,18 @@ function MentorProfile() {
         continue;
       }
 
+      
       if (
-        selectedMinutes >=
-          range.start &&
-        selectedMinutes <=
-          range.end
+        range.start === range.end
+          ? selectedMinutes === range.start
+          : selectedMinutes >= range.start &&
+            selectedMinutes <= range.end
       ) {
         return {
           available: true,
         };
       }
+
     }
 
     return {
@@ -548,7 +467,7 @@ function MentorProfile() {
 
     try {
       const token =
-        localStorage.getItem(
+        sessionStorage.getItem(
           "token"
         );
 
@@ -616,7 +535,7 @@ function MentorProfile() {
   };
 
   return (
-    <div className="mentor-profile-page">
+    <div className="peer-profile-page">
 
       {/* ================= NAVBAR ================= */}
 
@@ -629,7 +548,7 @@ function MentorProfile() {
         <button
           className="logout-button"
           onClick={() =>
-            navigate("/mentors")
+            navigate("/peers")
           }
         >
           ← Back to Peers
@@ -637,7 +556,7 @@ function MentorProfile() {
 
       </nav>
 
-      <main className="mentor-profile-content">
+      <main className="peer-profile-content">
 
         {/* ================= PROFILE HERO ================= */}
 
@@ -645,7 +564,7 @@ function MentorProfile() {
 
           <div className="profile-hero-top">
 
-            <div className="large-mentor-avatar">
+            <div className="large-peer-avatar">
               {peer.name
                 ?.charAt(0)
                 ?.toUpperCase()}
@@ -730,7 +649,7 @@ function MentorProfile() {
 
             <div className="profile-stat">
               <strong>
-                {matchScore > 0
+                {matchScore !== null
                   ? `${matchScore}%`
                   : "—"}
               </strong>
@@ -746,7 +665,7 @@ function MentorProfile() {
 
         {/* ================= MATCH BANNER ================= */}
 
-        {matchScore > 0 && (
+        {matchScore !== null && (
           <section className="skill-match-banner">
 
             <div className="match-icon">
@@ -756,11 +675,16 @@ function MentorProfile() {
             <div>
 
               <h3>
-                {matchScore >= 70
-                  ? "Excellent skill match"
-                  : matchScore >= 35
-                  ? "Good skill match"
-                  : "Potential skill match"}
+                {peer.matchLabel ||
+                  (peer.matchedTeachSkills?.length > 0 &&
+                  peer.matchedLearnSkills?.length > 0
+                    ? matchScore >= 100
+                      ? "Perfect two-way skill match"
+                      : "Good skill match"
+                    : peer.matchedTeachSkills?.length > 0 ||
+                      peer.matchedLearnSkills?.length > 0
+                    ? "Potential learning partner"
+                    : "No direct skill match")}
               </h3>
 
               <p>
@@ -1332,4 +1256,7 @@ function MentorProfile() {
   );
 }
 
-export default MentorProfile;
+export default Peerprofile;
+
+
+

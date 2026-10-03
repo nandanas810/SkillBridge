@@ -183,106 +183,59 @@ const availabilityMatchesDay = (
 //
 // ======================================================
 
+
 const getAvailabilityRange = (availabilityText) => {
   const text = String(availabilityText)
     .trim()
     .toUpperCase();
-
-  // ----------------------------------------------------
-  // Find a time range
-  // ----------------------------------------------------
-
-  const rangeMatch = text.match(
-    /(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)\s*(?:-|–|—|TO)\s*(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)/i
-  );
+    
+const rangeMatch = text.match(
+  /(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)\s*(?:-|–|—|TO)\s*(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)/i
+);
 
   if (rangeMatch) {
     let startText = rangeMatch[1].trim();
-    let endText = rangeMatch[2].trim();
-
-    // --------------------------------------------------
-    // Handle cases such as:
-    //
-    // 6 PM - 8 PM
-    // 6 AM - 8 AM
-    //
-    // Already fine.
-    //
-    // For:
-    // 6 - 8 PM
-    //
-    // Apply PM to the starting time too.
-    // --------------------------------------------------
+    const endText = rangeMatch[2].trim();
 
     if (
       /(?:AM|PM)$/i.test(endText) &&
       !/(?:AM|PM)$/i.test(startText)
     ) {
-      const endPeriod = endText.match(
-        /(AM|PM)$/i
-      );
-
-      if (endPeriod) {
-        startText = `${startText} ${endPeriod[1]}`;
-      }
+      startText += ` ${endText.match(/(AM|PM)$/i)[1]}`;
     }
 
-    const startMinutes =
-      parseTimeToMinutes(startText);
-
-    const endMinutes =
-      parseTimeToMinutes(endText);
+    const start = parseTimeToMinutes(startText);
+    const end = parseTimeToMinutes(endText);
 
     if (
-      startMinutes !== null &&
-      endMinutes !== null &&
-      startMinutes < endMinutes
+      start !== null &&
+      end !== null &&
+      start < end
     ) {
-      return {
-        start: startMinutes,
-        end: endMinutes,
-      };
+      return { start, end };
     }
   }
 
-  // ----------------------------------------------------
-  // Common text-based periods
-  // ----------------------------------------------------
-
   if (text.includes("MORNING")) {
-    return {
-      start: 6 * 60,
-      end: 12 * 60,
-    };
+    return { start: 360, end: 720 };
   }
 
   if (text.includes("AFTERNOON")) {
-    return {
-      start: 12 * 60,
-      end: 17 * 60,
-    };
+    return { start: 720, end: 1020 };
   }
 
   if (text.includes("EVENING")) {
-    return {
-      start: 17 * 60,
-      end: 22 * 60,
-    };
+    return { start: 1020, end: 1320 };
   }
 
   if (text.includes("NIGHT")) {
-    return {
-      start: 18 * 60,
-      end: 23 * 60,
-    };
+    return { start: 1080, end: 1380 };
   }
 
   return null;
 };
 
-// ======================================================
-// CHECK PEER AVAILABILITY
-// ======================================================
+
 
 const isPeerAvailable = (
   availability,
@@ -293,15 +246,10 @@ const isPeerAvailable = (
     !Array.isArray(availability) ||
     availability.length === 0
   ) {
-    return {
-      available: false,
-      reason:
-        "This peer has not added any availability yet.",
-    };
+    return { available: true };
   }
 
-  const selectedDay =
-    getDayName(selectedDate);
+  const selectedDay = getDayName(selectedDate);
 
   if (!selectedDay) {
     return {
@@ -320,45 +268,50 @@ const isPeerAvailable = (
     };
   }
 
-  // ----------------------------------------------------
-  // Check every availability slot
-  // ----------------------------------------------------
-
   for (const slot of availability) {
-    if (
-      !availabilityMatchesDay(
-        slot,
-        selectedDay
-      )
-    ) {
+    if (!availabilityMatchesDay(slot, selectedDay)) {
       continue;
     }
 
-    const range =
-      getAvailabilityRange(slot);
+    const range = getAvailabilityRange(slot);
 
+    // Support a single time such as "Monday 4pm".
     if (!range) {
+      const text = String(slot).trim().toUpperCase();
+
+      const match = text.match(
+        /(\d{1,2}(?::\d{2})?\s*(?:AM|PM)|\b(?:[01]?\d|2[0-3]):[0-5]\d\b)/
+      );
+
+      if (match) {
+        const slotMinutes =
+          parseTimeToMinutes(match[1]);
+
+        if (
+          slotMinutes !== null &&
+          selectedMinutes === slotMinutes
+        ) {
+          return { available: true };
+        }
+      }
+
       continue;
     }
 
-    // Session time must fall inside the range.
+    // Support time ranges.
     if (
       selectedMinutes >= range.start &&
-      selectedMinutes <= range.end
+      selectedMinutes < range.end
     ) {
-      return {
-        available: true,
-      };
+      return { available: true };
     }
   }
 
   return {
     available: false,
-    reason:
-      `The peer is not available on ${selectedDay} at ${selectedTime}. Please choose a time within the peer's available slots.`,
+    reason: `The peer is not available on ${selectedDay} at ${selectedTime}. Please choose a time within the peer's available slots.`,
   };
 };
-
 // ======================================================
 // CREATE PEER LEARNING REQUEST
 // ======================================================
@@ -566,6 +519,7 @@ const getMySessions = async (req, res) => {
       });
     }
 
+   
     // ==================================================
     // ONLY RECEIVED
     // ==================================================
@@ -822,202 +776,96 @@ const updateSessionStatus = async (
 // RATE / REVIEW COMPLETED SESSION
 // ======================================================
 
-const rateCompletedSession = async (
-  req,
-  res
-) => {
+const rateCompletedSession = async (req, res) => {
   try {
-    const {
-      rating,
-      comment = "",
-    } = req.body;
-
+    const { rating, comment = "" } = req.body;
     const value = Number(rating);
 
-    // ==================================================
-    // VALIDATE RATING
-    // ==================================================
-
-    if (
-      !Number.isInteger(value) ||
-      value < 1 ||
-      value > 5
-    ) {
-      return res.status(400).json({
-        message:
-          "Rating must be between 1 and 5",
-      });
+    if (!Number.isInteger(value) || value < 1 || value > 5) {
+      return res.status(400).json({ message: "Rating must be between 1 and 5" });
     }
 
-    // ==================================================
-    // FIND SESSION
-    // ==================================================
-
-    const session = await Session.findById(
-      req.params.id
-    );
-
+    const session = await Session.findById(req.params.id);
     if (!session) {
-      return res.status(404).json({
-        message: "Session not found",
-      });
+      return res.status(404).json({ message: "Session not found" });
     }
-
-    // ==================================================
-    // MUST BE COMPLETED
-    // ==================================================
 
     if (session.status !== "Completed") {
       return res.status(400).json({
-        message:
-          "You can rate and review a peer only after the session is completed.",
+        message: "You can rate and review a peer only after the session is completed.",
       });
     }
 
-    // ==================================================
-    // ONLY SENDER CAN REVIEW
-    // ==================================================
+    const reviewerId = req.user.id.toString();
+    const senderId = session.sender.toString();
+    const receiverId = session.receiver.toString();
 
-    if (
-      session.sender.toString() !==
-      req.user.id.toString()
-    ) {
+    let peerId;
+    if (reviewerId === senderId) {
+      peerId = session.receiver;
+    } else if (reviewerId === receiverId) {
+      peerId = session.sender;
+    } else {
       return res.status(403).json({
-        message:
-          "Only the student who sent the request can submit the review.",
+        message: "Only students who participated in this session can submit a review.",
       });
     }
 
-    // ==================================================
-    // FIND RECEIVER
-    // ==================================================
-
-    const peer = await User.findById(
-      session.receiver
-    );
-
+    const peer = await User.findById(peerId);
     if (!peer) {
-      return res.status(404).json({
-        message:
-          "Receiving student not found",
-      });
+      return res.status(404).json({ message: "The other student was not found." });
     }
 
-    // ==================================================
-    // FIND REVIEWER
-    // ==================================================
-
-    const reviewer = await User.findById(
-      req.user.id
-    );
-
+    const reviewer = await User.findById(reviewerId);
     if (!reviewer) {
-      return res.status(404).json({
-        message:
-          "Reviewer not found",
-      });
+      return res.status(404).json({ message: "Reviewer not found." });
     }
 
-    // ==================================================
-    // MAKE SURE REVIEWS EXISTS
-    // ==================================================
+    if (!peer.reviews) peer.reviews = [];
 
-    if (!peer.reviews) {
-      peer.reviews = [];
-    }
-
-    // ==================================================
-    // CHECK EXISTING REVIEW
-    // ==================================================
-
-    const existingIndex =
-      peer.reviews.findIndex(
-        (review) =>
-          review.reviewer &&
-          review.reviewer.toString() ===
-            req.user.id.toString()
-      );
-
-    // ==================================================
-    // NEW REVIEW
-    // ==================================================
+    // One review per reviewer for this specific session.
+    // If submitted again, update that same review rather than creating duplicates.
+    const existingIndex = peer.reviews.findIndex((review) =>
+      review.reviewer &&
+      review.reviewer.toString() === reviewerId &&
+      review.sessionId &&
+      review.sessionId.toString() === session._id.toString()
+    );
 
     const newReview = {
       reviewer: reviewer._id,
       reviewerName: reviewer.name,
+      sessionId: session._id,
       rating: value,
-      comment: String(comment).trim(),
+      comment: String(comment).trim().slice(0, 2000),
     };
 
-    // ==================================================
-    // UPDATE EXISTING REVIEW
-    // ==================================================
-
     if (existingIndex >= 0) {
-      peer.reviews[existingIndex] =
-        newReview;
+      peer.reviews[existingIndex] = newReview;
     } else {
       peer.reviews.push(newReview);
     }
 
-    // ==================================================
-    // REVIEW COUNT
-    // ==================================================
-
-    peer.reviewCount =
-      peer.reviews.length;
-
-    // ==================================================
-    // CALCULATE RATING
-    // ==================================================
-
-    const totalRating =
-      peer.reviews.reduce(
-        (sum, review) =>
-          sum +
-          Number(review.rating || 0),
-        0
-      );
-
-    peer.rating =
-      peer.reviewCount > 0
-        ? Number(
-            (
-              totalRating /
-              peer.reviewCount
-            ).toFixed(1)
-          )
-        : 0;
-
-    // ==================================================
-    // SAVE USER
-    // ==================================================
+    peer.reviewCount = peer.reviews.length;
+    const totalRating = peer.reviews.reduce(
+      (sum, review) => sum + Number(review.rating || 0),
+      0
+    );
+    peer.rating = peer.reviewCount > 0
+      ? Number((totalRating / peer.reviewCount).toFixed(1))
+      : 0;
 
     await peer.save();
 
-    // ==================================================
-    // RESPONSE
-    // ==================================================
-
-    res.json({
-      message:
-        "Rating and review submitted successfully",
-
+    return res.json({
+      message: "Rating and review submitted successfully",
       rating: peer.rating,
-
-      reviewCount:
-        peer.reviewCount,
+      reviewCount: peer.reviewCount,
     });
   } catch (error) {
-    console.error(
-      "RATE COMPLETED SESSION ERROR:",
-      error
-    );
-
-    res.status(500).json({
-      message:
-        "Failed to submit rating and review",
-
+    console.error("RATE COMPLETED SESSION ERROR:", error);
+    return res.status(500).json({
+      message: "Failed to submit rating and review",
       error: error.message,
     });
   }

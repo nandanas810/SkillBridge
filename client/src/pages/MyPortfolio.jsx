@@ -1,558 +1,230 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import "../styles/Mentorprofile.css";
+import { useNavigate } from "react-router-dom";
+import "../styles/MyPortfolio.css";
 
-function MentorProfile() {
+function MyPortfolio() {
   const navigate = useNavigate();
-  const location = useLocation();
 
-  // This page is now a PEER profile.
-  // The old route/state name "mentor" is kept only
-  // so the existing navigation continues to work.
-  const peer = location.state?.mentor;
+  // =========================
+  // PORTFOLIO DATA
+  // =========================
 
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [bio, setBio] = useState("");
+  const [academicProjects, setAcademicProjects] = useState([]);
+  const [certificates, setCertificates] = useState([]);
+
+  // =========================
+  // PROJECT FORM
+  // =========================
+
+  const [projectTitle, setProjectTitle] = useState("");
+  const [projectDescription, setProjectDescription] =
+    useState("");
+
+  // =========================
+  // CERTIFICATE FORM
+  // =========================
+
+  const [certificateName, setCertificateName] =
+    useState("");
+
+  const [certificateIssuer, setCertificateIssuer] =
+    useState("");
+
+  const [certificateIssuedDate, setCertificateIssuedDate] =
+    useState("");
+
+  // =========================
+  // STATUS
+  // =========================
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
   const [message, setMessage] = useState("");
-
-  const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
-  const [timeDropdownOpen, setTimeDropdownOpen] =
-    useState(false);
-
-  const timeDropdownRef = useRef(null);
-
-  // =========================================
-  // CLOSE TIME DROPDOWN WHEN CLICKING OUTSIDE
-  // =========================================
+  // =========================
+  // LOAD PORTFOLIO
+  // =========================
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        timeDropdownRef.current &&
-        !timeDropdownRef.current.contains(event.target)
-      ) {
-        setTimeDropdownOpen(false);
-      }
-    };
+    const fetchPortfolio = async () => {
+      try {
+        const token = sessionStorage.getItem("token");
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
-
-    return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
-    };
-  }, []);
-
-  if (!peer) {
-    return (
-      <div className="mentor-profile-page">
-        <div className="mentor-profile-card not-found">
-          <div className="not-found-icon">🔍</div>
-
-          <h2>Peer not found</h2>
-
-          <p>
-            The peer profile could not be loaded.
-          </p>
-
-          <button
-            className="back-button"
-            onClick={() => navigate("/mentors")}
-          >
-            ← Back to Peers
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const teachSkills =
-    peer.skillsToTeach ||
-    peer.skills ||
-    [];
-
-  const learnSkills =
-    peer.skillsToLearn || [];
-
-  const availability =
-    peer.availability || [];
-
-  const reviews =
-    peer.reviews || [];
-
-  const badges =
-    peer.badges || [];
-
-  const ratingValue =
-    Number(peer.rating || 0);
-
-  const reviewCount =
-    peer.reviewCount || 0;
-
-  const matchScore =
-    peer.matchScore || 0;
-
-  // =====================================================
-  // GENERATE TIME OPTIONS
-  // =====================================================
-
-  const generateTimeOptions = () => {
-    const options = [];
-
-    for (let hour = 0; hour < 24; hour++) {
-      for (
-        let minute = 0;
-        minute < 60;
-        minute += 30
-      ) {
-        const period =
-          hour >= 12 ? "PM" : "AM";
-
-        let displayHour =
-          hour % 12;
-
-        if (displayHour === 0) {
-          displayHour = 12;
+        if (!token) {
+          navigate("/login");
+          return;
         }
 
-        const displayMinute =
-          String(minute).padStart(2, "0");
-
-        options.push(
-          `${String(displayHour).padStart(
-            2,
-            "0"
-          )}:${displayMinute} ${period}`
-        );
-      }
-    }
-
-    return options;
-  };
-
-  const timeOptions =
-    generateTimeOptions();
-
-  // =====================================================
-  // FRONTEND AVAILABILITY HELPERS
-  // =====================================================
-
-  const getDayName = (dateString) => {
-    if (!dateString) {
-      return null;
-    }
-
-    const [year, month, day] =
-      dateString.split("-").map(Number);
-
-    const selectedDate = new Date(
-      Date.UTC(
-        year,
-        month - 1,
-        day
-      )
-    );
-
-    const days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-
-    return days[
-      selectedDate.getUTCDay()
-    ];
-  };
-
-  const parseTimeToMinutes = (
-    timeText
-  ) => {
-    if (!timeText) {
-      return null;
-    }
-
-    const text = String(timeText)
-      .trim()
-      .toUpperCase()
-      .replace(/\./g, "");
-
-    // 12-hour format
-    const twelveHourMatch =
-      text.match(
-        /^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/
-      );
-
-    if (twelveHourMatch) {
-      let hour = Number(
-        twelveHourMatch[1]
-      );
-
-      const minute = Number(
-        twelveHourMatch[2] || 0
-      );
-
-      const period =
-        twelveHourMatch[3];
-
-      if (
-        hour < 1 ||
-        hour > 12 ||
-        minute < 0 ||
-        minute > 59
-      ) {
-        return null;
-      }
-
-      if (
-        period === "AM" &&
-        hour === 12
-      ) {
-        hour = 0;
-      }
-
-      if (
-        period === "PM" &&
-        hour !== 12
-      ) {
-        hour += 12;
-      }
-
-      return (
-        hour * 60 + minute
-      );
-    }
-
-    // 24-hour format
-    const twentyFourHourMatch =
-      text.match(
-        /^(\d{1,2}):(\d{2})$/
-      );
-
-    if (twentyFourHourMatch) {
-      const hour = Number(
-        twentyFourHourMatch[1]
-      );
-
-      const minute = Number(
-        twentyFourHourMatch[2]
-      );
-
-      if (
-        hour < 0 ||
-        hour > 23 ||
-        minute < 0 ||
-        minute > 59
-      ) {
-        return null;
-      }
-
-      return (
-        hour * 60 + minute
-      );
-    }
-
-    return null;
-  };
-
-  const availabilityMatchesDay = (
-    availabilityText,
-    selectedDay
-  ) => {
-    const text = String(
-      availabilityText
-    )
-      .trim()
-      .toLowerCase();
-
-    const day =
-      selectedDay.toLowerCase();
-
-    if (text.includes(day)) {
-      return true;
-    }
-
-    // Weekdays = Monday-Friday
-    if (
-      text.includes("weekday") &&
-      [
-        "monday",
-        "tuesday",
-        "wednesday",
-        "thursday",
-        "friday",
-      ].includes(day)
-    ) {
-      return true;
-    }
-
-    // Weekends = Saturday-Sunday
-    if (
-      text.includes("weekend") &&
-      [
-        "saturday",
-        "sunday",
-      ].includes(day)
-    ) {
-      return true;
-    }
-
-    return false;
-  };
-
-  const getAvailabilityRange = (
-    availabilityText
-  ) => {
-    const text = String(
-      availabilityText
-    )
-      .trim()
-      .toUpperCase();
-
-    const rangeMatch =
-      text.match(
-        /(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)\s*(?:-|–|—|TO)\s*(\d{1,2}(?::\d{2})?\s*(?:AM|PM)?)/
-      );
-
-    if (rangeMatch) {
-      let startText =
-        rangeMatch[1].trim();
-
-      let endText =
-        rangeMatch[2].trim();
-
-      // Example:
-      // 6 - 8 PM
-      //
-      // Apply PM to starting time.
-      if (
-        /(?:AM|PM)$/i.test(
-          endText
-        ) &&
-        !/(?:AM|PM)$/i.test(
-          startText
-        )
-      ) {
-        const period =
-          endText.match(
-            /(AM|PM)$/i
-          );
-
-        if (period) {
-          startText =
-            `${startText} ${period[1]}`;
-        }
-      }
-
-      const startMinutes =
-        parseTimeToMinutes(
-          startText
+        const response = await axios.get(
+          "http://localhost:5000/api/users/student-portfolio",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
-      const endMinutes =
-        parseTimeToMinutes(
-          endText
+        const portfolio =
+          response.data.portfolio || {};
+
+        setBio(portfolio.bio || "");
+
+        setAcademicProjects(
+          portfolio.academicProjects || []
         );
 
-      if (
-        startMinutes !== null &&
-        endMinutes !== null &&
-        startMinutes < endMinutes
-      ) {
-        return {
-          start: startMinutes,
-          end: endMinutes,
-        };
-      }
-    }
-
-    // Common periods
-    if (
-      text.includes("MORNING")
-    ) {
-      return {
-        start: 6 * 60,
-        end: 12 * 60,
-      };
-    }
-
-    if (
-      text.includes("AFTERNOON")
-    ) {
-      return {
-        start: 12 * 60,
-        end: 17 * 60,
-      };
-    }
-
-    if (
-      text.includes("EVENING")
-    ) {
-      return {
-        start: 17 * 60,
-        end: 22 * 60,
-      };
-    }
-
-    if (
-      text.includes("NIGHT")
-    ) {
-      return {
-        start: 18 * 60,
-        end: 23 * 60,
-      };
-    }
-
-    return null;
-  };
-
-  const checkPeerAvailability = () => {
-    if (
-      !Array.isArray(availability) ||
-      availability.length === 0
-    ) {
-      return {
-        available: false,
-        reason:
-          "This peer has not added any availability yet.",
-      };
-    }
-
-    if (!date || !time) {
-      return {
-        available: false,
-        reason:
-          "Please select a date and time.",
-      };
-    }
-
-    const selectedDay =
-      getDayName(date);
-
-    const selectedMinutes =
-      parseTimeToMinutes(time);
-
-    if (!selectedDay) {
-      return {
-        available: false,
-        reason:
-          "Invalid session date.",
-      };
-    }
-
-    if (
-      selectedMinutes === null
-    ) {
-      return {
-        available: false,
-        reason:
-          "Invalid session time.",
-      };
-    }
-
-    for (
-      const slot of availability
-    ) {
-      if (
-        !availabilityMatchesDay(
-          slot,
-          selectedDay
-        )
-      ) {
-        continue;
-      }
-
-      const range =
-        getAvailabilityRange(
-          slot
+        setCertificates(
+          portfolio.certificates || []
+        );
+      } catch (err) {
+        console.error(
+          "PORTFOLIO ERROR:",
+          err
         );
 
-      if (!range) {
-        continue;
+        setError(
+          err.response?.data?.message ||
+            "Failed to load portfolio."
+        );
+      } finally {
+        setLoading(false);
       }
-
-      if (
-        selectedMinutes >=
-          range.start &&
-        selectedMinutes <=
-          range.end
-      ) {
-        return {
-          available: true,
-        };
-      }
-    }
-
-    return {
-      available: false,
-      reason:
-        `The peer is not available on ${selectedDay} at ${time}. Please choose a time within the peer's available slots.`,
     };
-  };
 
-  // =====================================================
-  // SEND PEER REQUEST
-  // =====================================================
+    fetchPortfolio();
+  }, [navigate]);
 
-  const requestSession = async (
-    e
-  ) => {
-    e.preventDefault();
+  // =========================
+  // ADD PROJECT
+  // =========================
 
-    setNotice("");
+  const addProject = () => {
+    if (
+      !projectTitle.trim() ||
+      !projectDescription.trim()
+    ) {
+      setError(
+        "Please enter project title and description."
+      );
+
+      setMessage("");
+      return;
+    }
+
+    setAcademicProjects([
+      ...academicProjects,
+      {
+        title: projectTitle.trim(),
+        description:
+          projectDescription.trim(),
+      },
+    ]);
+
+    setProjectTitle("");
+    setProjectDescription("");
+
     setError("");
+    setMessage("");
+  };
 
+  // =========================
+  // DELETE PROJECT
+  // =========================
+
+  const deleteProject = (index) => {
+    const updatedProjects =
+      academicProjects.filter(
+        (_, i) => i !== index
+      );
+
+    setAcademicProjects(
+      updatedProjects
+    );
+
+    setMessage("");
+  };
+
+  // =========================
+  // ADD CERTIFICATE
+  // =========================
+
+  const addCertificate = () => {
+    if (
+      !certificateName.trim() ||
+      !certificateIssuer.trim() ||
+      !certificateIssuedDate
+    ) {
+      setError(
+        "Please enter certificate name, issuer and issued date."
+      );
+
+      setMessage("");
+      return;
+    }
+
+    setCertificates([
+      ...certificates,
+      {
+        name: certificateName.trim(),
+        issuer:
+          certificateIssuer.trim(),
+        issuedDate: certificateIssuedDate,
+      },
+    ]);
+
+    setCertificateName("");
+    setCertificateIssuer("");
+    setCertificateIssuedDate("");
+
+    setError("");
+    setMessage("");
+  };
+
+  // =========================
+  // DELETE CERTIFICATE
+  // =========================
+
+  const deleteCertificate = (index) => {
+    const updatedCertificates =
+      certificates.filter(
+        (_, i) => i !== index
+      );
+
+    setCertificates(
+      updatedCertificates
+    );
+
+    setMessage("");
+  };
+
+  // =========================
+  // SAVE PORTFOLIO
+  // =========================
+
+  const savePortfolio = async () => {
     try {
+      setMessage("");
+      setError("");
+      setSaving(true);
+
       const token =
-        localStorage.getItem(
-          "token"
-        );
+        sessionStorage.getItem("token");
 
       if (!token) {
         navigate("/login");
         return;
       }
 
-      // Check frontend availability
-      const availabilityCheck =
-        checkPeerAvailability();
-
-      if (
-        !availabilityCheck.available
-      ) {
-        setError(
-          availabilityCheck.reason
-        );
-        return;
-      }
-
-      // Check user ID
-      if (!peer.userId) {
-        setError(
-          "Peer user ID is missing. Please refresh the peer list."
-        );
-        return;
-      }
-
-      // Send request
-      await axios.post(
-        "http://localhost:5000/api/sessions",
+      await axios.put(
+        "http://localhost:5000/api/users/student-portfolio",
         {
-          receiver: peer.userId,
-          date,
-          time,
-          message,
+          bio,
+          academicProjects,
+          certificates,
         },
         {
           headers: {
@@ -562,727 +234,485 @@ function MentorProfile() {
         }
       );
 
-      setNotice(
-        "Peer-learning request sent successfully!"
+      setMessage(
+        "Portfolio updated successfully!"
       );
-
-      setDate("");
-      setTime("");
-      setMessage("");
     } catch (err) {
       console.error(
-        "SEND PEER REQUEST ERROR:",
+        "SAVE PORTFOLIO ERROR:",
         err
       );
 
       setError(
         err.response?.data?.message ||
-          "Could not send peer-learning request."
+          "Failed to update portfolio."
       );
+    } finally {
+      setSaving(false);
     }
   };
 
+  // =========================
+  // LOADING
+  // =========================
+
+  if (loading) {
+    return (
+      <div className="portfolio-loading">
+        <div className="portfolio-loading-card">
+          Loading your portfolio...
+        </div>
+      </div>
+    );
+  }
+
+  // =========================
+  // PAGE
+  // =========================
+
   return (
-    <div className="mentor-profile-page">
+    <div className="portfolio-page">
 
-      {/* ================= NAVBAR ================= */}
+      {/* =========================
+          NAVBAR
+      ========================= */}
 
-      <nav className="dashboard-navbar">
+      <nav className="portfolio-navbar">
 
-        <div className="dashboard-logo">
+        <div className="portfolio-logo">
           SkillBridge
         </div>
 
         <button
-          className="logout-button"
+          type="button"
+          className="portfolio-dashboard-btn"
           onClick={() =>
-            navigate("/mentors")
+            navigate("/dashboard")
           }
         >
-          ← Back to Peers
+          ← Dashboard
         </button>
 
       </nav>
 
-      <main className="mentor-profile-content">
+      {/* =========================
+          MAIN CONTENT
+      ========================= */}
 
-        {/* ================= PROFILE HERO ================= */}
+      <main className="portfolio-content">
 
-        <section className="profile-hero-card">
+        {/* =========================
+            HEADER
+        ========================= */}
 
-          <div className="profile-hero-top">
+        <section className="portfolio-header">
 
-            <div className="large-mentor-avatar">
-              {peer.name
-                ?.charAt(0)
-                ?.toUpperCase()}
+          <span className="portfolio-label">
+            MY PROFILE
+          </span>
+
+          <h1>
+            My Portfolio
+          </h1>
+
+          <p>
+            Showcase your bio, academic
+            projects and certificates.
+          </p>
+
+        </section>
+
+        {/* =========================
+            SUCCESS MESSAGE
+        ========================= */}
+
+        {message && (
+          <div className="portfolio-message">
+            <span>✓</span>
+            {message}
+          </div>
+        )}
+
+        {/* =========================
+            ERROR MESSAGE
+        ========================= */}
+
+        {error && (
+          <div className="portfolio-error">
+            {error}
+          </div>
+        )}
+
+        {/* =========================
+            BIO
+        ========================= */}
+
+        <section className="portfolio-section">
+
+          <div className="portfolio-section-header">
+
+            <div className="portfolio-section-icon">
+              👋
             </div>
 
-            <div className="profile-main-info">
+            <div>
 
-              <div className="profile-name-row">
+              <h2>
+                About Me
+              </h2>
 
-                <h1>
-                  {peer.name}
-                </h1>
-
-                {badges.length > 0 && (
-                  <span className="profile-badge">
-                    🏅 {badges[0]}
-                  </span>
-                )}
-
-              </div>
-
-              <p className="profile-email">
-                {peer.email}
-              </p>
-
-              <div className="profile-rating">
-
-                <span className="rating-number">
-                  ★ {ratingValue.toFixed(1)}
-                </span>
-
-                <span className="rating-reviews">
-                  {reviewCount}{" "}
-                  {reviewCount === 1
-                    ? "review"
-                    : "reviews"}
-                </span>
-
-              </div>
-
-              <p className="profile-tagline">
-                Peer learner • Skill exchanger • Student
+              <p>
+                Write a short introduction
+                about yourself.
               </p>
 
             </div>
 
           </div>
 
-          {/* ================= PROFILE STATS ================= */}
+          <div className="portfolio-form">
 
-          <div className="profile-stats">
-
-            <div className="profile-stat">
-              <strong>
-                {teachSkills.length}
-              </strong>
-
-              <span>
-                Skills to teach
-              </span>
-            </div>
-
-            <div className="profile-stat">
-              <strong>
-                {learnSkills.length}
-              </strong>
-
-              <span>
-                Skills to learn
-              </span>
-            </div>
-
-            <div className="profile-stat">
-              <strong>
-                {reviewCount}
-              </strong>
-
-              <span>
-                Reviews
-              </span>
-            </div>
-
-            <div className="profile-stat">
-              <strong>
-                {matchScore > 0
-                  ? `${matchScore}%`
-                  : "—"}
-              </strong>
-
-              <span>
-                Skill match
-              </span>
-            </div>
+            <textarea
+              className="portfolio-textarea"
+              placeholder="Tell others about yourself, your interests, academic background, goals, or anything you would like to share..."
+              value={bio}
+              onChange={(e) =>
+                setBio(e.target.value)
+              }
+              rows="6"
+            />
 
           </div>
 
         </section>
 
-        {/* ================= MATCH BANNER ================= */}
+        {/* =========================
+            ACADEMIC PROJECTS
+        ========================= */}
 
-        {matchScore > 0 && (
-          <section className="skill-match-banner">
+        <section className="portfolio-section">
 
-            <div className="match-icon">
-              🎯
+          <div className="portfolio-section-header">
+
+            <div className="portfolio-section-icon">
+              🎓
             </div>
 
             <div>
 
-              <h3>
-                {matchScore >= 70
-                  ? "Excellent skill match"
-                  : matchScore >= 35
-                  ? "Good skill match"
-                  : "Potential skill match"}
-              </h3>
+              <h2>
+                Academic Projects
+              </h2>
 
               <p>
-                This peer is recommended based
-                on your learning and teaching
-                skills.
+                Add projects you have
+                completed as part of your
+                academic journey.
               </p>
 
             </div>
 
-          </section>
-        )}
-
-        {/* ================= TWO COLUMN ================= */}
-
-        <div className="profile-grid">
-
-          {/* ================= LEFT ================= */}
-
-          <div>
-
-            {/* ABOUT */}
-
-            <section className="profile-section">
-
-              <div className="section-heading">
-
-                <span>👋</span>
-
-                <div>
-
-                  <h2>
-                    About this peer
-                  </h2>
-
-                  <p>
-                    Get to know your potential
-                    learning partner
-                  </p>
-
-                </div>
-
-              </div>
-
-              <p className="about-text">
-                {peer.bio ||
-                  "This student is ready to learn, teach and exchange skills with other students through SkillBridge."}
-              </p>
-
-            </section>
-
-            {/* CAN TEACH */}
-
-            <section className="profile-section">
-
-              <div className="section-heading">
-
-                <span>📚</span>
-
-                <div>
-
-                  <h2>
-                    Skills they can teach
-                  </h2>
-
-                  <p>
-                    Knowledge this peer can
-                    share with you
-                  </p>
-
-                </div>
-
-              </div>
-
-              {teachSkills.length > 0 ? (
-
-                <div className="profile-skills">
-
-                  {teachSkills.map(
-                    (skill, index) => (
-                      <span
-                        className="profile-teach-tag"
-                        key={`${skill}-${index}`}
-                      >
-                        {skill}
-                      </span>
-                    )
-                  )}
-
-                </div>
-
-              ) : (
-
-                <p className="empty-text">
-                  No teaching skills added yet.
-                </p>
-
-              )}
-
-            </section>
-
-            {/* WANTS TO LEARN */}
-
-            <section className="profile-section">
-
-              <div className="section-heading">
-
-                <span>🎯</span>
-
-                <div>
-
-                  <h2>
-                    Skills they want to learn
-                  </h2>
-
-                  <p>
-                    Skills this peer is
-                    currently interested in
-                  </p>
-
-                </div>
-
-              </div>
-
-              {learnSkills.length > 0 ? (
-
-                <div className="profile-skills">
-
-                  {learnSkills.map(
-                    (skill, index) => (
-                      <span
-                        className="profile-learn-tag"
-                        key={`${skill}-${index}`}
-                      >
-                        {skill}
-                      </span>
-                    )
-                  )}
-
-                </div>
-
-              ) : (
-
-                <p className="empty-text">
-                  No learning interests added yet.
-                </p>
-
-              )}
-
-            </section>
-
-            {/* AVAILABILITY */}
-
-            <section className="profile-section">
-
-              <div className="section-heading">
-
-                <span>🕐</span>
-
-                <div>
-
-                  <h2>
-                    Availability
-                  </h2>
-
-                  <p>
-                    Preferred times for
-                    peer-learning sessions
-                  </p>
-
-                </div>
-
-              </div>
-
-              {availability.length > 0 ? (
-
-                <div className="availability-list">
-
-                  {availability.map(
-                    (slot, index) => (
-                      <div
-                        className="availability-item"
-                        key={index}
-                      >
-                        <span>✓</span>
-                        <p>{slot}</p>
-                      </div>
-                    )
-                  )}
-
-                </div>
-
-              ) : (
-
-                <div className="availability-item">
-                  <span>✓</span>
-
-                  <p>
-                    This peer has not added
-                    any availability yet.
-                  </p>
-                </div>
-
-              )}
-
-            </section>
-
-            {/* REVIEWS */}
-
-            <section className="profile-section">
-
-              <div className="section-heading">
-
-                <span>⭐</span>
-
-                <div>
-
-                  <h2>
-                    Student reviews
-                  </h2>
-
-                  <p>
-                    What other students say
-                    about this peer
-                  </p>
-
-                </div>
-
-              </div>
-
-              {reviews.length > 0 ? (
-
-                <div className="reviews-list">
-
-                  {reviews.map(
-                    (r, index) => (
-                      <div
-                        className="review-card"
-                        key={index}
-                      >
-
-                        <div className="review-top">
-
-                          <div className="reviewer-avatar">
-                            {r.reviewerName
-                              ?.charAt(0)
-                              ?.toUpperCase() ||
-                              "S"}
-                          </div>
-
-                          <div>
-
-                            <strong>
-                              {r.reviewerName ||
-                                "Student"}
-                            </strong>
-
-                            <div className="review-stars">
-                              {"★".repeat(
-                                Number(
-                                  r.rating || 5
-                                )
-                              )}
-                            </div>
-
-                          </div>
-
-                        </div>
-
-                        <p>
-                          {r.comment ||
-                            "Great peer-learning experience."}
-                        </p>
-
-                      </div>
-                    )
-                  )}
-
-                </div>
-
-              ) : (
-
-                <div className="no-reviews">
-
-                  <span>💬</span>
-
-                  <p>
-                    No reviews yet. Reviews
-                    can be submitted after a
-                    completed learning session.
-                  </p>
-
-                </div>
-
-              )}
-
-            </section>
+          </div>
+
+          {/* PROJECT FORM */}
+
+          <div className="portfolio-form">
+
+            <input
+              className="portfolio-input"
+              type="text"
+              placeholder="Project title"
+              value={projectTitle}
+              onChange={(e) =>
+                setProjectTitle(
+                  e.target.value
+                )
+              }
+            />
+
+            <textarea
+              className="portfolio-textarea"
+              placeholder="Describe your project..."
+              value={projectDescription}
+              onChange={(e) =>
+                setProjectDescription(
+                  e.target.value
+                )
+              }
+              rows="4"
+            />
+
+            <button
+              type="button"
+              className="portfolio-add-btn"
+              onClick={addProject}
+            >
+              + Add Project
+            </button>
 
           </div>
 
-          {/* ================= RIGHT ================= */}
+          {/* PROJECT LIST */}
 
-          <div className="profile-sidebar">
+          <div className="portfolio-items">
 
-            {/* REQUEST SESSION */}
+            {academicProjects.length === 0 ? (
 
-            <section className="request-card">
+              <div className="portfolio-empty">
 
-              <div className="request-card-header">
-
-                <span>🤝</span>
-
-                <div>
-
-                  <h2>
-                    Learn with{" "}
-                    {peer.name
-                      ?.split(" ")[0]}
-                  </h2>
-
-                  <p>
-                    Send a peer-learning
-                    request
-                  </p>
-
+                <div className="empty-icon">
+                  📁
                 </div>
+
+                <h3>
+                  No academic projects yet
+                </h3>
+
+                <p>
+                  Add your first academic
+                  project using the form
+                  above.
+                </p>
 
               </div>
 
-              {notice && (
-                <div className="success-message">
-                  ✓ {notice}
-                </div>
-              )}
+            ) : (
 
-              {error && (
-                <div className="error-message">
-                  ⚠ {error}
-                </div>
-              )}
-
-              <form
-                onSubmit={requestSession}
-              >
-
-                {/* DATE */}
-
-                <div className="form-group">
-
-                  <label>
-                    Date
-                  </label>
-
-                  <input
-                    type="date"
-                    value={date}
-                    min={
-                      new Date()
-                        .toISOString()
-                        .split("T")[0]
-                    }
-                    onChange={(e) => {
-                      setDate(
-                        e.target.value
-                      );
-                      setError("");
-                    }}
-                    required
-                  />
-
-                </div>
-
-                {/* TIME */}
-
-                <div className="form-group">
-
-                  <label>
-                    Time
-                  </label>
+              academicProjects.map(
+                (project, index) => (
 
                   <div
-                    className="custom-time-picker"
-                    ref={timeDropdownRef}
+                    className="portfolio-item-card"
+                    key={index}
                   >
+
+                    <div className="portfolio-item-icon">
+                      📁
+                    </div>
+
+                    <div className="portfolio-item-content">
+
+                      <h3>
+                        {project.title}
+                      </h3>
+
+                      <p>
+                        {project.description}
+                      </p>
+
+                    </div>
 
                     <button
                       type="button"
-                      className={`custom-time-button ${
-                        timeDropdownOpen
-                          ? "active"
-                          : ""
-                      }`}
-                      onClick={() => {
-                        setTimeDropdownOpen(
-                          (prev) => !prev
-                        );
-                        setError("");
-                      }}
+                      className="delete-btn"
+                      onClick={() =>
+                        deleteProject(index)
+                      }
                     >
-
-                      <span
-                        className={
-                          time
-                            ? "selected-time"
-                            : "time-placeholder"
-                        }
-                      >
-                        {time ||
-                          "Select time"}
-                      </span>
-
-                      <span
-                        className={`time-arrow ${
-                          timeDropdownOpen
-                            ? "open"
-                            : ""
-                        }`}
-                      >
-                        ▾
-                      </span>
-
+                      Delete
                     </button>
-
-                    {timeDropdownOpen && (
-                      <div className="custom-time-menu">
-
-                        {timeOptions.map(
-                          (option) => (
-                            <button
-                              type="button"
-                              key={option}
-                              className={`custom-time-option ${
-                                time === option
-                                  ? "selected"
-                                  : ""
-                              }`}
-                              onClick={() => {
-                                setTime(
-                                  option
-                                );
-                                setTimeDropdownOpen(
-                                  false
-                                );
-                                setError("");
-                              }}
-                            >
-                              {option}
-                            </button>
-                          )
-                        )}
-
-                      </div>
-                    )}
 
                   </div>
 
-                </div>
+                )
+              )
 
-                {/* MESSAGE */}
-
-                <div className="form-group">
-
-                  <label>
-                    Message
-                  </label>
-
-                  <textarea
-                    placeholder={`Hi ${
-                      peer.name?.split(" ")[0]
-                    }, I would like to learn ${
-                      teachSkills[0] ||
-                      "this skill"
-                    } from you...`}
-                    value={message}
-                    onChange={(e) =>
-                      setMessage(
-                        e.target.value
-                      )
-                    }
-                    rows="5"
-                  />
-
-                </div>
-
-                <button
-                  type="submit"
-                  className="session-submit-button"
-                >
-                  Send Peer Request →
-                </button>
-
-              </form>
-
-              <div className="request-note">
-                💡 Select a date and time
-                that falls within this
-                peer's availability.
-              </div>
-
-            </section>
-
-            {/* SKILL EXCHANGE */}
-
-            <section className="exchange-card">
-
-              <h3>
-                🔄 Skill Exchange
-              </h3>
-
-              <p>
-                SkillBridge works both ways.
-                You can learn from this peer
-                while also sharing your own
-                knowledge.
-              </p>
-
-              {peer.matchedTeachSkills
-                ?.length > 0 && (
-
-                <div className="match-detail">
-
-                  <span>
-                    They can teach you
-                  </span>
-
-                  <strong>
-                    {peer.matchedTeachSkills.join(
-                      ", "
-                    )}
-                  </strong>
-
-                </div>
-              )}
-
-              {peer.matchedLearnSkills
-                ?.length > 0 && (
-
-                <div className="match-detail">
-
-                  <span>
-                    You can teach them
-                  </span>
-
-                  <strong>
-                    {peer.matchedLearnSkills.join(
-                      ", "
-                    )}
-                  </strong>
-
-                </div>
-              )}
-
-            </section>
+            )}
 
           </div>
+
+        </section>
+
+        {/* =========================
+            CERTIFICATES
+        ========================= */}
+
+        <section className="portfolio-section">
+
+          <div className="portfolio-section-header">
+
+            <div className="portfolio-section-icon certificate-icon">
+              📜
+            </div>
+
+            <div>
+
+              <h2>
+                Certificates
+              </h2>
+
+              <p>
+                Showcase certificates and
+                achievements you have earned.
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* CERTIFICATE FORM */}
+
+          <div className="portfolio-form">
+
+            <input
+              className="portfolio-input"
+              type="text"
+              placeholder="Certificate name"
+              value={certificateName}
+              onChange={(e) =>
+                setCertificateName(
+                  e.target.value
+                )
+              }
+            />
+
+            <input
+              className="portfolio-input"
+              type="text"
+              placeholder="Issued by"
+              value={certificateIssuer}
+              onChange={(e) =>
+                setCertificateIssuer(
+                  e.target.value
+                )
+              }
+            />
+
+            <label>
+              Issued date
+            </label>
+
+            <input
+              className="portfolio-input"
+              type="date"
+              value={certificateIssuedDate}
+              onChange={(e) =>
+                setCertificateIssuedDate(
+                  e.target.value
+                )
+              }
+            />
+
+            <button
+              type="button"
+              className="portfolio-add-btn"
+              onClick={addCertificate}
+            >
+              + Add Certificate
+            </button>
+
+          </div>
+
+          {/* CERTIFICATE LIST */}
+
+          <div className="portfolio-items">
+
+            {certificates.length === 0 ? (
+
+              <div className="portfolio-empty">
+
+                <div className="empty-icon">
+                  📄
+                </div>
+
+                <h3>
+                  No certificates yet
+                </h3>
+
+                <p>
+                  Add your certificates and
+                  achievements above.
+                </p>
+
+              </div>
+
+            ) : (
+
+              certificates.map(
+                (certificate, index) => (
+
+                  <div
+                    className="portfolio-item-card certificate-card"
+                    key={index}
+                  >
+
+                    <div className="portfolio-item-icon">
+                      📜
+                    </div>
+
+                    <div className="portfolio-item-content">
+
+                      <h3>
+                        {certificate.name}
+                      </h3>
+
+                      <p>
+                        Issued by:{" "}
+                        <strong>
+                          {certificate.issuer}
+                        </strong>
+                      </p>
+
+                      {certificate.issuedDate && (
+                        <p>
+                          Issued date:{" "}
+                          <strong>
+                            {new Date(
+                              certificate.issuedDate +
+                                "T00:00:00"
+                            ).toLocaleDateString(
+                              "en-IN",
+                              {
+                                day: "2-digit",
+                                month: "long",
+                                year: "numeric",
+                              }
+                            )}
+                          </strong>
+                        </p>
+                      )}
+
+                    </div>
+
+                    <button
+                      type="button"
+                      className="delete-btn"
+                      onClick={() =>
+                        deleteCertificate(
+                          index
+                        )
+                      }
+                    >
+                      Delete
+                    </button>
+
+                  </div>
+
+                )
+              )
+
+            )}
+
+          </div>
+
+        </section>
+
+        {/* =========================
+            SAVE
+        ========================= */}
+
+        <div className="portfolio-save-area">
+
+          <button
+            type="button"
+            className="portfolio-save-btn"
+            onClick={savePortfolio}
+            disabled={saving}
+          >
+            {saving
+              ? "Saving..."
+              : "Save Portfolio"}
+          </button>
 
         </div>
 
@@ -1292,4 +722,4 @@ function MentorProfile() {
   );
 }
 
-export default MentorProfile;
+export default MyPortfolio;

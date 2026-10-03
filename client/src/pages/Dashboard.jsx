@@ -10,7 +10,7 @@ function Dashboard() {
   // USER
   // =====================================================
 
-  const stored = localStorage.getItem("user");
+  const stored = sessionStorage.getItem("user");
 
   let user = null;
 
@@ -20,7 +20,7 @@ function Dashboard() {
     user = null;
   }
 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   // =====================================================
   // STATES
@@ -97,8 +97,8 @@ function Dashboard() {
   // =====================================================
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
 
     navigate("/login");
   };
@@ -191,7 +191,7 @@ function Dashboard() {
       // =================================================
 
       const peerResponse = await axios.get(
-        "http://localhost:5000/api/mentors",
+        "http://localhost:5000/api/peers",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -200,9 +200,9 @@ function Dashboard() {
       );
 
       const peerList =
-        peerResponse.data.peers ||
-        peerResponse.data.mentors ||
-        [];
+  peerResponse.data.peers ||
+  peerResponse.data.Peer ||
+  [];
 
       // Don't show yourself
       const currentUserId = getId(
@@ -699,7 +699,7 @@ function Dashboard() {
 
               <button
                 onClick={() =>
-                  navigate("/mentors")
+                  navigate("/peers")
                 }
               >
                 Find Skill Partners →
@@ -787,14 +787,16 @@ function Dashboard() {
                 students who can teach it.
               </p>
 
-              <button
-                onClick={() =>
-                  navigate("/mentors")
-                }
-              >
-                Browse peers{" "}
-                <span>→</span>
-              </button>
+             
+<button
+  onClick={() =>
+    navigate("/peers")
+  }
+>
+  Browse peers{" "}
+  <span>→</span>
+</button>
+
 
             </div>
 
@@ -940,7 +942,7 @@ function Dashboard() {
 
             <button
               onClick={() =>
-                navigate("/mentors")
+                navigate("/peers")
               }
             >
               View all →
@@ -1006,10 +1008,10 @@ function Dashboard() {
                   <button
                     onClick={() =>
                       navigate(
-                        "/mentor-profile",
+                        "/peer-profile",
                         {
                           state: {
-                            mentor: peer,
+                            peer: peer,
                           },
                         }
                       )

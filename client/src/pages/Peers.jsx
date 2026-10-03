@@ -1,3 +1,4 @@
+
 import {
   useEffect,
   useMemo,
@@ -10,24 +11,25 @@ import {
 
 import axios from "axios";
 
-import "../styles/Mentor.css";
+import "../styles/Peers.css";
+
 
 // =========================================
 // STAR RATING
 // =========================================
 
 const Stars = ({ rating }) => (
-  <span className="peer-rating">
+  <span className="peers-rating">
     ★{" "}
     {Number(rating || 0).toFixed(1)}
   </span>
 );
 
 // =========================================
-// MENTORS PAGE
+// PEERS PAGE
 // =========================================
 
-function Mentors() {
+function Peers() {
   const navigate = useNavigate();
 
   const [peers, setPeers] =
@@ -55,13 +57,13 @@ function Mentors() {
       setError("");
 
       const token =
-        localStorage.getItem(
+        sessionStorage.getItem(
           "token"
         );
 
       const res =
         await axios.get(
-          `http://localhost:5000/api/mentors?skill=${encodeURIComponent(
+          `http://localhost:5000/api/peers?skill=${encodeURIComponent(
             skill
           )}`,
           {
@@ -121,28 +123,27 @@ function Mentors() {
     );
   }, [peers, search]);
 
-  // =======================================
+    // =======================================
   // SEARCH BUTTON
   // =======================================
 
   const searchNow = () => {
     fetchPeers(search);
   };
-
   // =======================================
   // PAGE
   // =======================================
 
   return (
-    <div className="mentors-page">
+    <div className="peers-page">
 
       {/* =================================
           NAVBAR
       ================================= */}
 
-      <nav className="mentors-navbar">
+      <nav className="peers-navbar">
 
-        <div className="mentors-logo">
+        <div className="peers-logo">
           SkillBridge
         </div>
 
@@ -161,15 +162,15 @@ function Mentors() {
           MAIN
       ================================= */}
 
-      <main className="mentors-content">
+      <main className="peers-content">
 
         {/* =================================
             HERO
         ================================= */}
 
-        <section className="mentors-hero">
+        <section className="peers-hero">
 
-          <span className="mentors-label">
+          <span className="peers-label">
             PEER SKILL EXCHANGE
           </span>
 
@@ -194,7 +195,7 @@ function Mentors() {
             SEARCH
         ================================= */}
 
-        <div className="mentor-search-wrapper">
+        <div className="peers-search-wrapper">
 
           <input
             value={search}
@@ -212,7 +213,7 @@ function Mentors() {
           />
 
           <button
-            className="peer-search-button"
+            className="peers-search-button"
             onClick={searchNow}
           >
             Search
@@ -226,13 +227,13 @@ function Mentors() {
 
         {loading ? (
 
-          <div className="mentors-state">
+          <div className="peers-state">
             Finding skill partners...
           </div>
 
         ) : error ? (
 
-          <div className="mentor-error">
+          <div className="peers-error">
             {error}
           </div>
 
@@ -244,37 +245,39 @@ function Mentors() {
                 RESULTS HEADING
             ============================= */}
 
-            <div className="peer-results-heading">
+           <div className="peers-results-heading">
 
-              <div>
-                <strong>
-                  {filtered.length}
-                </strong>{" "}
-                peer
-                {filtered.length !== 1
-                  ? "s"
-                  : ""}{" "}
-                found
-              </div>
+  <div>
+    <strong>
+      {filtered.length}
+    </strong>{" "}
+    peer
+    {filtered.length !== 1
+      ? "s"
+      : ""}{" "}
+    found
+  </div>
 
-              <span>
-                Sorted by skill match,
-                rating and reviews
-              </span>
+  <span>
+    Sorted by skill match,
+    rating and reviews
+  </span>
 
-            </div>
+</div>
+
+
 
             {/* =============================
-                MENTOR GRID
+                PEER GRID
             ============================= */}
 
-            <section className="mentors-grid">
+            <section className="peers-grid">
 
               {filtered.map(
                 (peer) => (
 
                   <article
-                    className="mentor-card"
+                    className="peers-card"
                     key={peer._id}
                   >
 
@@ -282,15 +285,15 @@ function Mentors() {
                         CARD TOP
                     ======================= */}
 
-                    <div className="mentor-card-top">
+                    <div className="peers-card-top">
 
-                      <div className="mentor-avatar">
+                      <div className="peers-avatar">
                         {peer.name
                           ?.charAt(0)
                           ?.toUpperCase()}
                       </div>
 
-                      <span className="peer-match-badge">
+                      <span className="peers-match-badge">
                         {peer.badges?.[0] ||
                           "Active Peer"}
                       </span>
@@ -301,13 +304,13 @@ function Mentors() {
                         INFO
                     ======================= */}
 
-                    <div className="mentor-info">
+                    <div className="peers-info">
 
                       <h2>
                         {peer.name}
                       </h2>
 
-                      <div className="peer-meta">
+                      <div className="peers-meta">
 
                         <Stars
                           rating={
@@ -326,7 +329,7 @@ function Mentors() {
 
                       </div>
 
-                      <p className="mentor-bio">
+                      <p className="peers-bio">
                         {peer.bio ||
                           "Ready to exchange skills with fellow students."}
                       </p>
@@ -337,7 +340,7 @@ function Mentors() {
                         SKILLS
                     ======================= */}
 
-                    <div className="peer-skill-block">
+                    <div className="peers-skill-block">
 
                       {/* CAN TEACH */}
 
@@ -347,7 +350,7 @@ function Mentors() {
                           CAN TEACH
                         </small>
 
-                        <div className="mentor-skills">
+                        <div className="peers-skills">
 
                           {(
                             peer.skillsToTeach ||
@@ -377,7 +380,7 @@ function Mentors() {
                           WANTS TO LEARN
                         </small>
 
-                        <div className="mentor-skills">
+                        <div className="peers-skills">
 
                           {(
                             peer.skillsToLearn ||
@@ -401,36 +404,31 @@ function Mentors() {
 
                     </div>
 
-                    {/* =======================
-                        MATCH MESSAGE
-                    ======================= */}
+                    
+{/* =======================
+    MATCH MESSAGE
+======================= */}
 
-                    <div className="peer-match-line">
+<div className="peers-match-line">
+  🎯{" "}
+  {peer.matchLabel || "No direct skill match"}
+  {Number.isFinite(Number(peer.matchScore)) &&
+    ` · ${Number(peer.matchScore)}% match`}
+</div>
 
-                      🎯{" "}
-
-                      {peer.matchScore >=
-                      70
-                        ? "Perfect two-way skill match"
-                        : peer.matchScore >=
-                          35
-                        ? "Good skill match"
-                        : "Potential learning partner"}
-
-                    </div>
 
                     {/* =======================
                         PROFILE BUTTON
                     ======================= */}
 
                     <button
-                      className="mentor-profile-button"
+                      className="peers-profile-button"
                       onClick={() =>
                         navigate(
-                          "/mentor-profile",
+                          "/peer-profile",
                           {
                             state: {
-                              mentor:
+                              peer:
                                 peer,
                             },
                           }
@@ -454,7 +452,7 @@ function Mentors() {
             {filtered.length ===
               0 && (
 
-              <div className="empty-mentors">
+              <div className="empty-peers">
 
                 <h3>
                   No peers can teach "
@@ -481,4 +479,18 @@ function Mentors() {
   );
 }
 
-export default Mentors;
+export default Peers;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

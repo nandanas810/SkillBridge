@@ -19,11 +19,6 @@ function Navbar() {
           <a href="#about">About</a>
         </li>
 
-        <li>
-          <Link to="/mentors">
-            Mentors
-          </Link>
-        </li>
 
         <li>
           <Link to="/login">

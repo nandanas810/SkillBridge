@@ -7,6 +7,16 @@ function StudentSessions() {
   const navigate = useNavigate();
 
   const [sessions, setSessions] = useState([]);
+  const storedUser = sessionStorage.getItem("user");
+  let currentUser = null;
+  try { currentUser = storedUser ? JSON.parse(storedUser) : null; } catch { currentUser = null; }
+  const currentUserId = String(currentUser?._id || currentUser?.id || "");
+
+  const getOtherPeer = (session) => {
+    const senderId = String(session.sender?._id || session.sender || "");
+    return senderId === currentUserId ? session.receiver : session.sender;
+  };
+  const getOtherPeerName = (session) => getOtherPeer(session)?.name || "your peer";
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -26,7 +36,7 @@ function StudentSessions() {
       setLoading(true);
       setError("");
 
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       if (!token) {
         navigate("/login");
@@ -42,7 +52,11 @@ function StudentSessions() {
         }
       );
 
-      setSessions(response.data.sessions || []);
+      const sent = response.data.sent || response.data.sessions || [];
+      const received = response.data.received || [];
+      const byId = new Map();
+      [...sent, ...received].forEach((session) => byId.set(session._id, session));
+      setSessions([...byId.values()]);
     } catch (error) {
       console.error("Student sessions error:", error);
 
@@ -97,7 +111,7 @@ function StudentSessions() {
       setSubmittingReview(true);
       setReviewMessage("");
 
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       await axios.post(
         `http://localhost:5000/api/sessions/${reviewingSession._id}/review`,
@@ -222,9 +236,9 @@ function StudentSessions() {
               </p>
 
               <button
-                onClick={() => navigate("/mentors")}
+                onClick={() => navigate("/peers")}
               >
-                Find a Mentor →
+                Find a PEER →
               </button>
 
             </div>
@@ -253,16 +267,13 @@ function StudentSessions() {
 
                   <div className="student-session-top">
 
-                    <div className="mentor-avatar">
-                      {session.mentor?.name
-                        ?.charAt(0)
-                        ?.toUpperCase() || "M"}
+                    <div className="peer-avatar">
+                      {getOtherPeerName(session).charAt(0).toUpperCase() || "P"}
                     </div>
 
                     <div>
                       <h2>
-                        {session.mentor?.name ||
-                          "Peer"}
+                        {getOtherPeerName(session)}
                       </h2>
 
                       <p>
@@ -384,8 +395,7 @@ function StudentSessions() {
 
                         <p>
                           Share your experience
-                          with {session.mentor?.name ||
-                            "your peer"}.
+                          with {getOtherPeerName(session)}.
                         </p>
 
                       </div>
@@ -446,8 +456,7 @@ function StudentSessions() {
                 How was your learning experience
                 with{" "}
                 <strong>
-                  {reviewingSession.mentor?.name ||
-                    "your peer"}
+                  {getOtherPeerName(reviewingSession)}
                 </strong>
                 ?
               </p>
